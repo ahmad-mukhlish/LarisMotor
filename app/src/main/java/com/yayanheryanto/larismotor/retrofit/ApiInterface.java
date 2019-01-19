@@ -402,4 +402,8 @@ public interface ApiInterface {
     Call<Motor> validateMotor(@Query("id_user") String id,
                               @Query("no_mesin") String nomorMesin);
 
+    @FormUrlEncoded
+    @POST("api/searchTipe")
+    Call<List<MerkTipe>> searchTipe(@Field("nama_tipe") String namaTipe);
+
 }
