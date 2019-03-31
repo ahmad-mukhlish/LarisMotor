@@ -26,9 +26,72 @@ public class Transaksi {
     @SerializedName("dp")
     @Expose
     private String dp;
+    @SerializedName("pencairanLeasing")
+    @Expose
+    private String pencairanLeasing;
+    @SerializedName("subsidi")
+    @Expose
+    private String subsidi;
+    @SerializedName("mediator")
+    @Expose
+    private String mediator;
+    @SerializedName("terjual")
+    @Expose
+    private String terjual;
+
 
     private int nomor;
     private boolean sama;
+    private int hargaTerjual;
+    private int netto;
+
+    public String getPencairanLeasing() {
+        return pencairanLeasing;
+    }
+
+    public void setPencairanLeasing(String pencairanLeasing) {
+        this.pencairanLeasing = pencairanLeasing;
+    }
+
+    public String getSubsidi() {
+        return subsidi;
+    }
+
+    public void setSubsidi(String subsidi) {
+        this.subsidi = subsidi;
+    }
+
+    public String getMediator() {
+        return mediator;
+    }
+
+    public void setMediator(String mediator) {
+        this.mediator = mediator;
+    }
+
+    public String getTerjual() {
+        return terjual;
+    }
+
+    public void setTerjual(String terjual) {
+        this.terjual = terjual;
+    }
+
+    public int getHargaTerjual() {
+        return hargaTerjual;
+    }
+
+    public void setHargaTerjual(int hargaTerjual) {
+        this.hargaTerjual = hargaTerjual;
+    }
+
+    public int getNetto() {
+        return netto;
+    }
+
+    public void setNetto(int netto) {
+        this.netto = netto;
+    }
 
     public boolean isSama() {
         return sama;

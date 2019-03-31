@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,10 +85,16 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
         motorViewHolder.textHjm.setText("Rp. " + motor.getHarga());
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+
+        Log.v("id1",motor.getIdMerk()+"") ;
+        Log.v("id2",motor.getIdTipe()+"") ;
         Call<List<MerkTipe>> call = apiInterface.getMerkById(motor.getIdMerk() + "", motor.getIdTipe() + "");
         call.enqueue(new Callback<List<MerkTipe>>() {
             @Override
             public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
+
+                Log.v("coba",response.body().toString()) ;
+
                 String merk = response.body().get(0).getNamaMerk();
                 String tipe = response.body().get(0).getNamaTipe();
 

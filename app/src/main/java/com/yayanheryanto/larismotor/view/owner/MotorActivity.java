@@ -370,13 +370,18 @@ public class MotorActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
-        Call<List<Motor>> call = apiInterface.getFilteredMotor(id,status, merk, tipe, tahun);
+        Call<List<Motor>> call = apiInterface.getFilteredMotor(id, status, merk, tipe, tahun);
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
 
-                if (response.body().isEmpty()) {
-                    Toast.makeText(MotorActivity.this, "Data Filter Tidak Tersedia", Toast.LENGTH_SHORT).show();
+                if (response.body() == null) {
+                    Toast.makeText(MotorActivity.this, "Silakan filter data Anda", Toast.LENGTH_SHORT).show();
+
+                } else if (response.body().isEmpty()) {
+
+                    Toast.makeText(MotorActivity.this, "Data yang Anda filter tidak tersediad", Toast.LENGTH_SHORT).show();
+
 
                 } else {
                     List<Motor> list = response.body();
@@ -399,6 +404,6 @@ public class MotorActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(MotorActivity.this,OwnerMenuActivity.class));
+        startActivity(new Intent(MotorActivity.this, OwnerMenuActivity.class));
     }
 }

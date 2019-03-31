@@ -47,6 +47,19 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
             case 6:
                 renderedView = renderDp(transaksi);
                 break;
+            case 7:
+                renderedView = renderHargaTerjual(transaksi);
+                break;
+            case 8:
+                renderedView = renderSubsidi(transaksi);
+                break;
+            case 9:
+                renderedView = renderMediator(transaksi);
+                break;
+            case 10:
+                renderedView = renderNetto(transaksi);
+                break;
+
 
         }
 
@@ -54,14 +67,13 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
     }
 
     private View renderNomor(final Transaksi transaksi) {
-        return renderString(transaksi.getNomor()+"");
+        return renderString(transaksi.getNomor() + "");
     }
-
 
 
     private View renderTanggal(final Transaksi transaksi) {
 
-        String hasil = "" ;
+        String hasil = "";
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", new Locale("ID"));
         SimpleDateFormat sqlformat = new SimpleDateFormat("yyyy-MM-dd", new Locale("EN"));
@@ -113,6 +125,134 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
         return renderString(hasil);
     }
 
+    private View renderHargaTerjual(final Transaksi transaksi) {
+
+        String hasil = "";
+
+        //bila cash maka munculkan terjual
+        if (transaksi.getDp() == null) {
+            hasil = transaksi.getTerjual();
+        } else {
+
+            //motor baru
+            if (!transaksi.getKondisi().equals("0")) {
+
+                hasil = transaksi.getDp();
+
+            } else {
+
+                int pencairan = 0;
+                if (transaksi.getPencairanLeasing() == null) {
+                    pencairan = 0;
+                } else {
+                    pencairan = Integer.parseInt(transaksi.getPencairanLeasing());
+                }
+                hasil = (Integer.parseInt(transaksi.getDp()) + pencairan) + "";
+
+            }
+
+        }
+        return renderString(hasil);
+    }
+
+    private View renderSubsidi(final Transaksi transaksi) {
+
+        String hasil = "";
+
+        //bila cash maka hasilnya tidak ada
+        if (transaksi.getDp() == null) {
+            hasil = "-";
+        } else {
+
+            //motor baru
+            if (!transaksi.getKondisi().equals("0")) {
+
+                hasil = transaksi.getSubsidi();
+
+            } else {
+
+                hasil = "-";
+
+            }
+
+        }
+        return renderString(hasil);
+    }
+
+
+    private View renderMediator(final Transaksi transaksi) {
+
+        int mediator = 0;
+        if (transaksi.getMediator() == null) {
+            mediator = 0;
+        } else {
+            mediator = Integer.parseInt(transaksi.getMediator());
+        }
+        return renderString(mediator+"");
+    }
+
+
+    private View renderNetto(final Transaksi transaksi) {
+
+        String hasil = "";
+
+        //bila cash terjual - mediator
+        if (transaksi.getDp() == null) {
+            int mediator = 0;
+            if (transaksi.getMediator() == null) {
+                mediator = 0;
+            } else {
+                mediator = Integer.parseInt(transaksi.getMediator());
+            }
+
+            int terjual = 0;
+            if (transaksi.getTerjual() == null) {
+                terjual = 0;
+            } else {
+                terjual = Integer.parseInt(transaksi.getTerjual());
+            }
+
+            hasil = (terjual - mediator) + "";
+        } else {
+
+            //motor baru
+            if (!transaksi.getKondisi().equals("0")) {
+
+                int mediator = 0;
+                if (transaksi.getMediator() == null) {
+                    mediator = 0;
+                } else {
+                    mediator = Integer.parseInt(transaksi.getMediator());
+                }
+
+                hasil = (Integer.parseInt(transaksi.getDp()) -
+                        Integer.parseInt(transaksi.getSubsidi()) - mediator) + "";
+
+            } else {
+
+                int pencairan = 0;
+                if (transaksi.getPencairanLeasing() == null) {
+                    pencairan = 0;
+                } else {
+                    pencairan = Integer.parseInt(transaksi.getPencairanLeasing());
+                }
+
+                int mediator = 0;
+                if (transaksi.getMediator() == null) {
+                    mediator = 0;
+                } else {
+                    mediator = Integer.parseInt(transaksi.getMediator());
+                }
+
+
+                hasil = (Integer.parseInt(transaksi.getDp()) +
+                        pencairan - mediator) + "";
+
+            }
+
+        }
+        return renderString(hasil);
+    }
 
     private View renderString(final String value) {
         final TextView textView = new TextView(getContext());
