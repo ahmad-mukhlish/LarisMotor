@@ -53,6 +53,7 @@ public class TransaksiActivity extends AppCompatActivity {
     private Spinner spinnerTipe;
     private EditText tahun;
     private EditText hargaJualMinimum;
+    private EditText mediator;
     private Button checklist;
     private TextView tanggal, merk, tipe, pembayaran;
     private ArrayAdapter<String> merkAdapter;
@@ -87,10 +88,9 @@ public class TransaksiActivity extends AppCompatActivity {
         merk = findViewById(R.id.merk);
         tipe = findViewById(R.id.tipe);
         pembayaran = findViewById(R.id.pembayaran);
+        mediator = findViewById(R.id.mediator);
 
         initProgressDialog();
-
-
 
 
         SimpleDateFormat df = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("ID"));
@@ -201,18 +201,19 @@ public class TransaksiActivity extends AppCompatActivity {
                     cicilan.setVisibility(GONE);
                     subsidi.setVisibility(View.GONE);
                     pencairanLeasing.setVisibility(View.GONE);
+                    mediator.setVisibility(GONE);
                 } else if (position == 1) {
                     harga.setVisibility(View.VISIBLE);
+                    mediator.setVisibility(View.VISIBLE);
                     dp.setVisibility(GONE);
                     tenor.setVisibility(GONE);
                     cicilan.setVisibility(GONE);
                     subsidi.setVisibility(GONE);
                     pencairanLeasing.setVisibility(GONE);
-
-
                 } else {
 
                     harga.setVisibility(GONE);
+                    mediator.setVisibility(View.VISIBLE);
                     dp.setVisibility(View.VISIBLE);
                     tenor.setVisibility(View.VISIBLE);
                     cicilan.setVisibility(View.VISIBLE);
@@ -301,7 +302,7 @@ public class TransaksiActivity extends AppCompatActivity {
                                 cicilan.setText("Cicilan : Rp. " + motor.getCicilan());
                                 cicilan.setEnabled(false);
                                 cicilan.setTextColor(Color.BLACK);
-                                flagTenor = true;
+                                flagCicilan = true;
                             }
 
                             Call<List<MerkTipe>> call2 = apiInterface.getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
@@ -380,7 +381,7 @@ public class TransaksiActivity extends AppCompatActivity {
 
         Motor motor = new Motor();
         String noMesin, noRangka, tahunMotor, hjm, dpMotor, cicilanMotor,
-                tenorMotor, hargaTerjual, subsidiMotor, pencairanLeasingMotor;
+                tenorMotor, hargaTerjual, subsidiMotor, pencairanLeasingMotor, mediatorMotor;
 
         if (kondisi == 0) {
             noMesin = nomorMesin.getText().toString();
@@ -393,6 +394,7 @@ public class TransaksiActivity extends AppCompatActivity {
                 cicilanMotor = cicilan.getText().toString();
                 tenorMotor = tenor.getText().toString();
                 pencairanLeasingMotor = pencairanLeasing.getText().toString();
+
 
                 if (flagDp) {
                     motor.setDp(Integer.valueOf(dpMotor.substring(15)));
@@ -418,6 +420,13 @@ public class TransaksiActivity extends AppCompatActivity {
 
             motor.setNoMesin(noMesin);
             motor.setKondisi(kondisi);
+            mediatorMotor = mediator.getText().toString();
+            if (mediatorMotor.isEmpty() || mediatorMotor.equals("")) {
+                motor.setMediator(null);
+            } else {
+                motor.setMediator(Integer.valueOf(mediatorMotor));
+            }
+
 
             Intent intent = new Intent(TransaksiActivity.this, IsiDataActivity.class);
             intent.putExtra(DATA_MOTOR, motor);
@@ -440,18 +449,24 @@ public class TransaksiActivity extends AppCompatActivity {
             if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
                 hargaTerjual = harga.getText().toString();
                 motor.setHargaTerjual(Integer.valueOf(hargaTerjual));
+                mediatorMotor = mediator.getText().toString();
+                motor.setMediator(Integer.valueOf(mediatorMotor));
             } else {
 
                 dpMotor = dp.getText().toString();
                 cicilanMotor = cicilan.getText().toString();
                 tenorMotor = tenor.getText().toString();
                 subsidiMotor = subsidi.getText().toString();
+                mediatorMotor = mediator.getText().toString();
 
 
                 motor.setDp(Integer.valueOf(dpMotor));
                 motor.setCicilan(Integer.valueOf(cicilanMotor));
                 motor.setTenor(Integer.valueOf(tenorMotor));
                 motor.setSubsidi(Integer.valueOf(subsidiMotor));
+                motor.setMediator(Integer.valueOf(mediatorMotor));
+
+
             }
 
             Intent intent = new Intent(TransaksiActivity.this, IsiDataActivity.class);

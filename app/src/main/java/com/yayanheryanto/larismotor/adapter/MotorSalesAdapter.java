@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,9 +126,14 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
         SharedPreferences pref = mContext.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
 
+
         if (!id.equals(motor.getIdUser()+"")) {
             holder.imgEdit.setVisibility(View.GONE);
             holder.imgDeelete.setVisibility(View.GONE);
+        }
+        else {
+            holder.imgEdit.setVisibility(View.VISIBLE);
+            holder.imgDeelete.setVisibility(View.VISIBLE);
         }
 
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {

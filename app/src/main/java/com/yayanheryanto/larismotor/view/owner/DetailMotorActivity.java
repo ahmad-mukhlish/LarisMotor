@@ -106,19 +106,19 @@ public class DetailMotorActivity extends AppCompatActivity {
 
                 harga.setText("Rp. " + motor.getHarga());
 
-                if (motor.getDp() == null) {
+                if (motor.getDp() == null || motor.getDp().equals("0")) {
                     dp.setText("-");
                 } else {
                     dp.setText("Rp. " + motor.getDp());
                 }
 
-                if (motor.getCicilan() == null) {
+                if (motor.getCicilan() == null || motor.getCicilan().equals("0")) {
                     cicilan.setText("-");
                 } else {
                     cicilan.setText("Rp. " + motor.getCicilan());
                 }
 
-                if (motor.getTenor() == null) {
+                if (motor.getTenor() == null || motor.getTenor().equals("0")) {
                     tenor.setText("-");
                 } else {
                     tenor.setText(motor.getTenor() + " Bulan");

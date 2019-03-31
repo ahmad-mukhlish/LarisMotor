@@ -140,11 +140,14 @@
                 android:layout_height="wrap_content"
                 android:hint="Harga Jual" />
 
+
+
+
             <EditText
                 android:id="@+id/dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="DP"
+                android:hint="DP PO"
                 android:visibility="gone" />
 
             <EditText
@@ -174,6 +177,12 @@
                 android:layout_height="wrap_content"
                 android:hint="Subsidi"
                 android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/mediator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mediator" />
 
 
         </LinearLayout>

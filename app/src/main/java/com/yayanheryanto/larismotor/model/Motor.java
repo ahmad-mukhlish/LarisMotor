@@ -1,6 +1,5 @@
 package com.yayanheryanto.larismotor.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -81,9 +80,14 @@ public class Motor implements Parcelable {
     @SerializedName("pencairan_leasing")
     @Expose
     private Integer pencairanLeasing;
+    @SerializedName("mediator")
+    @Expose
+    private Integer mediator;
 
     public Motor() {
     }
+
+
 
     public String getNoMesin() {
         return noMesin;
@@ -245,8 +249,26 @@ public class Motor implements Parcelable {
         this.pencairanLeasing = pencairanLeasing;
     }
 
+    public Integer getMediator() {
+        return mediator;
+    }
+
+    public void setMediator(Integer mediator) {
+        this.mediator = mediator;
+    }
+
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+
+
+
 
     protected Motor(Parcel in) {
+        message = in.readString();
         noMesin = in.readString();
         idMerk = in.readByte() == 0x00 ? null : in.readInt();
         idTipe = in.readByte() == 0x00 ? null : in.readInt();
@@ -267,6 +289,7 @@ public class Motor implements Parcelable {
         dp = in.readByte() == 0x00 ? null : in.readInt();
         subsidi = in.readByte() == 0x00 ? null : in.readInt();
         pencairanLeasing = in.readByte() == 0x00 ? null : in.readInt();
+        mediator = in.readByte() == 0x00 ? null : in.readInt();
     }
 
     @Override
@@ -276,6 +299,7 @@ public class Motor implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(message);
         dest.writeString(noMesin);
         if (idMerk == null) {
             dest.writeByte((byte) (0x00));
@@ -366,6 +390,12 @@ public class Motor implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeInt(pencairanLeasing);
         }
+        if (mediator == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(mediator);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -380,9 +410,4 @@ public class Motor implements Parcelable {
             return new Motor[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
 }

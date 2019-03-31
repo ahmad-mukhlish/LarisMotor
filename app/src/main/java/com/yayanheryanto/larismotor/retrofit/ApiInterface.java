@@ -262,7 +262,8 @@ public interface ApiInterface {
                                 @Field("dp") String dp,
                                 @Field("cicilan") String cicilan,
                                 @Field("tenor") String tenor,
-                                @Field("pencairanLeasing") String pencairanLeasing);
+                                @Field("pencairanLeasing") String pencairanLeasing,
+                                @Field("mediator") String mediator);
 
 
     @FormUrlEncoded
@@ -284,7 +285,8 @@ public interface ApiInterface {
                               @Field("cicilan") String cicilan,
                               @Field("tenor") String tenor,
                               @Field("pencairanLeasing") String pencairanLeasing,
-                              @Field("no_ktp_sales") String no_ktp_sales);
+                              @Field("no_ktp_sales") String no_ktp_sales,
+                              @Field("mediator") String mediator);
 
 
     @FormUrlEncoded
@@ -303,7 +305,8 @@ public interface ApiInterface {
                                 @Field("dp") String dp,
                                 @Field("cicilan") String cicilan,
                                 @Field("tenor") String tenor,
-                                @Field("subsidi") String subsidi);
+                                @Field("subsidi") String subsidi,
+                                @Field("mediator") String mediator);
 
 
     @FormUrlEncoded
@@ -331,7 +334,8 @@ public interface ApiInterface {
                               @Field("instagram") String instagram,
                               @Field("facebook") String facebook,
                               @Field("no_ktp_sales") String no_ktp_sales,
-                              @Field("ttl") String ttl);
+                              @Field("ttl") String ttl,
+                              @Field("mediator") String mediator);
 
     @POST("api/getTransaksi")
     Call<List<Transaksi>> getTransaksi(@Query("dari") String dari,

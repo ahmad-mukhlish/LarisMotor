@@ -23,7 +23,9 @@ import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.owner.OwnerMenuActivity;
+import com.yayanheryanto.larismotor.view.sales.SalesMenuActivity;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -252,6 +254,7 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
     private void getFromIntent() {
         Bundle bundle = getIntent().getExtras();
         motor = bundle.getParcelable(DATA_MOTOR);
+        Log.v("cik2",motor.getMediator()+"") ;
 
 
     }
@@ -293,7 +296,7 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
         try {
             convertedDate = dateFormat.parse(ttlTxt);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
+
             e.printStackTrace();
         }
         String tanggal = dateFormat.format(convertedDate);
@@ -310,26 +313,28 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
             //ubah status motor dan simpan ke transaksi, customer++
             Log.v("apa", no_ktp_sales);
             call = apiInterface.mokasWithNoCust(token, motor.getNoMesin(), nomorKtpTxt, no_ktp_sales, String.valueOf(motor.getHargaTerjual()),
-                    motor.getDp() + "", motor.getCicilan() + "", motor.getTenor() + "", motor.getPencairanLeasing() + "");
+                    motor.getDp() + "", motor.getCicilan() + "", motor.getTenor() + "",
+                    motor.getPencairanLeasing() + "", motor.getMediator() + "");
         } else if (motor.getKondisi() == 0 && statusCustomer == 0) {
             //ubah status motor, simpan customer dan transaksi
             call = apiInterface.mokasWithCust(token, motor.getNoMesin(), nomorKtpTxt, namaTxt, alamatTxt, nomorTelpTxt, tanggal, Agama, pekerjaanTxt, whatsappTxt, instagramTxt, facebookTxt,
                     String.valueOf(motor.getHargaTerjual()), motor.getDp() + "", motor.getCicilan() + "",
-                    motor.getTenor() + "", motor.getPencairanLeasing() + "", no_ktp_sales);
+                    motor.getTenor() + "", motor.getPencairanLeasing() + "", no_ktp_sales, motor.getMediator() + "");
         } else if (motor.getKondisi() == 1 && statusCustomer == 1) {
             //simpan, simpan ke transaksi, customer++
+
 
             call = apiInterface.mobarWithNoCust(token, nomorKtpTxt, no_ktp_sales, motor.getNoMesin(), motor.getNoRangka(), String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()),
                     String.valueOf(motor.getTahun()), String.valueOf(motor.getHjm()), id, motor.getHargaTerjual() + "",
                     String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()),
-                    motor.getSubsidi() + ""
-            );
+                    motor.getSubsidi() + "", motor.getMediator() + "");
 
         } else if (motor.getKondisi() == 1 && statusCustomer == 0) {
             call = apiInterface.mobarWithCust(token, motor.getNoMesin(), motor.getNoRangka(), String.valueOf(motor.getTahun()), String.valueOf(motor.getHjm()),
                     String.valueOf(motor.getIdTipe()), String.valueOf(motor.getIdMerk()), id, String.valueOf(motor.getHargaTerjual()),
                     String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()), motor.getSubsidi() + "",
-                    nomorKtpTxt, namaTxt, alamatTxt, nomorTelpTxt, Agama, pekerjaanTxt, whatsappTxt, instagramTxt, facebookTxt, no_ktp_sales, tanggal);
+                    nomorKtpTxt, namaTxt, alamatTxt, nomorTelpTxt, Agama, pekerjaanTxt, whatsappTxt,
+                    instagramTxt, facebookTxt, no_ktp_sales, tanggal, motor.getMediator() + "");
         }
         call.enqueue(new Callback<Motor>() {
             @Override
@@ -338,7 +343,15 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
 
                 if (response.body().getMessage().equalsIgnoreCase("success")) {
                     Toast.makeText(IsiDataActivity.this, "Transasksi Berhasil Disimpan", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(IsiDataActivity.this, OwnerMenuActivity.class));
+
+                    SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+                    String id = pref.getString(ID_USER, "");
+
+                    if (id.equals("1")) {
+                        startActivity(new Intent(IsiDataActivity.this, OwnerMenuActivity.class));
+                    } else {
+                        startActivity(new Intent(IsiDataActivity.this, SalesMenuActivity.class));
+                    }
                 }
             }
 
