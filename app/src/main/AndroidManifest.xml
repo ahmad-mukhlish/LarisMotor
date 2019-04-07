@@ -72,9 +72,11 @@
         <activity android:name=".view.pending.FilteredPendingJualActivity" />
         <activity android:name=".view.pending.FilteredPendingBeliActivity" />
         <activity android:name=".view.owner.EditCustomerActivity" />
-        <activity android:name=".view.sales.InsentifSalesActivity" />
-        <activity android:name=".view.owner.InsentifAcitivity" />
-        <activity android:name=".view.owner.CariTipeActivity"></activity>
+        <activity android:name=".view.owner.InsentifConfigAcitivity" />
+        <activity android:name=".view.owner.CariTipeActivity" />
+        <activity android:name=".view.owner.InsentifHasilOwnerActivity" />
+        <activity android:name=".view.sales.InsentifConfigSalesActivity" />
+        <activity android:name=".view.sales.InsentifHasilSalesActivity"></activity>
     </application>
 
 </manifest>

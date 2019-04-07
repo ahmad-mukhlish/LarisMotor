@@ -72,7 +72,7 @@ public class OwnerMenuActivity extends AppCompatActivity implements View.OnClick
         list.add(new Menu(R.drawable.motorbike, "Motor", MotorActivity.class));
         list.add(new Menu(R.drawable.transaction, "Transaksi",TransaksiActivity.class));
         list.add(new Menu(R.drawable.time, "Pending Transaksi",PendingTransaksiActivity.class));
-        list.add(new Menu(R.drawable.money, "Atur Insentif",MotorActivity.class));
+        list.add(new Menu(R.drawable.money, "Atur Insentif",InsentifConfigAcitivity.class));
         list.add(new Menu(R.drawable.report, "Laporan Penjualan",FilterActivity.class));
         list.add(new Menu(R.drawable.master, "Master",MasterActivity.class));
         list.add(new Menu(R.drawable.sales, "Sales",SalesActivity.class));

@@ -65,7 +65,7 @@ public class SalesMenuActivity extends AppCompatActivity implements View.OnClick
         list.add(new Menu(R.drawable.motorbike, "Motor",MotorSalesActivity.class));
         list.add(new Menu(R.drawable.transaction, "Transaksi",TransaksiActivity.class));
         list.add(new Menu(R.drawable.time, "Pending Transaksi",PendingTransaksiActivity.class));
-        list.add(new Menu(R.drawable.money, "Lihat Insentif Saya",MotorActivity.class));
+        list.add(new Menu(R.drawable.money, "Lihat Insentif Saya",InsentifConfigSalesActivity.class));
 
         recyclerView.setHasFixedSize(true);
         layoutManager = new GridLayoutManager(this,2);

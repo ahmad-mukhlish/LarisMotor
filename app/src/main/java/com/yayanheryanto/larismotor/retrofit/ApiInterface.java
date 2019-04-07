@@ -2,6 +2,7 @@ package com.yayanheryanto.larismotor.retrofit;
 
 import com.yayanheryanto.larismotor.model.Customer;
 import com.yayanheryanto.larismotor.model.Detail;
+import com.yayanheryanto.larismotor.model.KonfigInsentif;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -409,5 +410,20 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("api/searchTipe")
     Call<List<MerkTipe>> searchTipe(@Field("nama_tipe") String namaTipe);
+
+    @GET("api/getKonfigInsentif/")
+    Call<List<KonfigInsentif>> getKonfigInsentif();
+
+    @FormUrlEncoded
+    @POST("api/updateKonfigInsentif")
+    Call<KonfigInsentif> updateKonfigInsentif(
+            @Header("Authorization") String authorization,
+            @Field("persen") String persen,
+            @Field("insentif_mobar") String insentif_mobar,
+            @Field("lima") String lima,
+            @Field("sepuluh") String sepuluh,
+            @Field("limaBelas") String limaBelas,
+            @Field("duaPuluh") String duaPuluh,
+            @Field("duaSatu") String duaSatu);
 
 }
