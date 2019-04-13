@@ -101,6 +101,8 @@ public class InsentifConfigSalesActivity extends AppCompatActivity implements co
                         Intent intent = new Intent(InsentifConfigSalesActivity.this, InsentifHasilSalesActivity.class);
                         intent.putExtra("dari",dariTxt.getText().toString()) ;
                         intent.putExtra("hingga",keTxt.getText().toString()) ;
+                        intent.putExtra("dariSql",tanggalDari) ;
+                        intent.putExtra("hinggaSql",tanggalKe) ;
                         startActivity(intent);
                     }
                 } catch (ParseException e) {

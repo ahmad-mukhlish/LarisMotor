@@ -220,9 +220,11 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
 
                         updateKonfigInsentif();
                         Intent intent = new Intent(InsentifConfigAcitivity.this, InsentifHasilOwnerActivity.class);
-                        intent.putExtra("sales", spinnerSales.getSelectedItem().toString());
+                        intent.putExtra("sales", saleses.get(spinnerSales.getSelectedItemPosition() - 1));
                         intent.putExtra("dari",dariTxt.getText().toString()) ;
                         intent.putExtra("hingga",keTxt.getText().toString()) ;
+                        intent.putExtra("dariSql",tanggalDari) ;
+                        intent.putExtra("hinggaSql",tanggalKe) ;
                         startActivity(intent);
                     }
                 } catch (ParseException e) {

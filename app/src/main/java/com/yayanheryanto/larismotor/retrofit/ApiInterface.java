@@ -426,4 +426,17 @@ public interface ApiInterface {
             @Field("duaPuluh") String duaPuluh,
             @Field("duaSatu") String duaSatu);
 
+    @POST("api/getJumlahMobarInsentif")
+    Call<Integer> getJumlahMobarInsentif(@Query("id") String id,
+                                         @Query("dari") String dari,
+                                         @Query("hingga") String hingga
+                                         );
+
+
+    @POST("api/getJumlahMokasInsentif")
+    Call<Integer> getJumlahMokasInsentif(@Query("id") String id,
+                                         @Query("dari") String dari,
+                                         @Query("hingga") String hingga
+                                         );
 }
+
