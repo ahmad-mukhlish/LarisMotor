@@ -89,6 +89,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 } else {
                     persentaseTxt.setEnabled(false);
                     persentaseTxt.clearFocus();
+                    updateKonfigInsentif();
                 }
 
             }
@@ -104,6 +105,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 } else {
                     mobarTxt.setEnabled(false);
                     mobarTxt.clearFocus();
+                    updateKonfigInsentif();
                 }
 
             }
@@ -119,6 +121,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 } else {
                     limaTxt.setEnabled(false);
                     limaTxt.clearFocus();
+                    updateKonfigInsentif();
                 }
 
             }
@@ -134,6 +137,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 } else {
                     sepuluhTxt.setEnabled(false);
                     sepuluhTxt.clearFocus();
+                    updateKonfigInsentif();
                 }
 
             }
@@ -149,6 +153,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 } else {
                     limaBelasTxt.setEnabled(false);
                     limaBelasTxt.clearFocus();
+                    updateKonfigInsentif();
                 }
 
             }
@@ -164,6 +169,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 } else {
                     duaPuluhTxt.setEnabled(false);
                     duaPuluhTxt.clearFocus();
+                    updateKonfigInsentif();
                 }
 
             }
@@ -179,6 +185,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 } else {
                     duaSatuTxt.setEnabled(false);
                     duaSatuTxt.clearFocus();
+                    updateKonfigInsentif();
                 }
 
             }
@@ -218,7 +225,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                         Toast.makeText(InsentifConfigAcitivity.this, "Data sales atau tanggal ada yang belum valid...", Toast.LENGTH_SHORT).show();
                     } else {
 
-                        updateKonfigInsentif();
+
                         Intent intent = new Intent(InsentifConfigAcitivity.this, InsentifHasilOwnerActivity.class);
                         intent.putExtra("sales", saleses.get(spinnerSales.getSelectedItemPosition() - 1));
                         intent.putExtra("dari",dariTxt.getText().toString()) ;

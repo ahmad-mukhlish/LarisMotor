@@ -10,11 +10,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
+import com.yayanheryanto.larismotor.model.KonfigInsentif;
 import com.yayanheryanto.larismotor.model.Sales;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,12 +29,14 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
     EditText lain;
     ImageView edit, hapus;
     boolean klik;
-    TextView salesTxt, dariTxt, hinggaTxt, jumlahMokasTxt, jumlahMobarTxt;
+    TextView salesTxt, dariTxt, hinggaTxt,
+            jumlahMokasTxt, jumlahMobarTxt, nominalMobarTxt, nominalMokasTxt;
     View batas;
     RelativeLayout holder, holderMargin;
     int jumlahMobar, jumlahMokas;
     String dariSql, hinggaSql;
     Sales salesNow;
+    KonfigInsentif konfigInsentif;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +59,8 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
         holderMargin = findViewById(R.id.holder_margin);
         jumlahMobarTxt = findViewById(R.id.jumlah_mobar);
         jumlahMokasTxt = findViewById(R.id.jumlah_mokas);
+        nominalMobarTxt = findViewById(R.id.nominal_mobar);
+        nominalMokasTxt = findViewById(R.id.nominal_mokas);
 
 
         salesTxt.setText(salesNow.getNama());
@@ -105,6 +113,8 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
         getJumlahMobar();
         getJumlahMokas();
+        getKonfig();
+
 
 
     }
@@ -116,15 +126,14 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
     public void getJumlahMobar() {
 
 
-
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Log.v("cik",salesNow.getIdUser()+" " + dariSql + " " + hinggaSql) ;
-        Call<Integer> call = apiInterface.getJumlahMobarInsentif(salesNow.getIdUser()+"",dariSql,hinggaSql );
+        Log.v("cik", salesNow.getIdUser() + " " + dariSql + " " + hinggaSql);
+        Call<Integer> call = apiInterface.getJumlahMobarInsentif(salesNow.getIdUser() + "", dariSql, hinggaSql);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-             jumlahMobar = response.body();
-             jumlahMobarTxt.setText(jumlahMobar+"");
+                jumlahMobar = response.body();
+                jumlahMobarTxt.setText(jumlahMobar + "");
             }
 
             @Override
@@ -139,13 +148,13 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Log.v("cikan",salesNow.getIdUser()+" " + dariSql + " " + hinggaSql) ;
-        Call<Integer> call = apiInterface.getJumlahMokasInsentif(salesNow.getIdUser()+"",dariSql,hinggaSql );
+        Log.v("cikan", salesNow.getIdUser() + " " + dariSql + " " + hinggaSql);
+        Call<Integer> call = apiInterface.getJumlahMokasInsentif(salesNow.getIdUser() + "", dariSql, hinggaSql);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 jumlahMokas = response.body();
-                jumlahMokasTxt.setText(jumlahMokas+"");
+                jumlahMokasTxt.setText(jumlahMokas + "");
 
 
             }
@@ -173,5 +182,54 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
             view.requestLayout();
         }
+    }
+
+    private void getKonfig() {
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<List<KonfigInsentif>> call = apiInterface.getKonfigInsentif();
+        call.enqueue(new Callback<List<KonfigInsentif>>() {
+            @Override
+            public void onResponse(Call<List<KonfigInsentif>> call, Response<List<KonfigInsentif>> response) {
+                konfigInsentif = response.body().get(0);
+                getNominalMobar();
+                getNominalMokas();
+            }
+
+            @Override
+            public void onFailure(Call<List<KonfigInsentif>> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(InsentifHasilOwnerActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+
+
+        });
+    }
+
+    private void getNominalMobar() {
+
+        int hasil = jumlahMobar * Integer.parseInt(konfigInsentif.getInsentifMobar()) ;
+        nominalMobarTxt.setText(hasil+"");
+
+    }
+
+    private void getNominalMokas() {
+
+        int hasil = 0 ;
+
+        if (jumlahMokas < 6)
+        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas15());}
+        else if (jumlahMokas > 5 && jumlahMokas < 11)
+        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas610());}
+        else if (jumlahMokas > 10 && jumlahMokas < 16)
+        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1115());}
+        else if (jumlahMokas > 15 && jumlahMokas < 21)
+        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1620());}
+        else if (jumlahMokas > 20)
+        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas21());}
+
+        nominalMokasTxt.setText(hasil+"");
+
+
+
     }
 }
