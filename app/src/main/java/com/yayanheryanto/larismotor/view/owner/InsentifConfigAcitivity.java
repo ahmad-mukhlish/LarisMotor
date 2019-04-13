@@ -45,7 +45,7 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
     String tanggalDari = "kosong", tanggalKe = "kosong", sales = "-1", kondisi = "-1", caraBayar = "-1";
 
     private int jenis;
-    ArrayAdapter<String> salesAdapter;
+    private ArrayAdapter<String> salesAdapter;
 
     private Spinner spinnerSales;
     private final List<Sales> saleses = new ArrayList<>();

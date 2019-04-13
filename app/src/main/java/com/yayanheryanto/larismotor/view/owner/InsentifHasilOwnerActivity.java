@@ -1,6 +1,8 @@
 package com.yayanheryanto.larismotor.view.owner;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,20 +27,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+
 public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
-    EditText lain, persentaseMobar;
-    ImageView edit, hapus, editPm, hapusPm;
-    boolean klik, klikPm;
-    TextView salesTxt, dariTxt, hinggaTxt,
+    private EditText lainTxt, persentaseMobarTxt;
+    private ImageView edit, hapus, editPm, hapusPm;
+    private boolean klik, klikPm;
+    private TextView salesTxt, dariTxt, hinggaTxt,
             jumlahMokasTxt, jumlahMobarTxt, nominalMobarTxt, nominalMokasTxt;
 
-    View batas, batasPm;
-    RelativeLayout holder, holderMargin, holderPm, holderMarginPm;
-    int jumlahMobar, jumlahMokas;
-    String dariSql, hinggaSql;
-    Sales salesNow;
-    KonfigInsentif konfigInsentif;
+    private View batas, batasPm;
+    private RelativeLayout holder, holderMargin, holderPm, holderMarginPm;
+    private int jumlahMobar, jumlahMokas, lain, persentaseMobar;
+    private String dariSql, hinggaSql;
+    private Sales salesNow;
+    private KonfigInsentif konfigInsentif;
 
     private ProgressDialog dialog;
 
@@ -54,8 +59,8 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
         dariSql = bundle.getString("dariSql");
         hinggaSql = bundle.getString("hinggaSql");
 
-        persentaseMobar = findViewById(R.id.persentase_mobar);
-        lain = findViewById(R.id.lain);
+        persentaseMobarTxt = findViewById(R.id.persentase_mobar);
+        lainTxt = findViewById(R.id.lain);
 
         edit = findViewById(R.id.edit);
         hapus = findViewById(R.id.hapus);
@@ -97,9 +102,9 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!klik) {
-                    lain.setEnabled(true);
-                    lain.requestFocus();
-                    lain.setSelection(lain.getText().length());
+                    lainTxt.setEnabled(true);
+                    lainTxt.requestFocus();
+                    lainTxt.setSelection(lainTxt.getText().length());
                     edit.setImageResource(R.drawable.ic_save_256);
                     batas.setVisibility(View.VISIBLE);
                     holder.setVisibility(View.VISIBLE);
@@ -111,9 +116,9 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
                     edit.setImageResource(R.drawable.ic_pencil_edit_button);
                     batas.setVisibility(View.GONE);
                     holder.setVisibility(View.GONE);
-                    lain.setEnabled(false);
-                    lain.clearFocus();
-                    simpan();
+                    lainTxt.setEnabled(false);
+                    lainTxt.clearFocus();
+                    simpanLain();
                     klik = false;
 
                 }
@@ -125,7 +130,7 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                lain.setText("0");
+                lainTxt.setText("0");
 
             }
         });
@@ -135,9 +140,9 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!klikPm) {
-                    persentaseMobar.setEnabled(true);
-                    persentaseMobar.requestFocus();
-                    persentaseMobar.setSelection(lain.getText().length());
+                    persentaseMobarTxt.setEnabled(true);
+                    persentaseMobarTxt.requestFocus();
+                    persentaseMobarTxt.setSelection(persentaseMobarTxt.getText().length());
                     editPm.setImageResource(R.drawable.ic_save_256);
                     batasPm.setVisibility(View.VISIBLE);
                     holderPm.setVisibility(View.VISIBLE);
@@ -149,9 +154,9 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
                     editPm.setImageResource(R.drawable.ic_pencil_edit_button);
                     batasPm.setVisibility(View.GONE);
                     holderPm.setVisibility(View.GONE);
-                    persentaseMobar.setEnabled(false);
-                    persentaseMobar.clearFocus();
-                    simpanPm();
+                    persentaseMobarTxt.setEnabled(false);
+                    persentaseMobarTxt.clearFocus();
+                    simpanPersentaseMobar();
                     klikPm = false;
 
                 }
@@ -163,7 +168,7 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                persentaseMobar.setText("0");
+                persentaseMobarTxt.setText("0");
 
             }
         });
@@ -171,6 +176,7 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
         getJumlahMobar();
         getJumlahMokas();
         getKonfig();
+
 
 
     }
@@ -182,12 +188,67 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
         dialog.setCancelable(false);
     }
 
-    private void simpan() {
-        //save ke database
+    private void simpanLain() {
+
+        dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String token = pref.getString(ACCESTOKEN, "");
+
+        String lain = lainTxt.getText().toString();
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<KonfigInsentif> call = apiInterface.updateLain(token,salesNow.getNoKtpSales(),lain);
+
+        call.enqueue(new Callback<KonfigInsentif>() {
+            @Override
+            public void onResponse(Call<KonfigInsentif> call, Response<KonfigInsentif> response) {
+                dialog.dismiss();
+                if (response.body().getMessage().equals("success")){
+                    Toast.makeText(InsentifHasilOwnerActivity.this, "Data Telah Disubmit", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(InsentifHasilOwnerActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<KonfigInsentif> call, Throwable t) {
+                dialog.dismiss();
+                t.printStackTrace();
+                Toast.makeText(InsentifHasilOwnerActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
-    private void simpanPm() {
-        //save ke database
+    private void simpanPersentaseMobar() {
+        dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String token = pref.getString(ACCESTOKEN, "");
+
+        String persentaseMobar = persentaseMobarTxt.getText().toString();
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<KonfigInsentif> call = apiInterface.updatePersentaseMobar(token,salesNow.getNoKtpSales(),persentaseMobar);
+
+        call.enqueue(new Callback<KonfigInsentif>() {
+            @Override
+            public void onResponse(Call<KonfigInsentif> call, Response<KonfigInsentif> response) {
+                dialog.dismiss();
+                if (response.body().getMessage().equals("success")){
+                    Toast.makeText(InsentifHasilOwnerActivity.this, "Data Telah Disubmit", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(InsentifHasilOwnerActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<KonfigInsentif> call, Throwable t) {
+                dialog.dismiss();
+                t.printStackTrace();
+                Toast.makeText(InsentifHasilOwnerActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void getJumlahMobar() {
@@ -261,6 +322,8 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
                 konfigInsentif = response.body().get(0);
                 getNominalMobar();
                 getNominalMokas();
+                getLain();
+                getPersentaseMobar();
                 dialog.dismiss();
 
 
@@ -304,4 +367,47 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
 
     }
+
+    public void getLain() {
+
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<Integer> call = apiInterface.getLain(salesNow.getIdUser() + "");
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                lain = response.body();
+                lainTxt.setText(lain + "");
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void getPersentaseMobar() {
+
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<Integer> call = apiInterface.getPersentaseMobar(salesNow.getIdUser() + "");
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                persentaseMobar = response.body();
+                persentaseMobarTxt.setText(persentaseMobar + "");
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
+
 }

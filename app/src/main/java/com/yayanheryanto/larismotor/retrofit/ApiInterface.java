@@ -438,5 +438,27 @@ public interface ApiInterface {
                                          @Query("dari") String dari,
                                          @Query("hingga") String hingga
                                          );
+
+    @POST("api/getLain")
+    Call<Integer> getLain(@Query("id") String id);
+
+
+    @POST("api/getPersentaseMobar")
+    Call<Integer> getPersentaseMobar(@Query("id") String id);
+
+    @FormUrlEncoded
+    @POST("api/updateLain")
+    Call<KonfigInsentif> updateLain(
+            @Header("Authorization") String authorization,
+            @Field("ktp") String ktp,
+            @Field("lain") String lain);
+
+
+    @FormUrlEncoded
+    @POST("api/updatePersentaseMobar")
+    Call<KonfigInsentif> updatePersentaseMobar(
+            @Header("Authorization") String authorization,
+            @Field("ktp") String ktp,
+            @Field("persentase_mobar") String persentase_mobar);
 }
 

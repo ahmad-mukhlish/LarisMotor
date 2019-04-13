@@ -27,12 +27,15 @@ import static com.yayanheryanto.larismotor.config.config.NAMA_USER;
 
 public class InsentifHasilSalesActivity extends AppCompatActivity {
 
-    TextView salesTxt, dariTxt, hinggaTxt, jumlahMobarTxt, jumlahMokasTxt,
-            nominalMobarTxt, nominalMokasTxt;
-    String id, dariSql, hinggaSql;
+    private TextView salesTxt, dariTxt, hinggaTxt, jumlahMobarTxt, jumlahMokasTxt,
+            nominalMobarTxt, nominalMokasTxt, lainTxt, persentaseMobarTxt;
+
+    private String id, dariSql, hinggaSql;
     private SharedPreferences pref;
-    int jumlahMobar, jumlahMokas;
-    KonfigInsentif konfigInsentif;
+    private int jumlahMobar, jumlahMokas, lain, persentaseMobar;
+    private KonfigInsentif konfigInsentif;
+
+
 
     private ProgressDialog dialog;
 
@@ -51,6 +54,8 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
         jumlahMokasTxt = findViewById(R.id.jumlah_mokas_sales);
         nominalMobarTxt = findViewById(R.id.nominal_mobar_sales);
         nominalMokasTxt = findViewById(R.id.nominal_mokas_sales);
+        lainTxt = findViewById(R.id.lain_sales);
+        persentaseMobarTxt = findViewById(R.id.persentase_mobar_sales);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -129,6 +134,8 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
                 konfigInsentif = response.body().get(0);
                 getNominalMobar();
                 getNominalMokas();
+                getLain();
+                getPersentaseMobar();
                 dialog.dismiss();
             }
 
@@ -170,4 +177,45 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
 
 
     }
+
+    public void getLain() {
+
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<Integer> call = apiInterface.getLain(id);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                lain = response.body();
+                lainTxt.setText(lain + "");
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void getPersentaseMobar() {
+
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<Integer> call = apiInterface.getPersentaseMobar(id);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                persentaseMobar = response.body();
+                persentaseMobarTxt.setText(persentaseMobar + "");
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 }
