@@ -214,13 +214,15 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
 
 
                 try {
-                    if (tanggalDari.equals("kosong") || tanggalKe.equals("kosong") || (sql.parse(tanggalDari).after(sql.parse(tanggalKe)))) {
-                        Toast.makeText(InsentifConfigAcitivity.this, "Data tanggal belum valid...", Toast.LENGTH_SHORT).show();
+                    if (tanggalDari.equals("kosong") || tanggalKe.equals("kosong") || (sql.parse(tanggalDari).after(sql.parse(tanggalKe))) || sales.equals("-1")) {
+                        Toast.makeText(InsentifConfigAcitivity.this, "Data sales atau tanggal ada yang belum valid...", Toast.LENGTH_SHORT).show();
                     } else {
 
                         updateKonfigInsentif();
                         Intent intent = new Intent(InsentifConfigAcitivity.this, InsentifHasilOwnerActivity.class);
-                        intent.putExtra("posSales", spinnerSales.getSelectedItemPosition());
+                        intent.putExtra("sales", spinnerSales.getSelectedItem().toString());
+                        intent.putExtra("dari",dariTxt.getText().toString()) ;
+                        intent.putExtra("hingga",keTxt.getText().toString()) ;
                         startActivity(intent);
                     }
                 } catch (ParseException e) {

@@ -99,6 +99,8 @@ public class InsentifConfigSalesActivity extends AppCompatActivity implements co
                         Toast.makeText(InsentifConfigSalesActivity.this, "Data tanggal belum valid...", Toast.LENGTH_SHORT).show();
                     } else {
                         Intent intent = new Intent(InsentifConfigSalesActivity.this, InsentifHasilSalesActivity.class);
+                        intent.putExtra("dari",dariTxt.getText().toString()) ;
+                        intent.putExtra("hingga",keTxt.getText().toString()) ;
                         startActivity(intent);
                     }
                 } catch (ParseException e) {

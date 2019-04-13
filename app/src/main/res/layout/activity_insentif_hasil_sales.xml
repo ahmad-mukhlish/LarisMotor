@@ -15,6 +15,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/sales"
             android:layout_width="90dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
@@ -74,6 +75,7 @@
 
 
             <TextView
+                android:id="@+id/dari"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="4dp"
@@ -90,6 +92,7 @@
 
 
             <TextView
+                android:id="@+id/hingga"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="4dp"
