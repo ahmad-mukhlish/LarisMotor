@@ -1,5 +1,6 @@
 package com.yayanheryanto.larismotor.view.owner;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,37 +27,54 @@ import retrofit2.Response;
 
 public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
-    EditText lain;
-    ImageView edit, hapus;
-    boolean klik;
+    EditText lain, persentaseMobar;
+    ImageView edit, hapus, editPm, hapusPm;
+    boolean klik, klikPm;
     TextView salesTxt, dariTxt, hinggaTxt,
             jumlahMokasTxt, jumlahMobarTxt, nominalMobarTxt, nominalMokasTxt;
-    View batas;
-    RelativeLayout holder, holderMargin;
+
+    View batas, batasPm;
+    RelativeLayout holder, holderMargin, holderPm, holderMarginPm;
     int jumlahMobar, jumlahMokas;
     String dariSql, hinggaSql;
     Sales salesNow;
     KonfigInsentif konfigInsentif;
+
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insentif_hasil_owner);
 
+        initProgressDialog();
+
         Bundle bundle = getIntent().getExtras();
         salesNow = bundle.getParcelable("sales");
         dariSql = bundle.getString("dariSql");
         hinggaSql = bundle.getString("hinggaSql");
 
+        persentaseMobar = findViewById(R.id.persentase_mobar);
         lain = findViewById(R.id.lain);
+
         edit = findViewById(R.id.edit);
         hapus = findViewById(R.id.hapus);
+
+        editPm = findViewById(R.id.edit_pm);
+        hapusPm = findViewById(R.id.hapus_pm);
+
         salesTxt = findViewById(R.id.sales);
         dariTxt = findViewById(R.id.dari);
         hinggaTxt = findViewById(R.id.hingga);
+
         batas = findViewById(R.id.batas);
         holder = findViewById(R.id.holder);
         holderMargin = findViewById(R.id.holder_margin);
+
+        batasPm = findViewById(R.id.batas_pm);
+        holderPm = findViewById(R.id.holder_pm);
+        holderMarginPm = findViewById(R.id.holder_margin_pm);
+
         jumlahMobarTxt = findViewById(R.id.jumlah_mobar);
         jumlahMokasTxt = findViewById(R.id.jumlah_mokas);
         nominalMobarTxt = findViewById(R.id.nominal_mobar);
@@ -68,8 +86,10 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
         hinggaTxt.setText(bundle.getString("hingga"));
 
         klik = false;
+        klikPm = false ;
 
         setMargins(holderMargin, 0, 2, 2, 2);
+        setMargins(holderMarginPm, 0, 2, 2, 2);
 
 
         holderMargin.setOnClickListener(new View.OnClickListener() {
@@ -110,16 +130,63 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
             }
         });
 
+        holderMarginPm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!klikPm) {
+                    persentaseMobar.setEnabled(true);
+                    persentaseMobar.requestFocus();
+                    persentaseMobar.setSelection(lain.getText().length());
+                    editPm.setImageResource(R.drawable.ic_save_256);
+                    batasPm.setVisibility(View.VISIBLE);
+                    holderPm.setVisibility(View.VISIBLE);
+                    klikPm = true;
+                    setMargins(holderMarginPm, 0, 2, 2, 0);
+
+                } else {
+                    setMargins(holderMarginPm, 0, 2, 2, 2);
+                    editPm.setImageResource(R.drawable.ic_pencil_edit_button);
+                    batasPm.setVisibility(View.GONE);
+                    holderPm.setVisibility(View.GONE);
+                    persentaseMobar.setEnabled(false);
+                    persentaseMobar.clearFocus();
+                    simpanPm();
+                    klikPm = false;
+
+                }
+
+            }
+        });
+
+        hapusPm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                persentaseMobar.setText("0");
+
+            }
+        });
 
         getJumlahMobar();
         getJumlahMokas();
         getKonfig();
 
 
+    }
 
+    private void initProgressDialog() {
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("Loading");
+        dialog.setMessage("Sedang Memproses..");
+        dialog.setCancelable(false);
     }
 
     private void simpan() {
+        //save ke database
+    }
+
+    private void simpanPm() {
         //save ke database
     }
 
@@ -185,6 +252,7 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
     }
 
     private void getKonfig() {
+        dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<KonfigInsentif>> call = apiInterface.getKonfigInsentif();
         call.enqueue(new Callback<List<KonfigInsentif>>() {
@@ -193,10 +261,14 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
                 konfigInsentif = response.body().get(0);
                 getNominalMobar();
                 getNominalMokas();
+                dialog.dismiss();
+
+
             }
 
             @Override
             public void onFailure(Call<List<KonfigInsentif>> call, Throwable t) {
+                dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(InsentifHasilOwnerActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
@@ -207,28 +279,28 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
     private void getNominalMobar() {
 
-        int hasil = jumlahMobar * Integer.parseInt(konfigInsentif.getInsentifMobar()) ;
-        nominalMobarTxt.setText(hasil+"");
+        int hasil = jumlahMobar * Integer.parseInt(konfigInsentif.getInsentifMobar());
+        nominalMobarTxt.setText(hasil + "");
 
     }
 
     private void getNominalMokas() {
 
-        int hasil = 0 ;
+        int hasil = 0;
 
-        if (jumlahMokas < 6)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas15());}
-        else if (jumlahMokas > 5 && jumlahMokas < 11)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas610());}
-        else if (jumlahMokas > 10 && jumlahMokas < 16)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1115());}
-        else if (jumlahMokas > 15 && jumlahMokas < 21)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1620());}
-        else if (jumlahMokas > 20)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas21());}
+        if (jumlahMokas < 6) {
+            hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas15());
+        } else if (jumlahMokas > 5 && jumlahMokas < 11) {
+            hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas610());
+        } else if (jumlahMokas > 10 && jumlahMokas < 16) {
+            hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1115());
+        } else if (jumlahMokas > 15 && jumlahMokas < 21) {
+            hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1620());
+        } else if (jumlahMokas > 20) {
+            hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas21());
+        }
 
-        nominalMokasTxt.setText(hasil+"");
-
+        nominalMokasTxt.setText(hasil + "");
 
 
     }

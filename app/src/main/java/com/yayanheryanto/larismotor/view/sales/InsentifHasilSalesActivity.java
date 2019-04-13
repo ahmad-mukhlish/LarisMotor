@@ -1,5 +1,6 @@
 package com.yayanheryanto.larismotor.view.sales;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -33,11 +34,15 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
     int jumlahMobar, jumlahMokas;
     KonfigInsentif konfigInsentif;
 
+    private ProgressDialog dialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insentif_hasil_sales);
+
+        initProgressDialog();
 
         salesTxt = findViewById(R.id.sales);
         dariTxt = findViewById(R.id.dari);
@@ -62,6 +67,13 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
         getJumlahMokas();
         getKonfig();
 
+    }
+
+    private void initProgressDialog() {
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("Loading");
+        dialog.setMessage("Sedang Memproses..");
+        dialog.setCancelable(false);
     }
 
     public void getJumlahMobar() {
@@ -108,6 +120,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
     }
 
     private void getKonfig() {
+        dialog.show();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<KonfigInsentif>> call = apiInterface.getKonfigInsentif();
         call.enqueue(new Callback<List<KonfigInsentif>>() {
@@ -116,10 +129,12 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
                 konfigInsentif = response.body().get(0);
                 getNominalMobar();
                 getNominalMokas();
+                dialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<List<KonfigInsentif>> call, Throwable t) {
+                dialog.dismiss();
                 t.printStackTrace();
                 Toast.makeText(InsentifHasilSalesActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
