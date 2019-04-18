@@ -467,5 +467,8 @@ public interface ApiInterface {
                                          @Query("dari") String dari,
                                          @Query("hingga") String hingga
     );
+
+    @GET("api/getHjmMotor")
+    Call<List<Motor>> getHjmMotor();
 }
 

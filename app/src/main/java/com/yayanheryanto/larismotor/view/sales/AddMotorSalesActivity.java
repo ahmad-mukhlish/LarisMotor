@@ -10,18 +10,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.StrictMode;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,23 +26,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.model.MerkTipe;
-import com.yayanheryanto.larismotor.view.LoginActivity;
-import com.yayanheryanto.larismotor.view.owner.AddMotorActivity;
-import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
-import com.yayanheryanto.larismotor.view.owner.MotorActivity;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -90,7 +81,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     private Uri tempUri;
     private TextView hint;
 
-    private static int cam ;
+    private static int pass;
 
 
     private final int CAMERA_REQUEST = 110;
@@ -128,16 +119,11 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         btnSave.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
 
-        if (cam == 1) {
+        if (pass == 1) {
             reveal();
             check.setVisibility(GONE);
             hint.setVisibility(GONE);
             notFound();
-        } else if (cam == 1) {
-            reveal();
-            check.setVisibility(GONE);
-            hint.setVisibility(GONE);
-
         } else {
             hide();
         }
@@ -163,9 +149,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
                             Toast.makeText(getBaseContext(), "Motor sudah tersedia", Toast.LENGTH_SHORT).show();
                         } else {
 
-                            Intent intent = new Intent(AddMotorSalesActivity.this,EditMotorSalesActivity.class) ;
-                            intent.putExtra(DATA_MOTOR,response.body()) ;
-                            intent.putExtra("ada",true) ;
+                            Intent intent = new Intent(AddMotorSalesActivity.this, EditMotorSalesActivity.class);
+                            intent.putExtra(DATA_MOTOR, response.body());
+                            intent.putExtra("ada", true);
 
                             startActivity(intent);
 
@@ -253,8 +239,6 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         });
 
 
-
-
     }
 
     private void initProgressDialog() {
@@ -273,9 +257,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
                 Log.d(DEBUG, String.valueOf(response.body().size()));
                 merk = response.body();
                 if (merk != null) {
-                    for (Merk merkMotor : merk){
+                    for (Merk merkMotor : merk) {
                         Log.d(DEBUG, merkMotor.getNamaMerk());
-                        adapter.add(merkMotor.getNamaMerk()) ;
+                        adapter.add(merkMotor.getNamaMerk());
                     }
 
                     spinnerMerk.setAdapter(adapter);
@@ -303,7 +287,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
                 tipe = response.body();
                 if (tipe != null) {
                     adapter2.clear();
-                    for (Tipe tipeMotor : tipe){
+                    for (Tipe tipeMotor : tipe) {
                         Log.d(DEBUG, tipeMotor.getNamaTipe());
                         adapter2.add(tipeMotor.getNamaTipe());
                     }
@@ -380,9 +364,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
     private void uploadImage() {
 
-        if (checkImageResource(this,image1,R.drawable.motorbike)){
+        if (checkImageResource(this, image1, R.drawable.motorbike)) {
             Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             dialog.show();
 
 
@@ -447,11 +431,13 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
+                        pass = 0;
                         finish();
                     } else {
                         Toast.makeText(AddMotorSalesActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(AddMotorSalesActivity.this, LoginActivity.class);
                         startActivity(intent);
+                        pass = 0;
                         finish();
                     }
                 }
@@ -502,7 +488,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAMERA_REQUEST);
-        cam = 1;
+        pass = 1;
 
     }
 
@@ -580,6 +566,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(AddMotorSalesActivity.this,MotorSalesActivity.class));
+        startActivity(new Intent(AddMotorSalesActivity.this, MotorSalesActivity.class));
+        pass = 0;
     }
 }

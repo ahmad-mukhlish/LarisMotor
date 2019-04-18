@@ -111,7 +111,7 @@ public class MotorActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_motor, menu);
+        getMenuInflater().inflate(R.menu.menu_motor_owner, menu);
         menuItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) menuItem.getActionView();
         searchView.setIconifiedByDefault(false);
@@ -136,6 +136,10 @@ public class MotorActivity extends AppCompatActivity {
                 dialogueFilter();
                 return true;
 
+
+            case R.id.hjm :
+                filterHjm();
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -380,7 +384,41 @@ public class MotorActivity extends AppCompatActivity {
 
                 } else if (response.body().isEmpty()) {
 
-                    Toast.makeText(MotorActivity.this, "Data yang Anda filter tidak tersediad", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MotorActivity.this, "Data yang Anda filter tidak tersedia", Toast.LENGTH_SHORT).show();
+
+
+                } else {
+                    List<Motor> list = response.body();
+                    adapter = new MotorAdapter(getApplicationContext(), list, MotorActivity.this);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Motor>> call, Throwable t) {
+                Toast.makeText(MotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    public void filterHjm() {
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<List<Motor>> call = apiInterface.getHjmMotor();
+        call.enqueue(new Callback<List<Motor>>() {
+            @Override
+            public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
+
+                if (response.body() == null) {
+                    Toast.makeText(MotorActivity.this, "Data yang tidak ber-hjm tidak tersedia", Toast.LENGTH_SHORT).show();
+
+                } else if (response.body().isEmpty()) {
+
+                    Toast.makeText(MotorActivity.this, "Data yang tidak ber-hjm sudah habis", Toast.LENGTH_SHORT).show();
 
 
                 } else {

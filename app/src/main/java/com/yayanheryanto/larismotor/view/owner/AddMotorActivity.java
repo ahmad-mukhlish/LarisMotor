@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -36,7 +35,6 @@ import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
-import com.yayanheryanto.larismotor.model.MerkTipe;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
@@ -91,7 +89,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private final int READ_EXTERNAL_STORAGE = 123;
 
     private Uri tempUri;
-    private static int cam ;
+    private static int pass;
 
 
     @Override
@@ -131,19 +129,15 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         btnSave.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
 
-        if (cam == 1) {
+        if (pass == 1) {
             reveal();
             check.setVisibility(GONE);
             hint.setVisibility(GONE);
             notFound();
-        } else if (cam == 1) {
-            reveal();
-            check.setVisibility(GONE);
-            hint.setVisibility(GONE);
-
         } else {
             hide();
         }
+
 
 
         check.setOnClickListener(new View.OnClickListener() {
@@ -476,11 +470,13 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
+                        pass = 0;
                         finish();
                     } else {
                         Toast.makeText(AddMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(AddMotorActivity.this, LoginActivity.class);
                         startActivity(intent);
+                        pass = 0;
                         finish();
                     }
                 }
@@ -533,7 +529,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAMERA_REQUEST);
-        cam = 1;
+        pass = 1;
 
     }
 
@@ -611,5 +607,6 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onBackPressed() {
         startActivity(new Intent(AddMotorActivity.this, MotorActivity.class));
+        pass = 0;
     }
 }
