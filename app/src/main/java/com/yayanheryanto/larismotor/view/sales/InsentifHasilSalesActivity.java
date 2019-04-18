@@ -28,11 +28,11 @@ import static com.yayanheryanto.larismotor.config.config.NAMA_USER;
 public class InsentifHasilSalesActivity extends AppCompatActivity {
 
     private TextView salesTxt, dariTxt, hinggaTxt, jumlahMobarTxt, jumlahMokasTxt,
-            nominalMobarTxt, nominalMokasTxt, lainTxt, persentaseMobarTxt;
+            nominalMobarTxt, nominalMokasTxt, lainTxt, persentaseMobarTxt, persentaseMokasTxt, totalTxt;
 
     private String id, dariSql, hinggaSql;
     private SharedPreferences pref;
-    private int jumlahMobar, jumlahMokas, lain, persentaseMobar;
+    private int jumlahMobar, jumlahMokas, lain, persentaseMobar, persentaseMokas, nominalMobar, nominalMokas;
     private KonfigInsentif konfigInsentif;
 
 
@@ -56,6 +56,8 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
         nominalMokasTxt = findViewById(R.id.nominal_mokas_sales);
         lainTxt = findViewById(R.id.lain_sales);
         persentaseMobarTxt = findViewById(R.id.persentase_mobar_sales);
+        persentaseMokasTxt = findViewById(R.id.persentase_mokas_sales);
+        totalTxt = findViewById(R.id.total_sales);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -136,6 +138,8 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
                 getNominalMokas();
                 getLain();
                 getPersentaseMobar();
+                getPersentaseMokas();
+                getTotal();
                 dialog.dismiss();
             }
 
@@ -152,27 +156,28 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
 
     private void getNominalMobar() {
 
-        int hasil = jumlahMobar * Integer.parseInt(konfigInsentif.getInsentifMobar()) ;
-        nominalMobarTxt.setText(hasil+"");
+        nominalMobar = jumlahMobar * Integer.parseInt(konfigInsentif.getInsentifMobar()) ;
+        nominalMobarTxt.setText(nominalMobar+"");
+        getTotal();
 
     }
 
     private void getNominalMokas() {
 
-        int hasil = 0 ;
 
         if (jumlahMokas < 6)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas15());}
+        {nominalMokas = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas15());}
         else if (jumlahMokas > 5 && jumlahMokas < 11)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas610());}
+        {nominalMokas = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas610());}
         else if (jumlahMokas > 10 && jumlahMokas < 16)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1115());}
+        {nominalMokas = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1115());}
         else if (jumlahMokas > 15 && jumlahMokas < 21)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1620());}
+        {nominalMokas = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas1620());}
         else if (jumlahMokas > 20)
-        {hasil = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas21());}
+        {nominalMokas = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas21());}
 
-        nominalMokasTxt.setText(hasil+"");
+        nominalMokasTxt.setText(nominalMokas+"");
+        getTotal();
 
 
 
@@ -188,6 +193,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 lain = response.body();
                 lainTxt.setText(lain + "");
+                getTotal();
             }
 
             @Override
@@ -208,6 +214,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 persentaseMobar = response.body();
                 persentaseMobarTxt.setText(persentaseMobar + "");
+                getTotal();
             }
 
             @Override
@@ -215,6 +222,45 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public void getPersentaseMokas() {
+
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<Integer> call = apiInterface.getPersentaseMokas(id, dariSql, hinggaSql);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                persentaseMokas = response.body();
+                persentaseMokas = persentaseMokas * Integer.parseInt(konfigInsentif.getPersentase()) / 100;
+                persentaseMokasTxt.setText(persentaseMokas + "");
+                getTotal();
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void getTotal() {
+
+
+        int total = 0;
+        total = nominalMobar + nominalMokas + persentaseMokas + persentaseMobar + lain ;
+
+        Log.v("cek1",nominalMobar+"");
+        Log.v("cek2",nominalMokas+"");
+        Log.v("cek3",persentaseMokas+"");
+        Log.v("cek4",persentaseMobar+"");
+        Log.v("cek5",lain+"");
+
+
+        totalTxt.setText(total+"");
 
     }
 

@@ -292,6 +292,7 @@
 
 
         <TextView
+            android:id="@+id/persentase_mokas_sales"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
@@ -402,6 +403,7 @@
 
 
         <TextView
+            android:id="@+id/total_sales"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"

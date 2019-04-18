@@ -460,5 +460,12 @@ public interface ApiInterface {
             @Header("Authorization") String authorization,
             @Field("ktp") String ktp,
             @Field("persentase_mobar") String persentase_mobar);
+
+
+    @POST("api/getPersentaseMokas")
+    Call<Integer> getPersentaseMokas(@Query("id") String id,
+                                         @Query("dari") String dari,
+                                         @Query("hingga") String hingga
+    );
 }
 
