@@ -82,12 +82,16 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
                 .load(BASE_URL + "storage/motor/" + motor.getGambar()).error(R.drawable.mobar)
                 .into(motorViewHolder.imageMotor);
 
-        motorViewHolder.textHjm.setText("Rp. " + motor.getHarga());
+        if (motor.getHjm() == null || motor.getHjm() == 0) {
+            motorViewHolder.textHjm.setText("HJM belum terisi");
+        }
+        else {
+            motorViewHolder.textHjm.setText("Rp. " + motor.getHjm() + " (HJM)");
+        }
+        motorViewHolder.textHarga.setText("Rp. " + motor.getHarga());
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-        Log.v("id1",motor.getIdMerk()+"") ;
-        Log.v("id2",motor.getIdTipe()+"") ;
         Call<List<MerkTipe>> call = apiInterface.getMerkById(motor.getIdMerk() + "", motor.getIdTipe() + "");
         call.enqueue(new Callback<List<MerkTipe>>() {
             @Override
@@ -221,7 +225,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
     public class MotorViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageMotor, imgDeelete, imgEdit;
-        private TextView textNopol, textHjm, txtStatus, title;
+        private TextView textNopol, textHarga, textHjm, txtStatus, title;
         private View view;
 
         public MotorViewHolder(View itemView) {
@@ -233,6 +237,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             imgEdit = itemView.findViewById(R.id.imgEdit);
             textNopol = itemView.findViewById(R.id.txt_plat);
             textHjm = itemView.findViewById(R.id.txt_hjm);
+            textHarga = itemView.findViewById(R.id.txt_harga);
             txtStatus = itemView.findViewById(R.id.txt_status);
             title = itemView.findViewById(R.id.title);
 

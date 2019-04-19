@@ -173,9 +173,15 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         no_mesin.setText(motor.getNoMesin());
         no_polisi.setText("" + motor.getNoPolisi());
         no_rangka.setText(motor.getNoRangka());
-        hjm.setText("" + motor.getHjm());
-        tahun.setText("" + motor.getTahun());
 
+        if (motor.getHjm() == null || motor.getHjm() == 0) {
+            hjm.setText("HJM belum terisi");
+        }
+        else {
+            hjm.setText("Rp. " + motor.getHjm() + " (HJM)");
+        }
+
+        tahun.setText("" + motor.getTahun());
         harga.setText("" + motor.getHarga());
 
         if (motor.getHargaTerjual() == null || motor.getHargaTerjual() == 0) {

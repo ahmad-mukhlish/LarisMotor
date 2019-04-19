@@ -343,7 +343,7 @@ public class TransaksiActivity extends AppCompatActivity {
                             tahun.setTextColor(Color.BLACK);
 
                             if (motor.getHjm() == null) {
-                                hargaJualMinimum.setText("HJM : - ");
+                                hargaJualMinimum.setText("HJM Belum Terisi ");
                                 hargaJualMinimum.setEnabled(false);
                                 hargaJualMinimum.setTextColor(Color.BLACK);
                             } else {
