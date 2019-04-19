@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,10 @@ import com.yayanheryanto.larismotor.model.PendingJual;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -81,12 +85,29 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
         holder.txtNamaMotor.setText(pending.getNamaMerk() + " " + pending.getNamaTipe());
 
 
+        if (pending.getTanggalJual() == null) {
+
+            holder.txtTanggalJual.setText("-");
+
+        } else {
+            SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
+            SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID"));
+
+            try {
+                holder.txtTanggalJual.setText(df.format(sql.parse(pending.getTanggalJual())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(mContext, DetailPendingJualActivity.class);
                 intent.putExtra(DATA_PENDING, pending);
+                Log.v("cek1",pending.getNamaMerk());
+                Log.v("cek1",pending.getNamaTipe());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
@@ -108,7 +129,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
             public void onClick(View view) {
                 AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("Konfirmasi Hapus")
-                        .setMessage("Hapus Data PendingBeli?")
+                        .setMessage("Hapus Data Pending Jual?")
                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -169,7 +190,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
 
     public class PendingViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView txtNama, txtNamaMotor;
+        private TextView txtNama, txtNamaMotor, txtTanggalJual;
         private ImageView imgDelete, imgEdit;
         private View mView;
 
@@ -181,6 +202,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
             txtNamaMotor = itemView.findViewById(R.id.txt_nama_motor);
             imgDelete = itemView.findViewById(R.id.imgDelete);
             imgEdit = itemView.findViewById(R.id.imgEdit);
+            txtTanggalJual = itemView.findViewById(R.id.txt_tanggal_jual);
         }
     }
 

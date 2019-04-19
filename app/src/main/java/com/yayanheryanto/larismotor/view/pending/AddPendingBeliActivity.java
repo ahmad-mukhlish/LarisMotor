@@ -12,9 +12,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.PendingBeli;
@@ -23,7 +25,11 @@ import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,16 +40,17 @@ import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
-public class AddPendingBeliActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddPendingBeliActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
-    private EditText txtNama, txtAlamat, txtNoTelepon, txtTahun, txtHarga;
+    private EditText txtNama, txtAlamat, txtNoTelepon, txtTahun, txtHarga, txtTanggalBeli;
     private Button btnSave;
     private ProgressDialog dialog;
     private int merkMotor, tipeMotor;
     private List<Merk> merk;
     private List<Tipe> tipe;
     private ArrayAdapter<String> adapter, adapter2;
-
+    private ImageView tanggalBeliImg;
+    private String tanggalBeli ;
     private Spinner spinnerMerk, spinnerTipe;
 
     @Override
@@ -57,6 +64,8 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
         txtTahun = findViewById(R.id.tahun);
         txtHarga = findViewById(R.id.harga);
         btnSave = findViewById(R.id.btnSave);
+        tanggalBeliImg = findViewById(R.id.tanggal_beli_picker);
+        txtTanggalBeli = findViewById(R.id.tanggal_beli);
 
         spinnerMerk = findViewById(R.id.spinner1);
         spinnerTipe = findViewById(R.id.spinner2);
@@ -64,8 +73,8 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
         initProgressDialog();
         getMerk();
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line);
-        adapter2 = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
+        adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
         spinnerMerk.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -90,6 +99,24 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
             }
         });
 
+        tanggalBeliImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Calendar now = Calendar.getInstance();
+                com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
+                        AddPendingBeliActivity.this,
+                        now.get(Calendar.YEAR), // Initial year selection
+                        now.get(Calendar.MONTH), // Initial month selection
+                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+
+
+            }
+        });
+
         btnSave.setOnClickListener(this);
     }
 
@@ -104,9 +131,9 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
                 Log.d(DEBUG, String.valueOf(response.body().size()));
                 merk = response.body();
                 if (merk != null) {
-                    for (Merk merkMotor : merk){
+                    for (Merk merkMotor : merk) {
                         Log.d(DEBUG, merkMotor.getNamaMerk());
-                        adapter.add(merkMotor.getNamaMerk()) ;
+                        adapter.add(merkMotor.getNamaMerk());
                     }
 
                     spinnerMerk.setAdapter(adapter);
@@ -135,7 +162,7 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
                 tipe = response.body();
                 if (tipe != null) {
                     adapter2.clear();
-                    for (Tipe tipeMotor : tipe){
+                    for (Tipe tipeMotor : tipe) {
                         Log.d(DEBUG, tipeMotor.getNamaTipe());
                         adapter2.add(tipeMotor.getNamaTipe());
                     }
@@ -162,7 +189,7 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btnSave:
                 savePendingBeli();
                 break;
@@ -182,34 +209,65 @@ public class AddPendingBeliActivity extends AppCompatActivity implements View.On
         String tahun = txtTahun.getText().toString();
         String harga = txtHarga.getText().toString();
 
-        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<PendingBeli> call = apiInterface.addPendingBeli(token, Integer.valueOf(id), nama, alamat, telepon, merkMotor, tipeMotor, tahun, harga);
-        call.enqueue(new Callback<PendingBeli>() {
-            @Override
-            public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
-                dialog.dismiss();
-                if (response.body().getMessage().equals("success")){
-                    Toast.makeText(AddPendingBeliActivity.this, "PendingBeli Beli Berhasil Ditambah", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddPendingBeliActivity.this, PendingTransaksiActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }else{
-                    Toast.makeText(AddPendingBeliActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddPendingBeliActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
+        if (!nama.isEmpty() && !alamat.isEmpty() && !telepon.isEmpty() && !tahun.isEmpty() && !harga.isEmpty() && !tanggalBeli.isEmpty()) {
+            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+            Call<PendingBeli> call = apiInterface.addPendingBeli(token, Integer.valueOf(id), nama, alamat, telepon, merkMotor, tipeMotor, tahun, harga, tanggalBeli);
+            call.enqueue(new Callback<PendingBeli>() {
+                @Override
+                public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
+                    dialog.dismiss();
+                    if (response.body().getMessage().equals("success")) {
+                        Toast.makeText(AddPendingBeliActivity.this, "Pending Beli Berhasil Ditambah", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddPendingBeliActivity.this, PendingTransaksiActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(AddPendingBeliActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddPendingBeliActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<PendingBeli> call, Throwable t) {
-                dialog.dismiss();
-                t.printStackTrace();
-                Toast.makeText(AddPendingBeliActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<PendingBeli> call, Throwable t) {
+                    dialog.dismiss();
+                    t.printStackTrace();
+                    Toast.makeText(AddPendingBeliActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            dialog.dismiss();
+            Toast.makeText(AddPendingBeliActivity.this, "Silakan isi semua data terlebih dahulu", Toast.LENGTH_SHORT).show();
+        }
     }
 
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
+        SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID"));
+        String month;
+
+        String tanggalBeliNya;
+        monthOfYear++;
+        if (monthOfYear < 10)
+            month = "0" + monthOfYear;
+        else
+            month = "" + monthOfYear;
+
+        SimpleDateFormat sqlformat = new SimpleDateFormat("yyyyMMdd", new Locale("EN"));
+        String tanggal = year + month + dayOfMonth;
+
+
+        try {
+            tanggalBeliNya = df.format(sqlformat.parse(tanggal));
+            txtTanggalBeli.setText(tanggalBeliNya);
+            tanggalBeli = sql.format(df.parse(tanggalBeliNya));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 }

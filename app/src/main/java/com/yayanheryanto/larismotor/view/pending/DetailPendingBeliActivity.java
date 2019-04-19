@@ -7,11 +7,16 @@ import android.widget.TextView;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.PendingBeli;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 
 public class DetailPendingBeliActivity extends AppCompatActivity {
 
-    private TextView txtNama, txtAlamat, txtNoTelepon, txtMerk, txtTipe, txtTahun, txtHarga;
+    private TextView txtNama, txtAlamat, txtNoTelepon, txtMerk, txtTipe, txtTahun,
+            txtHarga, txtTanggalBeli;
     private PendingBeli pendingBeli;
 
     @Override
@@ -20,14 +25,14 @@ public class DetailPendingBeliActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_pending_beli);
 
 
-        txtNama = findViewById(R.id.nama);
-        txtAlamat = findViewById(R.id.alamat);
-        txtNoTelepon = findViewById(R.id.telepon);
-        txtMerk = findViewById(R.id.nama_merk);
-        txtTipe = findViewById(R.id.nama_tipe);
-        txtTahun = findViewById(R.id.tahun);
-        txtHarga = findViewById(R.id.harga);
-
+        txtNama = findViewById(R.id.nama_detail_beli);
+        txtAlamat = findViewById(R.id.alamat_detail_beli);
+        txtNoTelepon = findViewById(R.id.telepon_detail_beli);
+        txtMerk = findViewById(R.id.nama_merk_detail_beli);
+        txtTipe = findViewById(R.id.nama_tipe_detail_beli);
+        txtTahun = findViewById(R.id.tahun_detail_beli);
+        txtHarga = findViewById(R.id.harga_detail_beli);
+        txtTanggalBeli = findViewById(R.id.tanggal_detail_beli);
         getFromIntent();
 
     }
@@ -37,13 +42,57 @@ public class DetailPendingBeliActivity extends AppCompatActivity {
         Bundle data = getIntent().getExtras();
         pendingBeli = data.getParcelable(DATA_PENDING);
 
-        txtNama.setText(pendingBeli.getNama());
+        txtNama.setText(convertToTitleCaseIteratingChars(pendingBeli.getNama()));
         txtAlamat.setText(pendingBeli.getAlamat());
         txtNoTelepon.setText(pendingBeli.getNoTelp());
         txtMerk.setText(pendingBeli.getNamaMerk());
         txtTipe.setText(pendingBeli.getNamaTipe());
         txtTahun.setText(""+ pendingBeli.getTahun());
         txtHarga.setText("Rp. "+ pendingBeli.getHarga());
+
+        if (pendingBeli.getNoTelp() == null) {
+            txtNoTelepon.setText("-");
+        } else {
+            txtNoTelepon.setText(pendingBeli.getNoTelp());
+        }
+
+        if (pendingBeli.getTanggalBeli() == null) {
+
+           txtTanggalBeli.setText("-");
+
+        } else {
+            SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
+            SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID"));
+
+            try {
+                txtTanggalBeli.setText(df.format(sql.parse(pendingBeli.getTanggalBeli())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String convertToTitleCaseIteratingChars(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder converted = new StringBuilder();
+
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()) {
+            if (Character.isSpaceChar(ch)) {
+                convertNext = true;
+            } else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+
+        return converted.toString();
     }
 
 

@@ -12,9 +12,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.PendingBeli;
@@ -23,7 +25,11 @@ import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,16 +40,18 @@ import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
-public class AddpendingJualActivity extends AppCompatActivity implements View.OnClickListener{
+public class AddPendingJualActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
 
-    private EditText txtNama, txtAlamat, txtNoTelepon, txtNoMesin, txtNoPolisi, txtTahun, txtHarga;
+    private EditText txtNama, txtAlamat, txtNoTelepon, txtNoMesin, txtNoPolisi, txtTahun, txtHarga, txtTanggalJual;
     private Button btnSave;
     private ProgressDialog dialog;
     private int merkMotor, tipeMotor;
     private List<Merk> merk;
     private List<Tipe> tipe;
     private ArrayAdapter<String> adapter, adapter2;
+    private ImageView tanggalJualImg;
+    private String tanggalJual ;
     private Spinner spinnerMerk, spinnerTipe;
 
     @Override
@@ -60,6 +68,8 @@ public class AddpendingJualActivity extends AppCompatActivity implements View.On
         txtTahun = findViewById(R.id.tahun);
         txtHarga = findViewById(R.id.harga);
         btnSave = findViewById(R.id.btnSave);
+        tanggalJualImg = findViewById(R.id.tanggal_jual_picker);
+        txtTanggalJual = findViewById(R.id.tanggal_jual);
 
         spinnerMerk = findViewById(R.id.spinner1);
         spinnerTipe = findViewById(R.id.spinner2);
@@ -93,6 +103,24 @@ public class AddpendingJualActivity extends AppCompatActivity implements View.On
             }
         });
         btnSave.setOnClickListener(this);
+
+        tanggalJualImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Calendar now = Calendar.getInstance();
+                com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
+                        AddPendingJualActivity.this,
+                        now.get(Calendar.YEAR), // Initial year selection
+                        now.get(Calendar.MONTH), // Initial month selection
+                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+
+
+            }
+        });
     }
 
     private void getMerk() {
@@ -119,7 +147,7 @@ public class AddpendingJualActivity extends AppCompatActivity implements View.On
             public void onFailure(Call<List<Merk>> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
-                Toast.makeText(AddpendingJualActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPendingJualActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -150,7 +178,7 @@ public class AddpendingJualActivity extends AppCompatActivity implements View.On
             public void onFailure(Call<List<Tipe>> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
-                Toast.makeText(AddpendingJualActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPendingJualActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -186,33 +214,66 @@ public class AddpendingJualActivity extends AppCompatActivity implements View.On
         String tahun = txtTahun.getText().toString();
         String harga = txtHarga.getText().toString();
 
-        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<PendingBeli> call = apiInterface.addPendingJual(token, Integer.valueOf(id), nama, alamat, telepon, merkMotor, tipeMotor, no_mesin, no_polisi, tahun, harga);
-        call.enqueue(new Callback<PendingBeli>() {
-            @Override
-            public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
-                dialog.dismiss();
-                if (response.body().getMessage().equals("success")){
-                    Toast.makeText(AddpendingJualActivity.this, "PendingBeli Jual Berhasil Ditambah", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddpendingJualActivity.this, PendingTransaksiActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }else{
-                    Toast.makeText(AddpendingJualActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddpendingJualActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
+        if (!nama.isEmpty() && !alamat.isEmpty() && !telepon.isEmpty() && !tahun.isEmpty() && !harga.isEmpty() && !tanggalJual.isEmpty()) {
+            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+            Call<PendingBeli> call = apiInterface.addPendingJual(token, Integer.valueOf(id), nama, alamat,
+                    telepon, merkMotor, tipeMotor, no_mesin, no_polisi, tahun, harga, tanggalJual);
+            call.enqueue(new Callback<PendingBeli>() {
+                @Override
+                public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
+                    dialog.dismiss();
+                    if (response.body().getMessage().equals("success")){
+                        Toast.makeText(AddPendingJualActivity.this, "Pending Jual Berhasil Ditambah", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddPendingJualActivity.this, PendingTransaksiActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        Toast.makeText(AddPendingJualActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddPendingJualActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<PendingBeli> call, Throwable t) {
-                dialog.dismiss();
-                t.printStackTrace();
-                Toast.makeText(AddpendingJualActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<PendingBeli> call, Throwable t) {
+                    dialog.dismiss();
+                    t.printStackTrace();
+                    Toast.makeText(AddPendingJualActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            dialog.dismiss();
+            Toast.makeText(AddPendingJualActivity.this, "Silakan isi semua data terlebih dahulu", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
+        SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID"));
+        String month;
+
+        String tanggalJualNya;
+        monthOfYear++;
+        if (monthOfYear < 10)
+            month = "0" + monthOfYear;
+        else
+            month = "" + monthOfYear;
+
+        SimpleDateFormat sqlformat = new SimpleDateFormat("yyyyMMdd", new Locale("EN"));
+        String tanggal = year + month + dayOfMonth;
+
+
+        try {
+            tanggalJualNya = df.format(sqlformat.parse(tanggal));
+            txtTanggalJual.setText(tanggalJualNya);
+            tanggalJual = sql.format(df.parse(tanggalJualNya));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

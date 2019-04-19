@@ -11,9 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
@@ -23,7 +25,11 @@ import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,10 +40,10 @@ import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
-public class EditPendingBeliActivity extends AppCompatActivity implements View.OnClickListener{
+public class EditPendingBeliActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
 
-    private EditText txtNama, txtAlamat, txtNoTelepon, txtNamaMotor, txtTahun, txtHarga;
+    private EditText txtNama, txtAlamat, txtNoTelepon, txtNamaMotor, txtTahun, txtHarga, txtTanggalBeli;
     private Button btnSave;
     private ProgressDialog dialog;
     private PendingBeli pendingBeli;
@@ -47,11 +53,13 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
     private int merkMotor, tipeMotor;
     private List<Merk> merk;
     private List<Tipe> tipe;
+    private ImageView tanggalBeliImg;
+    private String tanggalBeli ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_pending);
+        setContentView(R.layout.activity_edit_pending_beli);
 
 
         txtNama = findViewById(R.id.nama);
@@ -60,12 +68,32 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
         txtTahun = findViewById(R.id.tahun);
         txtHarga = findViewById(R.id.harga);
         btnSave = findViewById(R.id.btnSave);
+        tanggalBeliImg = findViewById(R.id.tanggal_beli_picker);
+        txtTanggalBeli = findViewById(R.id.tanggal_beli);
 
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
         adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
         spinnerMerk = findViewById(R.id.spinner1);
         spinnerTipe = findViewById(R.id.spinner2);
+
+        tanggalBeliImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Calendar now = Calendar.getInstance();
+                com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
+                        EditPendingBeliActivity.this,
+                        now.get(Calendar.YEAR), // Initial year selection
+                        now.get(Calendar.MONTH), // Initial month selection
+                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+
+
+            }
+        });
 
         btnSave.setOnClickListener(this);
         initProgressDialog();
@@ -106,12 +134,31 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
         Bundle data = getIntent().getExtras();
         pendingBeli = data.getParcelable(DATA_PENDING);
 
-        txtNama.setText(pendingBeli.getNama());
+        txtNama.setText(convertToTitleCaseIteratingChars(pendingBeli.getNama()));
         txtAlamat.setText(pendingBeli.getAlamat());
-        txtNoTelepon.setText(pendingBeli.getNoTelp());
-        //txtNamaMotor.setText(pendingBeli.getNamaMotor());
         txtTahun.setText(""+ pendingBeli.getTahun());
         txtHarga.setText(""+ pendingBeli.getHarga());
+
+        if (pendingBeli.getNoTelp() == null) {
+            txtNoTelepon.setText("-");
+        } else {
+            txtNoTelepon.setText(pendingBeli.getNoTelp());
+        }
+
+        if (pendingBeli.getTanggalBeli() == null) {
+
+            txtTanggalBeli.setText("-");
+
+        } else {
+            SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
+            SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID"));
+
+            try {
+            txtTanggalBeli.setText(df.format(sql.parse(pendingBeli.getTanggalBeli())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -225,7 +272,7 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
         int id_pending = pendingBeli.getIdPending();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<PendingBeli> call = apiInterface.updatePending(token, id_pending, nama, alamat, telepon, merkMotor,tipeMotor, tahun, harga);
+        Call<PendingBeli> call = apiInterface.updatePendingBeli(token, id_pending, nama, alamat, telepon, merkMotor,tipeMotor, tahun, harga,tanggalBeli);
         call.enqueue(new Callback<PendingBeli>() {
             @Override
             public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
@@ -254,4 +301,53 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
         });
     }
 
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
+        SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID"));
+        String month;
+
+        String tanggalBeliNya;
+        monthOfYear++;
+        if (monthOfYear < 10)
+            month = "0" + monthOfYear;
+        else
+            month = "" + monthOfYear;
+
+        SimpleDateFormat sqlformat = new SimpleDateFormat("yyyyMMdd", new Locale("EN"));
+        String tanggal = year + month + dayOfMonth;
+
+
+        try {
+            tanggalBeliNya = df.format(sqlformat.parse(tanggal));
+            txtTanggalBeli.setText(tanggalBeliNya);
+            tanggalBeli = sql.format(df.parse(tanggalBeliNya));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String convertToTitleCaseIteratingChars(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder converted = new StringBuilder();
+
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()) {
+            if (Character.isSpaceChar(ch)) {
+                convertNext = true;
+            } else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+
+        return converted.toString();
+    }
 }

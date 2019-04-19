@@ -156,7 +156,8 @@ public interface ApiInterface {
                                      @Field("id_merk") int id_merk,
                                      @Field("id_tipe") int id_tipe,
                                      @Field("tahun") String tahun,
-                                     @Field("harga") String harga);
+                                     @Field("harga") String harga,
+                                     @Field("tanggal_beli") String tanggalBeli);
 
     @FormUrlEncoded
     @POST("api/addPendingJual")
@@ -170,7 +171,8 @@ public interface ApiInterface {
                                      @Field("no_mesin") String no_mesin,
                                      @Field("no_polisi") String no_polisi,
                                      @Field("tahun") String tahun,
-                                     @Field("harga") String harga);
+                                     @Field("harga") String harga,
+                                     @Field("tanggal_jual") String tanggalJual);
 
 
     @FormUrlEncoded
@@ -185,25 +187,28 @@ public interface ApiInterface {
                                         @Field("no_mesin") String no_mesin,
                                         @Field("no_polisi") String no_polisi,
                                         @Field("tahun") String tahun,
-                                        @Field("harga") String harga);
+                                        @Field("harga") String harga,
+                                        @Field("tanggal_jual") String tanggalJual);
 
     @FormUrlEncoded
-    @POST("api/deletePending")
-    Call<PendingBeli> deletePending(@Header("Authorization") String authorization,
-                                    @Field("id_pending") int id_pending);
+    @POST("api/deletePendingBeli")
+    Call<PendingBeli> deletePendingBeli(@Header("Authorization") String authorization,
+                                        @Field("id_pending") int id_pending);
 
 
     @FormUrlEncoded
-    @POST("api/updatePending")
-    Call<PendingBeli> updatePending(@Header("Authorization") String authorization,
-                                    @Field("id_pending") int id_pending,
-                                    @Field("nama") String nama,
-                                    @Field("alamat") String alamat,
-                                    @Field("telepon") String telepon,
-                                    @Field("id_merk") int id_merk,
-                                    @Field("id_tipe") int id_tipe,
-                                    @Field("tahun") String tahun,
-                                    @Field("harga") String harga);
+    @POST("api/updatePendingBeli")
+    Call<PendingBeli> updatePendingBeli(@Header("Authorization") String authorization,
+                                        @Field("id_pending") int id_pending,
+                                        @Field("nama") String nama,
+                                        @Field("alamat") String alamat,
+                                        @Field("telepon") String telepon,
+                                        @Field("id_merk") int id_merk,
+                                        @Field("id_tipe") int id_tipe,
+                                        @Field("tahun") String tahun,
+                                        @Field("harga") String harga,
+                                        @Field("tanggal_beli") String tanggalBeli
+    );
 
     @FormUrlEncoded
     @POST("api/deletePendingJual")
@@ -430,14 +435,14 @@ public interface ApiInterface {
     Call<Integer> getJumlahMobarInsentif(@Query("id") String id,
                                          @Query("dari") String dari,
                                          @Query("hingga") String hingga
-                                         );
+    );
 
 
     @POST("api/getJumlahMokasInsentif")
     Call<Integer> getJumlahMokasInsentif(@Query("id") String id,
                                          @Query("dari") String dari,
                                          @Query("hingga") String hingga
-                                         );
+    );
 
     @POST("api/getLain")
     Call<Integer> getLain(@Query("id") String id);
@@ -464,8 +469,8 @@ public interface ApiInterface {
 
     @POST("api/getPersentaseMokas")
     Call<Integer> getPersentaseMokas(@Query("id") String id,
-                                         @Query("dari") String dari,
-                                         @Query("hingga") String hingga
+                                     @Query("dari") String dari,
+                                     @Query("hingga") String hingga
     );
 
     @GET("api/getHjmMotor")

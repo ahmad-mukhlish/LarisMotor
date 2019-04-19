@@ -4,14 +4,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
 
         <TextView
             android:layout_width="0dp"
@@ -19,24 +19,26 @@
             android:layout_weight="1"
             android:background="@drawable/label"
             android:text="Nama"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
         <TextView
-            android:id="@+id/nama"
+            android:id="@+id/nama_detail_beli"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/content"
             android:text="09807070"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
 
         <TextView
             android:layout_width="0dp"
@@ -44,24 +46,26 @@
             android:layout_weight="1"
             android:background="@drawable/label"
             android:text="Alamat"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
         <TextView
-            android:id="@+id/alamat"
+            android:id="@+id/alamat_detail_beli"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/content"
             android:text="09807070"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
 
         <TextView
             android:layout_width="0dp"
@@ -69,24 +73,26 @@
             android:layout_weight="1"
             android:background="@drawable/label"
             android:text="No. Telepon"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
         <TextView
-            android:id="@+id/telepon"
+            android:id="@+id/telepon_detail_beli"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/content"
             android:text="09807070"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
 
         <TextView
             android:layout_width="0dp"
@@ -94,24 +100,26 @@
             android:layout_weight="1"
             android:background="@drawable/label"
             android:text="Merk"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
         <TextView
-            android:id="@+id/nama_merk"
+            android:id="@+id/nama_merk_detail_beli"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/content"
             android:text="09807070"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
 
         <TextView
             android:layout_width="0dp"
@@ -119,24 +127,26 @@
             android:layout_weight="1"
             android:background="@drawable/label"
             android:text="Tipe"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
         <TextView
-            android:id="@+id/nama_tipe"
+            android:id="@+id/nama_tipe_detail_beli"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/content"
             android:text="09807070"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
 
         <TextView
             android:layout_width="0dp"
@@ -144,24 +154,26 @@
             android:layout_weight="1"
             android:background="@drawable/label"
             android:text="Tahun"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
         <TextView
-            android:id="@+id/tahun"
+            android:id="@+id/tahun_detail_beli"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/content"
             android:text="09807070"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
 
         <TextView
             android:layout_width="0dp"
@@ -169,16 +181,45 @@
             android:layout_weight="1"
             android:background="@drawable/label"
             android:text="Harga"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
 
         <TextView
-            android:id="@+id/harga"
+            android:id="@+id/harga_detail_beli"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/content"
             android:text="09807070"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="#000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/label"
+            android:text="Tanggal Beli"
+            android:textAlignment="center"
+            android:textColor="#000" />
+
+        <TextView
+            android:id="@+id/tanggal_detail_beli"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/content"
+            android:text="09807070"
+            android:textAlignment="center"
+            android:textColor="#000" />
 
     </LinearLayout>
 

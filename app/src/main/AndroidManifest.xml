@@ -48,7 +48,7 @@
         <activity android:name=".view.owner.DetailSalesActivity" />
         <activity android:name=".view.pending.PendingTransaksiActivity" />
         <activity android:name=".view.pending.AddPendingBeliActivity" />
-        <activity android:name=".view.pending.AddpendingJualActivity" />
+        <activity android:name=".view.pending.AddPendingJualActivity" />
         <activity android:name=".view.pending.EditPendingBeliActivity" />
         <activity android:name=".view.pending.DetailPendingBeliActivity" />
         <activity android:name=".view.pending.DetailPendingJualActivity" />

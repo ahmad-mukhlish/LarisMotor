@@ -35,7 +35,7 @@ public class Transaksi {
     @SerializedName("mediator")
     @Expose
     private String mediator;
-    @SerializedName("terjual")
+    @SerializedName("harga_terjual")
     @Expose
     private String terjual;
 

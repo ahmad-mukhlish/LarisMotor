@@ -7,8 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PendingBeli implements Parcelable
-{
+public class PendingBeli implements Parcelable {
 
 
     @SerializedName("message")
@@ -53,35 +52,19 @@ public class PendingBeli implements Parcelable
     @SerializedName("id_tipe")
     @Expose
     private Integer idTipe;
-    public final static Parcelable.Creator<PendingBeli> CREATOR = new Creator<PendingBeli>() {
+    @SerializedName("tanggal_beli")
+    @Expose
+    private String tanggalBeli;
 
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public PendingBeli createFromParcel(Parcel in) {
-            return new PendingBeli(in);
-        }
-
-        public PendingBeli[] newArray(int size) {
-            return (new PendingBeli[size]);
-        }
-
+    public String getTanggalBeli() {
+        return tanggalBeli;
     }
-            ;
 
-    protected PendingBeli(Parcel in) {
-        this.idPending = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.nama = ((String) in.readValue((String.class.getClassLoader())));
-        this.alamat = ((String) in.readValue((String.class.getClassLoader())));
-        this.noTelp = ((String) in.readValue((String.class.getClassLoader())));
-        this.tahun = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.harga = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.namaMerk = ((String) in.readValue((String.class.getClassLoader())));
-        this.idMerk = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.namaTipe = ((String) in.readValue((String.class.getClassLoader())));
-        this.idTipe = ((Integer) in.readValue((Integer.class.getClassLoader())));
+    public void setTanggalBeli(String tanggalBeli) {
+        this.tanggalBeli = tanggalBeli;
     }
+
+
 
     public PendingBeli() {
     }
@@ -166,21 +149,80 @@ public class PendingBeli implements Parcelable
         this.idTipe = idTipe;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(idPending);
-        dest.writeValue(nama);
-        dest.writeValue(alamat);
-        dest.writeValue(noTelp);
-        dest.writeValue(tahun);
-        dest.writeValue(harga);
-        dest.writeValue(namaMerk);
-        dest.writeValue(idMerk);
-        dest.writeValue(namaTipe);
-        dest.writeValue(idTipe);
+
+
+
+    protected PendingBeli(Parcel in) {
+        message = in.readString();
+        idPending = in.readByte() == 0x00 ? null : in.readInt();
+        nama = in.readString();
+        alamat = in.readString();
+        noTelp = in.readString();
+        tahun = in.readByte() == 0x00 ? null : in.readInt();
+        harga = in.readByte() == 0x00 ? null : in.readInt();
+        namaMerk = in.readString();
+        idMerk = in.readByte() == 0x00 ? null : in.readInt();
+        namaTipe = in.readString();
+        idTipe = in.readByte() == 0x00 ? null : in.readInt();
+        tanggalBeli = in.readString();
     }
 
+    @Override
     public int describeContents() {
         return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(message);
+        if (idPending == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(idPending);
+        }
+        dest.writeString(nama);
+        dest.writeString(alamat);
+        dest.writeString(noTelp);
+        if (tahun == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(tahun);
+        }
+        if (harga == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(harga);
+        }
+        dest.writeString(namaMerk);
+        if (idMerk == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(idMerk);
+        }
+        dest.writeString(namaTipe);
+        if (idTipe == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(idTipe);
+        }
+        dest.writeString(tanggalBeli);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PendingBeli> CREATOR = new Parcelable.Creator<PendingBeli>() {
+        @Override
+        public PendingBeli createFromParcel(Parcel in) {
+            return new PendingBeli(in);
+        }
+
+        @Override
+        public PendingBeli[] newArray(int size) {
+            return new PendingBeli[size];
+        }
+    };
 }

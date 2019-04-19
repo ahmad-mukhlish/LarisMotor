@@ -26,8 +26,11 @@ import com.yayanheryanto.larismotor.view.pending.PendingTransaksiActivity;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,6 +82,21 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
         holder.txtNama.setText(convertToTitleCaseIteratingChars(pendingBeli.getNama()));
         holder.txtNamaMotor.setText(pendingBeli.getNamaMerk() + " " + pendingBeli.getNamaTipe());
 
+        if (pendingBeli.getTanggalBeli() == null) {
+
+            holder.txtTanggalBeli.setText("-");
+
+        } else {
+            SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
+            SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID"));
+
+            try {
+                holder.txtTanggalBeli.setText(df.format(sql.parse(pendingBeli.getTanggalBeli())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,7 +123,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
             public void onClick(View view) {
                 AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("Konfirmasi Hapus")
-                        .setMessage("Hapus Data PendingBeli?")
+                        .setMessage("Hapus Data Pending Beli?")
                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -116,7 +134,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
                                 String token = pref.getString(ACCESTOKEN, "");
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<PendingBeli> call = apiInterface.deletePending(token, pendingBeli.getIdPending());
+                                Call<PendingBeli> call = apiInterface.deletePendingBeli(token, pendingBeli.getIdPending());
                                 call.enqueue(new Callback<PendingBeli>() {
                                     @Override
                                     public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
@@ -164,7 +182,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
 
     public class PendingViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView txtNama, txtNamaMotor;
+        private TextView txtNama, txtNamaMotor, txtTanggalBeli;
         private ImageView imgDelete, imgEdit;
         private View mView;
 
@@ -174,6 +192,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
             this.mView = itemView;
             txtNama = itemView.findViewById(R.id.txt_nama);
             txtNamaMotor = itemView.findViewById(R.id.txt_nama_motor);
+            txtTanggalBeli = itemView.findViewById(R.id.txt_tanggal_beli);
             imgDelete = itemView.findViewById(R.id.imgDelete);
             imgEdit = itemView.findViewById(R.id.imgEdit);
         }

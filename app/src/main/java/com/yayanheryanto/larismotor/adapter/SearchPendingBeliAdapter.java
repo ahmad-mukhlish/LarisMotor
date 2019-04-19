@@ -114,7 +114,7 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
                                 String token = pref.getString(ACCESTOKEN, "");
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<PendingBeli> call = apiInterface.deletePending(token, pendingBeli.getIdPending());
+                                Call<PendingBeli> call = apiInterface.deletePendingBeli(token, pendingBeli.getIdPending());
                                 call.enqueue(new Callback<PendingBeli>() {
                                     @Override
                                     public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
