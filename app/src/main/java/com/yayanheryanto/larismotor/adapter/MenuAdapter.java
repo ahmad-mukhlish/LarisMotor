@@ -46,6 +46,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, menu.getmContext());
                 intent.putExtra("back",false) ;
+                intent.putExtra("editJual",false) ;
                 mContext.startActivity(intent);
 
             }

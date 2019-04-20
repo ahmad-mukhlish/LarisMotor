@@ -112,8 +112,9 @@ public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.SalesViewHol
                                 String id = pref.getString(ID_USER, "");
                                 String token = pref.getString(ACCESTOKEN, "");
 
+
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<Sales> call = apiInterface.deleteSales(token, sales.getNoKtpSales());
+                                Call<Sales> call = apiInterface.deleteSales(token, sales.getNoKtpSales(), sales.getIdUser()+"",id);
                                 call.enqueue(new Callback<Sales>() {
                                     @Override
                                     public void onResponse(Call<Sales> call, Response<Sales> response) {

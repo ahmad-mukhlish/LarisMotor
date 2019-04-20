@@ -227,6 +227,7 @@ public class AddPendingJualActivity extends AppCompatActivity implements View.On
                         Intent intent = new Intent(AddPendingJualActivity.this, PendingTransaksiActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("editJual",true);
                         startActivity(intent);
                         finish();
                     }else{

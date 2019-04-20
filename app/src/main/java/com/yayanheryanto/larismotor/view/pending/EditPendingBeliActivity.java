@@ -54,7 +54,7 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
     private List<Merk> merk;
     private List<Tipe> tipe;
     private ImageView tanggalBeliImg;
-    private String tanggalBeli ;
+    private String tanggalBeli;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +136,8 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
 
         txtNama.setText(convertToTitleCaseIteratingChars(pendingBeli.getNama()));
         txtAlamat.setText(pendingBeli.getAlamat());
-        txtTahun.setText(""+ pendingBeli.getTahun());
-        txtHarga.setText(""+ pendingBeli.getHarga());
+        txtTahun.setText("" + pendingBeli.getTahun());
+        txtHarga.setText("" + pendingBeli.getHarga());
 
         if (pendingBeli.getNoTelp() == null) {
             txtNoTelepon.setText("-");
@@ -154,7 +154,7 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
             SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID"));
 
             try {
-            txtTanggalBeli.setText(df.format(sql.parse(pendingBeli.getTanggalBeli())));
+                txtTanggalBeli.setText(df.format(sql.parse(pendingBeli.getTanggalBeli())));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -251,7 +251,7 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btnSave:
                 updatePending();
                 break;
@@ -272,19 +272,20 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
         int id_pending = pendingBeli.getIdPending();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<PendingBeli> call = apiInterface.updatePendingBeli(token, id_pending, nama, alamat, telepon, merkMotor,tipeMotor, tahun, harga,tanggalBeli);
+        Call<PendingBeli> call = apiInterface.updatePendingBeli(token, id_pending, nama, alamat, telepon, merkMotor, tipeMotor, tahun, harga, tanggalBeli);
         call.enqueue(new Callback<PendingBeli>() {
             @Override
             public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
                 dialog.dismiss();
-                    if (response.body().getMessage().equals("success")){
+                if (response.body().getMessage().equals("success")) {
                     Toast.makeText(EditPendingBeliActivity.this, "PendingBeli Beli Berhasil Diubah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditPendingBeliActivity.this, PendingTransaksiActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("editJual", false);
                     startActivity(intent);
                     finish();
-                }else{
+                } else {
                     Toast.makeText(EditPendingBeliActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditPendingBeliActivity.this, LoginActivity.class);
                     startActivity(intent);

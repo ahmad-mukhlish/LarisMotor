@@ -117,7 +117,10 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("api/deleteSales")
     Call<Sales> deleteSales(@Header("Authorization") String authorization,
-                            @Field("no_ktp_sales") String no_ktp_sales);
+                            @Field("no_ktp_sales") String no_ktp_sales,
+                            @Field("id_user") String id_user,
+                            @Field("id_owner") String id_owner
+                            );
 
 
     @FormUrlEncoded
