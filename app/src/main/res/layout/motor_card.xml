@@ -87,8 +87,9 @@
                     android:id="@+id/imgDeal"
                     android:layout_width="40dp"
                     android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_toStartOf="@id/imgDelete"
                     android:background="@color/colorPrimary"
                     android:src="@drawable/handshake" />
 
@@ -96,9 +97,8 @@
                     android:id="@+id/imgEdit"
                     android:layout_width="40dp"
                     android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="5dp"
-                    android:layout_toStartOf="@id/imgDeal"
                     android:background="@color/colorPrimary"
                     android:src="@drawable/ic_pencil_edit_button" />
 

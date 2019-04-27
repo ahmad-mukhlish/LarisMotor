@@ -178,7 +178,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             hjm.setText("HJM belum terisi");
         }
         else {
-            hjm.setText("Rp. " + motor.getHjm() + " (HJM)");
+            hjm.setText(motor.getHjm()+"");
         }
 
         tahun.setText("" + motor.getTahun());
@@ -562,7 +562,6 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onResponse(Call<Motor> call, Response<Motor> response) {
                 dialog.dismiss();
-                Log.d(DEBUG, String.valueOf(response.body().getMessage()));
                 if (response.body().getMessage().equals("success")) {
                     Toast.makeText(EditMotorActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditMotorActivity.this, MotorActivity.class);

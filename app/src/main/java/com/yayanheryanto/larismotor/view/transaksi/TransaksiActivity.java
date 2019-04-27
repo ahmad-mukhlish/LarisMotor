@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -64,6 +65,9 @@ public class TransaksiActivity extends AppCompatActivity {
     private int idTipe, idMerk;
     private List<Tipe> tipes;
     private boolean flagDp, flagCicilan, flagTenor;
+    private TextInputLayout wHarga, wDp, wTenor, wCicilan, wSubsidi, wPencairanLeasing, wNomorMesin,
+            wNomorRangka, wNomorPolisi, wTahun, wHargaJualMinimum, wMediator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,16 +75,27 @@ public class TransaksiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_transaksi);
 
         harga = findViewById(R.id.harga);
+        wHarga = findViewById(R.id.w_harga);
         dp = findViewById(R.id.dp);
+        wDp = findViewById(R.id.w_dp);
         tenor = findViewById(R.id.tenor);
+        wTenor = findViewById(R.id.w_tenor);
         cicilan = findViewById(R.id.cicilan);
+        wCicilan = findViewById(R.id.w_cicilan);
         subsidi = findViewById(R.id.subsidi);
+        wSubsidi = findViewById(R.id.w_subsidi);
         pencairanLeasing = findViewById(R.id.pencairan_leasing);
+        wPencairanLeasing = findViewById(R.id.w_pencairan_leasing);
         nomorMesin = findViewById(R.id.nomor_mesin_trans);
+        wNomorMesin = findViewById(R.id.w_nomor_mesin) ;
         nomorRangka = findViewById(R.id.nomor_rangka_trans);
+        wNomorRangka = findViewById(R.id.w_nomor_rangka);
         nomorPolisi = findViewById(R.id.nomor_polisi_trans);
+        wNomorPolisi = findViewById(R.id.w_nomor_polisi);
         tahun = findViewById(R.id.tahun_trans);
+        wTahun = findViewById(R.id.w_tahun);
         hargaJualMinimum = findViewById(R.id.harga_jual_minimum_trans);
+        wHargaJualMinimum = findViewById(R.id.w_harga_jual_minimum) ;
         checklist = findViewById(R.id.cheklist);
         tanggal = findViewById(R.id.tanggal);
         spinnerMerk = findViewById(R.id.spinnerMerk);
@@ -89,6 +104,7 @@ public class TransaksiActivity extends AppCompatActivity {
         tipe = findViewById(R.id.tipe);
         pembayaran = findViewById(R.id.pembayaran);
         mediator = findViewById(R.id.mediator);
+        wMediator = findViewById(R.id.w_mediator);
 
         initProgressDialog();
 
@@ -121,29 +137,43 @@ public class TransaksiActivity extends AppCompatActivity {
                     if (position == 0) {
 
                         nomorMesin.setVisibility(GONE);
+                        wNomorMesin.setVisibility(GONE);
                         nomorRangka.setVisibility(GONE);
+                        wNomorRangka.setVisibility(GONE);
                         nomorPolisi.setVisibility(GONE);
+                        wNomorPolisi.setVisibility(GONE);
                         spinnerMerk.setVisibility(GONE);
                         spinnerTipe.setVisibility(GONE);
                         tahun.setVisibility(GONE);
+                        wTahun.setVisibility(GONE);
                         hargaJualMinimum.setVisibility(GONE);
+                        wHargaJualMinimum.setVisibility(GONE);
                         spinnerCaraBayar.setVisibility(GONE);
                         harga.setVisibility(GONE);
+                        wHarga.setVisibility(GONE);
                         checklist.setVisibility(GONE);
                         merk.setVisibility(GONE);
                         tipe.setVisibility(GONE);
                         pembayaran.setVisibility(GONE);
                         dp.setVisibility(GONE);
+                        wDp.setVisibility(GONE);
                         cicilan.setVisibility(GONE);
+                        wCicilan.setVisibility(GONE);
                         tenor.setVisibility(GONE);
+                        wTenor.setVisibility(GONE);
                         pencairanLeasing.setVisibility(GONE);
+                        wPencairanLeasing.setVisibility(GONE);
                         subsidi.setVisibility(GONE);
+                        wSubsidi.setVisibility(GONE);
 
                     } else if (position == 1) {
                         nomorMesin.setVisibility(View.VISIBLE);
+                        wNomorMesin.setVisibility(View.VISIBLE);
                         nomorRangka.setVisibility(View.VISIBLE);
+                        wNomorRangka.setVisibility(View.VISIBLE);
                         nomorRangka.setEnabled(true);
                         nomorPolisi.setVisibility(GONE);
+                        wNomorPolisi.setVisibility(GONE);
                         merk.setVisibility(View.VISIBLE);
                         spinnerMerk.setVisibility(View.VISIBLE);
                         spinnerMerk.setEnabled(true);
@@ -152,19 +182,22 @@ public class TransaksiActivity extends AppCompatActivity {
                         spinnerTipe.setEnabled(true);
                         tahun.setVisibility(View.VISIBLE);
                         tahun.setEnabled(true);
+                        wTahun.setVisibility(View.VISIBLE);
                         hargaJualMinimum.setVisibility(View.VISIBLE);
+                        wHargaJualMinimum.setVisibility(View.VISIBLE);
                         pembayaran.setVisibility(View.VISIBLE);
                         spinnerCaraBayar.setVisibility(View.VISIBLE);
                         hargaJualMinimum.setEnabled(true);
                         checklist.setVisibility(GONE);
                         kondisi = 1;
                         getMerk();
-
-
                     } else {
                         nomorMesin.setVisibility(View.VISIBLE);
+                        wNomorMesin.setVisibility(View.VISIBLE);
                         nomorRangka.setVisibility(View.VISIBLE);
+                        wNomorRangka.setVisibility(View.VISIBLE);
                         nomorPolisi.setVisibility(View.VISIBLE);
+                        wNomorPolisi.setVisibility(View.VISIBLE);
                         merk.setVisibility(View.VISIBLE);
                         spinnerMerk.setVisibility(View.VISIBLE);
                         spinnerMerk.setEnabled(false);
@@ -173,16 +206,15 @@ public class TransaksiActivity extends AppCompatActivity {
                         spinnerTipe.setEnabled(false);
                         nomorRangka.setEnabled(false);
                         tahun.setVisibility(View.VISIBLE);
+                        wTahun.setVisibility(View.VISIBLE);
                         tahun.setEnabled(false);
                         hargaJualMinimum.setVisibility(View.VISIBLE);
-                        hargaJualMinimum.setHint(R.string.lbl_hjm);
+                        wHargaJualMinimum.setVisibility(View.VISIBLE);
                         hargaJualMinimum.setEnabled(false);
                         checklist.setVisibility(View.VISIBLE);
                         pembayaran.setVisibility(View.VISIBLE);
                         spinnerCaraBayar.setVisibility(View.VISIBLE);
                         kondisi = 0;
-
-
                     }
 
                 }
@@ -203,8 +235,11 @@ public class TransaksiActivity extends AppCompatActivity {
         } else {
 
             nomorMesin.setVisibility(View.VISIBLE);
+            wNomorMesin.setVisibility(View.VISIBLE);
             nomorRangka.setVisibility(View.VISIBLE);
+            wNomorRangka.setVisibility(View.VISIBLE);
             nomorPolisi.setVisibility(View.VISIBLE);
+            wNomorPolisi.setVisibility(View.VISIBLE);
             merk.setVisibility(View.VISIBLE);
             spinnerMerk.setVisibility(View.VISIBLE);
             spinnerMerk.setEnabled(false);
@@ -214,9 +249,10 @@ public class TransaksiActivity extends AppCompatActivity {
             nomorRangka.setEnabled(false);
             tahun.setVisibility(View.VISIBLE);
             tahun.setEnabled(false);
+            wTahun.setVisibility(View.VISIBLE);
             hargaJualMinimum.setVisibility(View.VISIBLE);
-            hargaJualMinimum.setHint(R.string.lbl_hjm);
             hargaJualMinimum.setEnabled(false);
+            wHargaJualMinimum.setVisibility(View.VISIBLE);
             pembayaran.setVisibility(View.VISIBLE);
             spinnerCaraBayar.setVisibility(View.VISIBLE);
             kondisi = 0;
@@ -226,6 +262,7 @@ public class TransaksiActivity extends AppCompatActivity {
 
 
             checklist.setVisibility(View.GONE);
+
             nomorMesin.setText(bundle.getString("data"));
             nomorMesin.setEnabled(false);
             nomorMesin.setTextColor(Color.parseColor("#000000"));
@@ -239,27 +276,46 @@ public class TransaksiActivity extends AppCompatActivity {
 
                 if (position == 0) {
                     harga.setVisibility(View.GONE);
+                    wHarga.setVisibility(GONE);
                     dp.setVisibility(GONE);
+                    wDp.setVisibility(GONE);
                     tenor.setVisibility(GONE);
+                    wTenor.setVisibility(GONE);
                     cicilan.setVisibility(GONE);
+                    wCicilan.setVisibility(GONE);
                     subsidi.setVisibility(View.GONE);
+                    wSubsidi.setVisibility(GONE);
                     pencairanLeasing.setVisibility(View.GONE);
+                    wPencairanLeasing.setVisibility(GONE);
                     mediator.setVisibility(GONE);
+                    wMediator.setVisibility(GONE);
                 } else if (position == 1) {
                     harga.setVisibility(View.VISIBLE);
+                    wHarga.setVisibility(View.VISIBLE);
                     mediator.setVisibility(View.VISIBLE);
+                    wMediator.setVisibility(View.VISIBLE);
                     dp.setVisibility(GONE);
+                    wDp.setVisibility(GONE);
                     tenor.setVisibility(GONE);
+                    wTenor.setVisibility(GONE);
                     cicilan.setVisibility(GONE);
+                    wCicilan.setVisibility(GONE);
                     subsidi.setVisibility(GONE);
+                    wSubsidi.setVisibility(GONE);
                     pencairanLeasing.setVisibility(GONE);
+                    wPencairanLeasing.setVisibility(GONE);
                 } else {
 
                     harga.setVisibility(GONE);
+                    wHarga.setVisibility(GONE);
                     mediator.setVisibility(View.VISIBLE);
+                    wMediator.setVisibility(View.VISIBLE);
                     dp.setVisibility(View.VISIBLE);
+                    wDp.setVisibility(View.VISIBLE);
                     tenor.setVisibility(View.VISIBLE);
+                    wTenor.setVisibility(View.VISIBLE);
                     cicilan.setVisibility(View.VISIBLE);
+                    wCicilan.setVisibility(View.VISIBLE);
 
                     dp.setEnabled(true);
                     tenor.setEnabled(true);
@@ -267,8 +323,10 @@ public class TransaksiActivity extends AppCompatActivity {
 
                     if (spinnerMobar.getSelectedItemPosition() == 1) {
                         subsidi.setVisibility(View.VISIBLE);
+                        wSubsidi.setVisibility(View.VISIBLE);
                     } else {
                         pencairanLeasing.setVisibility(View.VISIBLE);
+                        wPencairanLeasing.setVisibility(View.VISIBLE);
                     }
 
                 }

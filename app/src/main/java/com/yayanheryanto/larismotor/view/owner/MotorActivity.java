@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -374,10 +376,23 @@ public class MotorActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
+        Log.v("cik0",id);
+        Log.v("cik1",status);
+        Log.v("cik2",merk);
+        Log.v("cik3",tipe);
+        Log.v("cik4",tahun);
+
+
         Call<List<Motor>> call = apiInterface.getFilteredMotor(id, status, merk, tipe, tahun);
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
+
+//                try {
+//                    Log.v("cik",response.errorBody().string());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 
                 if (response.body() == null) {
                     Toast.makeText(MotorActivity.this, "Silakan filter data Anda", Toast.LENGTH_SHORT).show();

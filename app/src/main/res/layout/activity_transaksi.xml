@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -27,8 +26,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
                 android:text="Status" />
 
 
@@ -43,14 +42,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-
-                <EditText
-                    android:id="@+id/nomor_mesin_trans"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/w_nomor_mesin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:layout_weight="1"
-                    android:hint="Nomor Mesin" />
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/nomor_mesin_trans"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:hint="Nomor Mesin" />
+
+                </android.support.design.widget.TextInputLayout>
 
                 <Button
                     android:id="@+id/cheklist"
@@ -59,30 +65,44 @@
                     android:layout_gravity="center"
                     android:background="#00c853"
                     android:text="Check"
-                    android:textColor="#FFFFFF"
-                    />
+                    android:textColor="#FFFFFF" />
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/nomor_rangka_trans"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_nomor_rangka"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Nomor Rangka" />
+                android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/nomor_polisi_trans"
+                <EditText
+                    android:id="@+id/nomor_rangka_trans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nomor Rangka" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_nomor_polisi"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:hint="Nomor Polisi" />
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/nomor_polisi_trans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="Nomor Polisi" />
+
+            </android.support.design.widget.TextInputLayout>
+
 
             <TextView
                 android:id="@+id/merk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
                 android:text="Merk" />
 
             <Spinner
@@ -95,8 +115,8 @@
                 android:id="@+id/tipe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
                 android:text="Tipe" />
 
             <Spinner
@@ -105,26 +125,42 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp" />
 
-
-            <EditText
-                android:id="@+id/tahun_trans"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_tahun"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Tahun" />
+                android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/harga_jual_minimum_trans"
+
+                <EditText
+                    android:id="@+id/tahun_trans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tahun" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_harga_jual_minimum"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:hint="Harga Jual Minimum" />
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:id="@+id/harga_jual_minimum_trans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:hint="Harga Jual Minimum" />
+
+            </android.support.design.widget.TextInputLayout>
+
 
             <TextView
                 android:id="@+id/pembayaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
                 android:text="Pembayaran" />
 
 
@@ -134,55 +170,108 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp" />
 
-            <EditText
-                android:id="@+id/harga"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_harga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/harga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Harga Jual" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:id="@+id/dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="DP PO"
+                    android:visibility="gone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_cicilan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:id="@+id/cicilan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Cicilan"
+                    android:visibility="gone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_tenor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:id="@+id/tenor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tenor (Bulan)"
+                    android:visibility="gone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_pencairan_leasing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:id="@+id/pencairan_leasing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Pencairan Leasing"
+                    android:visibility="gone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/w_subsidi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:id="@+id/subsidi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Subsidi"
+                    android:visibility="gone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Harga Jual" />
+                android:id="@+id/w_mediator"
+                >
 
 
+                <EditText
+                    android:id="@+id/mediator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Mediator" />
 
-
-            <EditText
-                android:id="@+id/dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="DP PO"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/cicilan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Cicilan"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/tenor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Tenor (Bulan)"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/pencairan_leasing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Pencairan Leasing"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/subsidi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Subsidi"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/mediator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Mediator" />
+            </android.support.design.widget.TextInputLayout>
 
 
         </LinearLayout>
