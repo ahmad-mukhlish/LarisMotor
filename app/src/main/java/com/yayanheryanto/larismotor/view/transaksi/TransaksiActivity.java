@@ -94,102 +94,145 @@ public class TransaksiActivity extends AppCompatActivity {
 
 
         SimpleDateFormat df = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("ID"));
-
         tanggal.setText(df.format(Calendar.getInstance().getTime()));
 
         final String[] mobarArray = {"Pilih Kondisi", "Mobar", "Mokas"};
         final Spinner spinnerMobar = findViewById(R.id.mobar);
         ArrayAdapter<String> mobar = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mobarArray);
         spinnerMobar.setAdapter(mobar);
-        spinnerMobar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                statusMotor = mobarArray[position];
-                clearAll();
-                spinnerCaraBayar.setSelection(0);
-
-                if (position == 0) {
-
-                    nomorMesin.setVisibility(GONE);
-                    nomorRangka.setVisibility(GONE);
-                    nomorPolisi.setVisibility(GONE);
-                    spinnerMerk.setVisibility(GONE);
-                    spinnerTipe.setVisibility(GONE);
-                    tahun.setVisibility(GONE);
-                    hargaJualMinimum.setVisibility(GONE);
-                    spinnerCaraBayar.setVisibility(GONE);
-                    harga.setVisibility(GONE);
-                    checklist.setVisibility(GONE);
-                    merk.setVisibility(GONE);
-                    tipe.setVisibility(GONE);
-                    pembayaran.setVisibility(GONE);
-                    dp.setVisibility(GONE);
-                    cicilan.setVisibility(GONE);
-                    tenor.setVisibility(GONE);
-                    pencairanLeasing.setVisibility(GONE);
-                    subsidi.setVisibility(GONE);
-
-                } else if (position == 1) {
-                    nomorMesin.setVisibility(View.VISIBLE);
-                    nomorRangka.setVisibility(View.VISIBLE);
-                    nomorRangka.setEnabled(true);
-                    nomorPolisi.setVisibility(GONE);
-                    merk.setVisibility(View.VISIBLE);
-                    spinnerMerk.setVisibility(View.VISIBLE);
-                    spinnerMerk.setEnabled(true);
-                    tipe.setVisibility(View.VISIBLE);
-                    spinnerTipe.setVisibility(View.VISIBLE);
-                    spinnerTipe.setEnabled(true);
-                    tahun.setVisibility(View.VISIBLE);
-                    tahun.setEnabled(true);
-                    hargaJualMinimum.setVisibility(View.VISIBLE);
-                    pembayaran.setVisibility(View.VISIBLE);
-                    spinnerCaraBayar.setVisibility(View.VISIBLE);
-                    hargaJualMinimum.setEnabled(true);
-                    checklist.setVisibility(GONE);
-                    kondisi = 1;
-                    getMerk();
-
-
-                } else {
-                    nomorMesin.setVisibility(View.VISIBLE);
-                    nomorRangka.setVisibility(View.VISIBLE);
-                    nomorPolisi.setVisibility(View.VISIBLE);
-                    merk.setVisibility(View.VISIBLE);
-                    spinnerMerk.setVisibility(View.VISIBLE);
-                    spinnerMerk.setEnabled(false);
-                    tipe.setVisibility(View.VISIBLE);
-                    spinnerTipe.setVisibility(View.VISIBLE);
-                    spinnerTipe.setEnabled(false);
-                    nomorRangka.setEnabled(false);
-                    tahun.setVisibility(View.VISIBLE);
-                    tahun.setEnabled(false);
-                    hargaJualMinimum.setVisibility(View.VISIBLE);
-                    hargaJualMinimum.setHint(R.string.lbl_hjm);
-                    hargaJualMinimum.setEnabled(false);
-                    checklist.setVisibility(View.VISIBLE);
-                    pembayaran.setVisibility(View.VISIBLE);
-                    spinnerCaraBayar.setVisibility(View.VISIBLE);
-                    kondisi = 0;
-
-
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         spinnerCaraBayar = findViewById(R.id.cara_bayar);
         ArrayAdapter<CharSequence> caraBayar = ArrayAdapter.createFromResource(this,
                 R.array.caraBayar, android.R.layout.simple_spinner_item);
-
-
         spinnerCaraBayar.setAdapter(caraBayar);
+
+        Bundle bundle = getIntent().getExtras();
+
+        if (!bundle.getBoolean("deal")) {
+
+            spinnerMobar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    statusMotor = mobarArray[position];
+                    clearAll();
+                    spinnerCaraBayar.setSelection(0);
+
+                    if (position == 0) {
+
+                        nomorMesin.setVisibility(GONE);
+                        nomorRangka.setVisibility(GONE);
+                        nomorPolisi.setVisibility(GONE);
+                        spinnerMerk.setVisibility(GONE);
+                        spinnerTipe.setVisibility(GONE);
+                        tahun.setVisibility(GONE);
+                        hargaJualMinimum.setVisibility(GONE);
+                        spinnerCaraBayar.setVisibility(GONE);
+                        harga.setVisibility(GONE);
+                        checklist.setVisibility(GONE);
+                        merk.setVisibility(GONE);
+                        tipe.setVisibility(GONE);
+                        pembayaran.setVisibility(GONE);
+                        dp.setVisibility(GONE);
+                        cicilan.setVisibility(GONE);
+                        tenor.setVisibility(GONE);
+                        pencairanLeasing.setVisibility(GONE);
+                        subsidi.setVisibility(GONE);
+
+                    } else if (position == 1) {
+                        nomorMesin.setVisibility(View.VISIBLE);
+                        nomorRangka.setVisibility(View.VISIBLE);
+                        nomorRangka.setEnabled(true);
+                        nomorPolisi.setVisibility(GONE);
+                        merk.setVisibility(View.VISIBLE);
+                        spinnerMerk.setVisibility(View.VISIBLE);
+                        spinnerMerk.setEnabled(true);
+                        tipe.setVisibility(View.VISIBLE);
+                        spinnerTipe.setVisibility(View.VISIBLE);
+                        spinnerTipe.setEnabled(true);
+                        tahun.setVisibility(View.VISIBLE);
+                        tahun.setEnabled(true);
+                        hargaJualMinimum.setVisibility(View.VISIBLE);
+                        pembayaran.setVisibility(View.VISIBLE);
+                        spinnerCaraBayar.setVisibility(View.VISIBLE);
+                        hargaJualMinimum.setEnabled(true);
+                        checklist.setVisibility(GONE);
+                        kondisi = 1;
+                        getMerk();
+
+
+                    } else {
+                        nomorMesin.setVisibility(View.VISIBLE);
+                        nomorRangka.setVisibility(View.VISIBLE);
+                        nomorPolisi.setVisibility(View.VISIBLE);
+                        merk.setVisibility(View.VISIBLE);
+                        spinnerMerk.setVisibility(View.VISIBLE);
+                        spinnerMerk.setEnabled(false);
+                        tipe.setVisibility(View.VISIBLE);
+                        spinnerTipe.setVisibility(View.VISIBLE);
+                        spinnerTipe.setEnabled(false);
+                        nomorRangka.setEnabled(false);
+                        tahun.setVisibility(View.VISIBLE);
+                        tahun.setEnabled(false);
+                        hargaJualMinimum.setVisibility(View.VISIBLE);
+                        hargaJualMinimum.setHint(R.string.lbl_hjm);
+                        hargaJualMinimum.setEnabled(false);
+                        checklist.setVisibility(View.VISIBLE);
+                        pembayaran.setVisibility(View.VISIBLE);
+                        spinnerCaraBayar.setVisibility(View.VISIBLE);
+                        kondisi = 0;
+
+
+                    }
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            checklist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fillData(nomorMesin.getText().toString());
+                }
+            });
+
+        } else {
+
+            nomorMesin.setVisibility(View.VISIBLE);
+            nomorRangka.setVisibility(View.VISIBLE);
+            nomorPolisi.setVisibility(View.VISIBLE);
+            merk.setVisibility(View.VISIBLE);
+            spinnerMerk.setVisibility(View.VISIBLE);
+            spinnerMerk.setEnabled(false);
+            tipe.setVisibility(View.VISIBLE);
+            spinnerTipe.setVisibility(View.VISIBLE);
+            spinnerTipe.setEnabled(false);
+            nomorRangka.setEnabled(false);
+            tahun.setVisibility(View.VISIBLE);
+            tahun.setEnabled(false);
+            hargaJualMinimum.setVisibility(View.VISIBLE);
+            hargaJualMinimum.setHint(R.string.lbl_hjm);
+            hargaJualMinimum.setEnabled(false);
+            pembayaran.setVisibility(View.VISIBLE);
+            spinnerCaraBayar.setVisibility(View.VISIBLE);
+            kondisi = 0;
+            
+            spinnerMobar.setSelection(2);
+            spinnerMobar.setEnabled(false);
+
+
+            checklist.setVisibility(View.GONE);
+            nomorMesin.setText(bundle.getString("data"));
+            nomorMesin.setEnabled(false);
+            nomorMesin.setTextColor(Color.parseColor("#000000"));
+            fillData(bundle.getString("data"));
+
+        }
+
         spinnerCaraBayar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -239,134 +282,6 @@ public class TransaksiActivity extends AppCompatActivity {
             }
         });
 
-
-        checklist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.show();
-
-                String stringNomorMesin = nomorMesin.getText().toString();
-                final ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                Call<List<Motor>> call = apiInterface.getMotorById(stringNomorMesin);
-                call.enqueue(new Callback<List<Motor>>() {
-                    @Override
-                    public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
-
-                        if (response.body().isEmpty()) {
-
-                            dialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Data motor tidak tersedia", Toast.LENGTH_SHORT).show();
-                            clearAll();
-
-
-                        } else {
-                            dialog.dismiss();
-                            Motor motor = response.body().get(0);
-
-                            nomorRangka.setText("No. Rangka : " + motor.getNoRangka());
-                            nomorRangka.setEnabled(false);
-                            nomorRangka.setTextColor(Color.BLACK);
-
-                            nomorPolisi.setText("No. Polisi     : " + motor.getNoPolisi());
-                            nomorPolisi.setEnabled(false);
-                            nomorPolisi.setTextColor(Color.BLACK);
-
-
-                            if (motor.getDp() == null) {
-                                dp.setText("");
-                                flagDp = false;
-                            } else {
-                                dp.setText("DP       : Rp. " + motor.getDp());
-                                dp.setEnabled(false);
-                                dp.setTextColor(Color.BLACK);
-                                flagDp = true;
-                            }
-
-
-                            if (motor.getTenor() == null) {
-                                tenor.setText("");
-                                flagTenor = false;
-                            } else {
-                                tenor.setText("Tenor (Bulan) : " + motor.getTenor());
-                                tenor.setEnabled(false);
-                                tenor.setTextColor(Color.BLACK);
-                                flagTenor = true;
-                            }
-
-
-                            if (motor.getCicilan() == null) {
-                                cicilan.setText("");
-                                flagCicilan = false;
-                            } else {
-                                cicilan.setText("Cicilan : Rp. " + motor.getCicilan());
-                                cicilan.setEnabled(false);
-                                cicilan.setTextColor(Color.BLACK);
-                                flagCicilan = true;
-                            }
-
-                            Call<List<MerkTipe>> call2 = apiInterface.getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
-                            call2.enqueue(new Callback<List<MerkTipe>>() {
-                                @Override
-                                public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
-
-                                    MerkTipe merkTipe = response.body().get(0);
-
-                                    String[] merkArray = new String[1];
-                                    merkArray[0] = merkTipe.getNamaMerk();
-
-                                    merkAdapter = new ArrayAdapter<String>(TransaksiActivity.this,
-                                            android.R.layout.simple_spinner_item, merkArray);
-
-                                    spinnerMerk.setAdapter(merkAdapter);
-                                    spinnerMerk.setSelection(0);
-
-                                    String[] tipeArray = new String[1];
-                                    tipeArray[0] = merkTipe.getNamaTipe();
-
-                                    tipeAdapter = new ArrayAdapter<String>(TransaksiActivity.this,
-                                            android.R.layout.simple_spinner_item, tipeArray);
-
-                                    spinnerTipe.setAdapter(tipeAdapter);
-                                    spinnerTipe.setSelection(0);
-
-                                }
-
-                                @Override
-                                public void onFailure(Call<List<MerkTipe>> call, Throwable t) {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                            tahun.setText("Tahun : " + motor.getTahun());
-                            tahun.setEnabled(false);
-                            tahun.setTextColor(Color.BLACK);
-
-                            if (motor.getHjm() == null) {
-                                hargaJualMinimum.setText("HJM Belum Terisi ");
-                                hargaJualMinimum.setEnabled(false);
-                                hargaJualMinimum.setTextColor(Color.BLACK);
-                            } else {
-                                hargaJualMinimum.setText("HJM    : Rp." + motor.getHjm());
-                                hargaJualMinimum.setEnabled(false);
-                                hargaJualMinimum.setTextColor(Color.BLACK);
-                            }
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<Motor>> call, Throwable t) {
-                        dialog.dismiss();
-                        Log.v("cik", t.getMessage());
-
-                    }
-                });
-
-            }
-        });
-
         TextView textView = findViewById(R.id.next_trans);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -374,6 +289,7 @@ public class TransaksiActivity extends AppCompatActivity {
                 getData();
             }
         });
+
 
     }
 
@@ -610,5 +526,124 @@ public class TransaksiActivity extends AppCompatActivity {
         dialog.setCancelable(false);
     }
 
+    private void fillData(String stringNomorMesin) {
+        dialog.show();
+        final ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<List<Motor>> call = apiInterface.getMotorById(stringNomorMesin);
+        call.enqueue(new Callback<List<Motor>>() {
+            @Override
+            public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
 
+                if (response.body().isEmpty()) {
+
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Data motor tidak tersedia", Toast.LENGTH_SHORT).show();
+                    clearAll();
+
+
+                } else {
+                    dialog.dismiss();
+                    Motor motor = response.body().get(0);
+
+                    nomorRangka.setText("No. Rangka : " + motor.getNoRangka());
+                    nomorRangka.setEnabled(false);
+                    nomorRangka.setTextColor(Color.BLACK);
+
+                    nomorPolisi.setText("No. Polisi     : " + motor.getNoPolisi());
+                    nomorPolisi.setEnabled(false);
+                    nomorPolisi.setTextColor(Color.BLACK);
+
+
+                    if (motor.getDp() == null) {
+                        dp.setText("");
+                        flagDp = false;
+                    } else {
+                        dp.setText("DP       : Rp. " + motor.getDp());
+                        dp.setEnabled(false);
+                        dp.setTextColor(Color.BLACK);
+                        flagDp = true;
+                    }
+
+
+                    if (motor.getTenor() == null) {
+                        tenor.setText("");
+                        flagTenor = false;
+                    } else {
+                        tenor.setText("Tenor (Bulan) : " + motor.getTenor());
+                        tenor.setEnabled(false);
+                        tenor.setTextColor(Color.BLACK);
+                        flagTenor = true;
+                    }
+
+
+                    if (motor.getCicilan() == null) {
+                        cicilan.setText("");
+                        flagCicilan = false;
+                    } else {
+                        cicilan.setText("Cicilan : Rp. " + motor.getCicilan());
+                        cicilan.setEnabled(false);
+                        cicilan.setTextColor(Color.BLACK);
+                        flagCicilan = true;
+                    }
+
+                    Call<List<MerkTipe>> call2 = apiInterface.getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
+                    call2.enqueue(new Callback<List<MerkTipe>>() {
+                        @Override
+                        public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
+
+                            MerkTipe merkTipe = response.body().get(0);
+
+                            String[] merkArray = new String[1];
+                            merkArray[0] = merkTipe.getNamaMerk();
+
+                            merkAdapter = new ArrayAdapter<String>(TransaksiActivity.this,
+                                    android.R.layout.simple_spinner_item, merkArray);
+
+                            spinnerMerk.setAdapter(merkAdapter);
+                            spinnerMerk.setSelection(0);
+
+                            String[] tipeArray = new String[1];
+                            tipeArray[0] = merkTipe.getNamaTipe();
+
+                            tipeAdapter = new ArrayAdapter<String>(TransaksiActivity.this,
+                                    android.R.layout.simple_spinner_item, tipeArray);
+
+                            spinnerTipe.setAdapter(tipeAdapter);
+                            spinnerTipe.setSelection(0);
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<MerkTipe>> call, Throwable t) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    tahun.setText("Tahun : " + motor.getTahun());
+                    tahun.setEnabled(false);
+                    tahun.setTextColor(Color.BLACK);
+
+                    if (motor.getHjm() == null) {
+                        hargaJualMinimum.setText("HJM Belum Terisi ");
+                        hargaJualMinimum.setEnabled(false);
+                        hargaJualMinimum.setTextColor(Color.BLACK);
+                    } else {
+                        hargaJualMinimum.setText("HJM    : Rp." + motor.getHjm());
+                        hargaJualMinimum.setEnabled(false);
+                        hargaJualMinimum.setTextColor(Color.BLACK);
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Motor>> call, Throwable t) {
+                dialog.dismiss();
+                Log.v("cik", t.getMessage());
+
+            }
+        });
+
+    }
 }

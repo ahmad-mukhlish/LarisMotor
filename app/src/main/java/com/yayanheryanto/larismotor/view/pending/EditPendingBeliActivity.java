@@ -39,6 +39,7 @@ import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.convertToTitleCaseIteratingChars;
 
 public class EditPendingBeliActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
@@ -72,6 +73,8 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
         txtTanggalBeli = findViewById(R.id.tanggal_beli);
 
 
+
+
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
         adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
         spinnerMerk = findViewById(R.id.spinner1);
@@ -90,6 +93,7 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
                         now.get(Calendar.DAY_OF_MONTH) // Inital day selection
                 );
                 dpd.show(getFragmentManager(), "Datepickerdialog");
+
 
 
             }
@@ -329,26 +333,5 @@ public class EditPendingBeliActivity extends AppCompatActivity implements View.O
         }
     }
 
-    private String convertToTitleCaseIteratingChars(String text) {
-        if (text == null || text.isEmpty()) {
-            return text;
-        }
 
-        StringBuilder converted = new StringBuilder();
-
-        boolean convertNext = true;
-        for (char ch : text.toCharArray()) {
-            if (Character.isSpaceChar(ch)) {
-                convertNext = true;
-            } else if (convertNext) {
-                ch = Character.toTitleCase(ch);
-                convertNext = false;
-            } else {
-                ch = Character.toLowerCase(ch);
-            }
-            converted.append(ch);
-        }
-
-        return converted.toString();
-    }
 }

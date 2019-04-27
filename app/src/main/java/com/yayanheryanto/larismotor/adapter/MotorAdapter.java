@@ -27,6 +27,7 @@ import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.view.owner.DetailMotorActivity;
 import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
+import com.yayanheryanto.larismotor.view.transaksi.TransaksiActivity;
 
 import java.util.List;
 
@@ -84,9 +85,12 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
 
         if (motor.getHjm() == null || motor.getHjm() == 0) {
             motorViewHolder.textHjm.setText("HJM belum terisi");
+            motorViewHolder.textHjm.setTextColor(Color.parseColor("#F44336"));
         }
         else {
             motorViewHolder.textHjm.setText("Rp. " + motor.getHjm() + " (HJM)");
+            motorViewHolder.textHjm.setTextColor(Color.parseColor("#388E3C"));
+
         }
         motorViewHolder.textHarga.setText("Rp. " + motor.getHarga());
 
@@ -154,8 +158,15 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
 
         if (motor.getStatus() == 1) {
             motorViewHolder.imgDeelete.setVisibility(View.GONE);
+            motorViewHolder.imgDeal.setVisibility(View.GONE);
 
         }
+        else {
+            motorViewHolder.imgDeelete.setVisibility(View.VISIBLE);
+            motorViewHolder.imgDeal.setVisibility(View.VISIBLE);
+        }
+
+
 
         motorViewHolder.imgDeelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,6 +225,15 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             }
         });
 
+        motorViewHolder.imgDeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, TransaksiActivity.class);
+                intent.putExtra("deal",true);
+                intent.putExtra("data",motor.getNoMesin());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
 
@@ -224,7 +244,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
 
     public class MotorViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView imageMotor, imgDeelete, imgEdit;
+        private ImageView imageMotor, imgDeelete, imgEdit, imgDeal;
         private TextView textNopol, textHarga, textHjm, txtStatus, title;
         private View view;
 
@@ -234,6 +254,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             this.view = itemView;
             imageMotor = itemView.findViewById(R.id.image);
             imgDeelete = itemView.findViewById(R.id.imgDelete);
+            imgDeal = itemView.findViewById(R.id.imgDeal);
             imgEdit = itemView.findViewById(R.id.imgEdit);
             textNopol = itemView.findViewById(R.id.txt_plat);
             textHjm = itemView.findViewById(R.id.txt_hjm);

@@ -1,8 +1,8 @@
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
 
 
     <ScrollView
@@ -32,8 +32,8 @@
                         android:id="@+id/namaCustomer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nama Customer"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:hint="Nama Customer" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -45,8 +45,8 @@
                         android:id="@+id/noKtp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="No. KTP"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:hint="No. KTP" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -58,9 +58,9 @@
                         android:id="@+id/alamat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="false"
                         android:gravity="top"
                         android:hint="Alamat"
-                        android:enabled="false"
                         android:inputType="textMultiLine"
                         android:maxLines="12"
                         android:minLines="4" />
@@ -76,7 +76,8 @@
                         android:id="@+id/no_telp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nomor Telepon"/>
+                        android:hint="Nomor Telepon"
+                        android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -88,7 +89,8 @@
                         android:id="@+id/noWa"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Whatsapp"/>
+                        android:hint="Whatsapp"
+                        android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -100,7 +102,7 @@
                         android:id="@+id/instagram"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Instagram"/>
+                        android:hint="Instagram" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -112,7 +114,7 @@
                         android:id="@+id/fb"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Facebook"/>
+                        android:hint="Facebook" />
 
                 </android.support.design.widget.TextInputLayout>
 

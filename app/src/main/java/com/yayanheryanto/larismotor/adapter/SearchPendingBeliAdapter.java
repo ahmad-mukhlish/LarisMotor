@@ -36,6 +36,7 @@ import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.convertToTitleCaseIteratingChars;
 
 public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPendingBeliAdapter.PendingViewHolder>{
 
@@ -177,26 +178,5 @@ public class SearchPendingBeliAdapter extends RecyclerView.Adapter<SearchPending
         }
     }
 
-    private String convertToTitleCaseIteratingChars(String text) {
-        if (text == null || text.isEmpty()) {
-            return text;
-        }
 
-        StringBuilder converted = new StringBuilder();
-
-        boolean convertNext = true;
-        for (char ch : text.toCharArray()) {
-            if (Character.isSpaceChar(ch)) {
-                convertNext = true;
-            } else if (convertNext) {
-                ch = Character.toTitleCase(ch);
-                convertNext = false;
-            } else {
-                ch = Character.toLowerCase(ch);
-            }
-            converted.append(ch);
-        }
-
-        return converted.toString();
-    }
 }

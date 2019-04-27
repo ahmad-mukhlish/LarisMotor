@@ -36,7 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
 
 
                 <TextView
@@ -83,13 +83,22 @@
                 </LinearLayout>
 
 
+                <ImageView
+                    android:id="@+id/imgDeal"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorPrimary"
+                    android:src="@drawable/handshake" />
 
                 <ImageView
                     android:id="@+id/imgEdit"
                     android:layout_width="40dp"
                     android:layout_height="30dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_toStartOf="@id/imgDeal"
                     android:background="@color/colorPrimary"
                     android:src="@drawable/ic_pencil_edit_button" />
 
@@ -97,9 +106,9 @@
                     android:id="@+id/imgDelete"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
-                    android:layout_marginEnd="5dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_toLeftOf="@id/imgEdit"
+                    android:layout_marginEnd="5dp"
+                    android:layout_toStartOf="@id/imgEdit"
                     android:background="@color/colorPrimary"
                     android:src="@drawable/ic_rubbish_bin" />
 

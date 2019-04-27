@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
+import static com.yayanheryanto.larismotor.helper.HelperClass.convertToTitleCaseIteratingChars;
 
 public class DetailPendingBeliActivity extends AppCompatActivity {
 
@@ -72,28 +73,6 @@ public class DetailPendingBeliActivity extends AppCompatActivity {
         }
     }
 
-    private String convertToTitleCaseIteratingChars(String text) {
-        if (text == null || text.isEmpty()) {
-            return text;
-        }
-
-        StringBuilder converted = new StringBuilder();
-
-        boolean convertNext = true;
-        for (char ch : text.toCharArray()) {
-            if (Character.isSpaceChar(ch)) {
-                convertNext = true;
-            } else if (convertNext) {
-                ch = Character.toTitleCase(ch);
-                convertNext = false;
-            } else {
-                ch = Character.toLowerCase(ch);
-            }
-            converted.append(ch);
-        }
-
-        return converted.toString();
-    }
 
 
 }

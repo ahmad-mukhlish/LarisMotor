@@ -47,6 +47,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
                 Intent intent = new Intent(mContext, menu.getmContext());
                 intent.putExtra("back",false) ;
                 intent.putExtra("editJual",false) ;
+                intent.putExtra("deal",false);
                 mContext.startActivity(intent);
 
             }
