@@ -27,6 +27,7 @@ import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.view.owner.DetailMotorActivity;
 import com.yayanheryanto.larismotor.view.sales.EditMotorSalesActivity;
+import com.yayanheryanto.larismotor.view.transaksi.TransaksiActivity;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ import static com.yayanheryanto.larismotor.config.config.BASE_URL;
 import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
 public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.MotorViewHolder> {
 
@@ -84,7 +86,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
                 .load(BASE_URL + "storage/motor/" + motor.getGambar()).error(R.drawable.mobar)
                 .into(holder.imageMotor);
 
-        holder.textHjm.setText("Rp. " + motor.getHarga());
+        holder.textHjm.setText(formatter(motor.getHarga()+""));
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<MerkTipe>> call = apiInterface.getMerkById(motor.getIdMerk() + "", motor.getIdTipe() + "");
@@ -117,9 +119,13 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
         if (motor.getStatus().equals(0)) {
             holder.txtStatus.setText("Tersedia");
             holder.txtStatus.setTextColor(Color.parseColor("#388E3C"));
+            holder.imgDeal.setVisibility(View.VISIBLE);
+
         } else {
             holder.txtStatus.setText("Sold Out");
             holder.txtStatus.setTextColor(Color.parseColor("#F44336"));
+            holder.imgDeal.setVisibility(View.GONE);
+
         }
 
 
@@ -214,6 +220,16 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
             }
         });
 
+        holder.imgDeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, TransaksiActivity.class);
+                intent.putExtra("deal",true);
+                intent.putExtra("data",motor.getNoMesin());
+                mContext.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -224,7 +240,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
     public class MotorViewHolder extends RecyclerView.ViewHolder {
 
 
-        private ImageView imageMotor, imgDeelete, imgEdit;
+        private ImageView imageMotor, imgDeelete, imgEdit, imgDeal;;
         private TextView textNopol, textHjm, txtStatus, title;
         private View view;
 
@@ -235,6 +251,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
             this.view = itemView;
             imageMotor = itemView.findViewById(R.id.image);
             imgDeelete = itemView.findViewById(R.id.imgDelete);
+            imgDeal = itemView.findViewById(R.id.imgDeal);
             imgEdit = itemView.findViewById(R.id.imgEdit);
             textNopol = itemView.findViewById(R.id.txt_plat);
             textHjm = itemView.findViewById(R.id.txt_hjm);

@@ -26,6 +26,7 @@ import ss.com.bannerslider.Slider;
 
 import static android.view.View.GONE;
 import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
 public class DetailMotorActivity extends AppCompatActivity {
 
@@ -104,21 +105,21 @@ public class DetailMotorActivity extends AppCompatActivity {
                 if (motor.getHjm() == null) {
                     hjm.setText("-");
                 } else {
-                    hjm.setText("Rp. " + motor.getHjm());
+                    hjm.setText(formatter(motor.getHjm()));
                 }
 
-                harga.setText("Rp. " + motor.getHarga());
+                harga.setText(formatter(motor.getHarga()));
 
                 if (motor.getDp() == null || motor.getDp().equals("0")) {
                     dp.setText("-");
                 } else {
-                    dp.setText("Rp. " + motor.getDp());
+                    dp.setText(formatter(motor.getDp()));
                 }
 
                 if (motor.getCicilan() == null || motor.getCicilan().equals("0")) {
                     cicilan.setText("-");
                 } else {
-                    cicilan.setText("Rp. " + motor.getCicilan());
+                    cicilan.setText(formatter(motor.getCicilan()));
                 }
 
                 if (motor.getTenor() == null || motor.getTenor().equals("0")) {
@@ -135,7 +136,7 @@ public class DetailMotorActivity extends AppCompatActivity {
                 } else {
                     status.setText("Sold Out");
                     terjual.setVisibility(View.VISIBLE);
-                    hargaTerjual.setText("Rp. " + motor.getHargaTerjual());
+                    hargaTerjual.setText(formatter(motor.getHargaTerjual()));
 
                     final ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
                     Call<List<Customer>> calling = apiInterface.getNamaCustomerAndNoTelp(motor.getNoMesin());
@@ -171,7 +172,7 @@ public class DetailMotorActivity extends AppCompatActivity {
                     if (motor.getSubsidi() == null) {
                         nilaiSubsidi.setText("-");
                     } else {
-                        nilaiSubsidi.setText("Rp. " + motor.getSubsidi());
+                        nilaiSubsidi.setText(formatter(motor.getSubsidi()));
                     }
 
                 } else {
@@ -182,7 +183,7 @@ public class DetailMotorActivity extends AppCompatActivity {
                     if (motor.getPencairanLeasing() == null) {
                         nilaiSubsidi.setText("-");
                     } else {
-                        nilaiSubsidi.setText("Rp. " + motor.getPencairanLeasing());
+                        nilaiSubsidi.setText(formatter(motor.getPencairanLeasing()));
                     }
                     slider.setAdapter(new MainSliderAdapter(motor.getGambar(), motor.getGambar1(), motor.getGambar2()));
                 }

@@ -36,6 +36,7 @@ import retrofit2.Response;
 
 import static android.view.View.GONE;
 import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
 public class TransaksiActivity extends AppCompatActivity {
 
@@ -686,7 +687,7 @@ public class TransaksiActivity extends AppCompatActivity {
                         hargaJualMinimum.setEnabled(false);
                         hargaJualMinimum.setTextColor(Color.BLACK);
                     } else {
-                        hargaJualMinimum.setText("HJM    : Rp." + motor.getHjm());
+                        hargaJualMinimum.setText(formatter(motor.getHjm()+""));
                         hargaJualMinimum.setEnabled(false);
                         hargaJualMinimum.setTextColor(Color.BLACK);
                     }

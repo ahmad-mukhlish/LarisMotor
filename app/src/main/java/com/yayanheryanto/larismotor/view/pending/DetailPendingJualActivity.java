@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 import static com.yayanheryanto.larismotor.helper.HelperClass.convertToTitleCaseIteratingChars;
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
 public class DetailPendingJualActivity extends AppCompatActivity {
 
@@ -70,7 +71,7 @@ public class DetailPendingJualActivity extends AppCompatActivity {
         }
 
         txtTahun.setText("" + pending.getTahun());
-        txtHarga.setText("Rp. " + pending.getHarga());
+        txtHarga.setText(formatter(pending.getHarga()+""));
 
         if (pending.getTanggalJual() == null) {
 

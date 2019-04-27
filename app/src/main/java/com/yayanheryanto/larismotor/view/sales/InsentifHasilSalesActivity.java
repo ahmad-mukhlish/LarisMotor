@@ -24,6 +24,7 @@ import retrofit2.Response;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 import static com.yayanheryanto.larismotor.config.config.NAMA_USER;
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
 public class InsentifHasilSalesActivity extends AppCompatActivity {
 
@@ -157,7 +158,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
     private void getNominalMobar() {
 
         nominalMobar = jumlahMobar * Integer.parseInt(konfigInsentif.getInsentifMobar()) ;
-        nominalMobarTxt.setText(nominalMobar+"");
+        nominalMobarTxt.setText(formatter(nominalMobar+""));
         getTotal();
 
     }
@@ -176,7 +177,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
         else if (jumlahMokas > 20)
         {nominalMokas = jumlahMokas * Integer.parseInt(konfigInsentif.getInsentifMokas21());}
 
-        nominalMokasTxt.setText(nominalMokas+"");
+        nominalMokasTxt.setText(formatter(nominalMokas+""));
         getTotal();
 
 
@@ -192,7 +193,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 lain = response.body();
-                lainTxt.setText(lain + "");
+                lainTxt.setText(formatter(lain + ""));
                 getTotal();
             }
 
@@ -213,7 +214,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 persentaseMobar = response.body();
-                persentaseMobarTxt.setText(persentaseMobar + "");
+                persentaseMobarTxt.setText(formatter(persentaseMobar + ""));
                 getTotal();
             }
 
@@ -235,7 +236,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 persentaseMokas = response.body();
                 persentaseMokas = persentaseMokas * Integer.parseInt(konfigInsentif.getPersentase()) / 100;
-                persentaseMokasTxt.setText(persentaseMokas + "");
+                persentaseMokasTxt.setText(formatter(persentaseMokas + ""));
                 getTotal();
             }
 
@@ -260,7 +261,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
         Log.v("cek5",lain+"");
 
 
-        totalTxt.setText(total+"");
+        totalTxt.setText(formatter(total+""));
 
     }
 

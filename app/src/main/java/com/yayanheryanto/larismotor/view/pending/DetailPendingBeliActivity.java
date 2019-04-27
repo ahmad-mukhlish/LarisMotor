@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import static com.yayanheryanto.larismotor.config.config.DATA_PENDING;
 import static com.yayanheryanto.larismotor.helper.HelperClass.convertToTitleCaseIteratingChars;
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
 public class DetailPendingBeliActivity extends AppCompatActivity {
 
@@ -49,7 +50,7 @@ public class DetailPendingBeliActivity extends AppCompatActivity {
         txtMerk.setText(pendingBeli.getNamaMerk());
         txtTipe.setText(pendingBeli.getNamaTipe());
         txtTahun.setText(""+ pendingBeli.getTahun());
-        txtHarga.setText("Rp. "+ pendingBeli.getHarga());
+        txtHarga.setText(formatter(pendingBeli.getHarga()+""));
 
         if (pendingBeli.getNoTelp() == null) {
             txtNoTelepon.setText("-");

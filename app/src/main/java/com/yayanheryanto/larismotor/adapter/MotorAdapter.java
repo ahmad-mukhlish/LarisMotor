@@ -40,6 +40,7 @@ import static com.yayanheryanto.larismotor.config.config.BASE_URL;
 import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
 
 public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHolder> {
@@ -88,11 +89,11 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             motorViewHolder.textHjm.setTextColor(Color.parseColor("#F44336"));
         }
         else {
-            motorViewHolder.textHjm.setText("Rp. " + motor.getHjm() + " (HJM)");
+            motorViewHolder.textHjm.setText(formatter(motor.getHjm()+""));
             motorViewHolder.textHjm.setTextColor(Color.parseColor("#388E3C"));
 
         }
-        motorViewHolder.textHarga.setText("Rp. " + motor.getHarga());
+        motorViewHolder.textHarga.setText(formatter(motor.getHarga()+""));
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 

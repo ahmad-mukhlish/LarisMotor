@@ -15,6 +15,8 @@ import java.util.Locale;
 
 import de.codecrafters.tableview.TableDataAdapter;
 
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
+
 public class LaporanAdapter extends TableDataAdapter<Transaksi> {
 
     public LaporanAdapter(Context context, List<Transaksi> data) {
@@ -152,7 +154,7 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
             }
 
         }
-        return renderString(hasil);
+        return renderString(formatter(hasil));
     }
 
     private View renderSubsidi(final Transaksi transaksi) {
@@ -167,7 +169,7 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
             //motor baru
             if (!transaksi.getKondisi().equals("0")) {
 
-                hasil = transaksi.getSubsidi();
+                hasil = formatter(transaksi.getSubsidi());
 
             } else {
 
@@ -188,7 +190,7 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
         } else {
             mediator = Integer.parseInt(transaksi.getMediator());
         }
-        return renderString(mediator+"");
+        return renderString(formatter(mediator+""));
     }
 
 
@@ -251,7 +253,7 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
             }
 
         }
-        return renderString(hasil);
+        return renderString(formatter(hasil));
     }
 
     private View renderString(final String value) {
