@@ -17,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
+import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Customer;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -44,7 +46,7 @@ import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.KTP_SALES;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
-public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener {
+public class IsiDataActivity extends AppCompatActivity {
 
 
     Spinner spinnerTxtAgama;
@@ -236,20 +238,20 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
             public void onClick(View v) {
 
 
-                Calendar now = Calendar.getInstance();
-                com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
-                        IsiDataActivity.this,
-                        now.get(Calendar.YEAR), // Initial year selection
-                        now.get(Calendar.MONTH), // Initial month selection
-                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
-                );
-                dpd.show(getFragmentManager(), "Datepickerdialog");
+                new SlideDateTimePicker.Builder(getSupportFragmentManager())
+                        .setListener(listener)
+                        .setInitialDate(new Date())
+                        .build()
+                        .show();
+
 
 
             }
         });
 
     }
+
+
 
     private void getFromIntent() {
         Bundle bundle = getIntent().getExtras();
@@ -367,29 +369,51 @@ public class IsiDataActivity extends AppCompatActivity implements com.wdullaer.m
 
     }
 
-    @Override
-    public void onDateSet(com.wdullaer.materialdatetimepicker.date.DatePickerDialog view,
-                          int year, int monthOfYear, int dayOfMonth) {
-        SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
-        Log.v("cik", monthOfYear + "");
-        String month;
-        monthOfYear++;
-        if (monthOfYear < 10)
-            month = "0" + monthOfYear;
-        else
-            month = "" + monthOfYear;
-
-        SimpleDateFormat sqlformat = new SimpleDateFormat("yyyyMMdd", new Locale("EN"));
-        String tanggal = year + month + dayOfMonth;
 
 
-        try {
-            ttl.setText(df.format(sqlformat.parse(tanggal)));
-        } catch (ParseException e) {
-            e.printStackTrace();
+
+    private SlideDateTimeListener listener = new SlideDateTimeListener() {
+
+        @Override
+        public void onDateTimeSet(Date date)
+        {
+            SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
+            String month;
+
+            int monthOfYear, year, dayOfMonth ;
+
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            monthOfYear = cal.get(Calendar.MONTH);
+            year = cal.get(Calendar.YEAR);
+            dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+
+
+
+            monthOfYear++;
+            if (monthOfYear < 10)
+                month = "0" + monthOfYear;
+            else
+                month = "" + monthOfYear;
+
+            SimpleDateFormat sqlformat = new SimpleDateFormat("yyyyMMdd", new Locale("EN"));
+            String tanggal = year + month + dayOfMonth;
+
+
+            try {
+                ttl.setText(df.format(sqlformat.parse(tanggal)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
-
+        @Override
+        public void onDateTimeCancel()
+        {
+            // Overriding onDateTimeCancel() is optional.
+        }
+    };
 }
 
