@@ -1,7 +1,6 @@
 package com.yayanheryanto.larismotor.view.owner;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,12 +10,12 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +32,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
@@ -68,9 +69,11 @@ import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
+import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 
 
-public class EditMotorActivity extends AppCompatActivity implements View.OnClickListener {
+public class EditMotorActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private Button btnUpload, btnSave, btnCamera;
     private List<Merk> merk;
@@ -87,13 +90,20 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     private String s1, s2;
     private TextInputLayout terjual;
     private File file, file2 = null;
-    private RadioButton sold ;
+    private RadioButton sold;
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
 
     private Uri tempUri;
     boolean buttonCamera, buttonGallery = false;
+
+    private String hjmMotor;
+    private String hargaMotor;
+    private String hargaTerjual;
+    private String dpMotor;
+    private String cicilanMotor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +128,6 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         dp = findViewById(R.id.dp);
         terjual = findViewById(R.id.terjual);
         sold = findViewById(R.id.radio_sold_out);
-
 
 
         image1 = findViewById(R.id.image1);
@@ -164,6 +173,9 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
+
+        setInputMask();
+
     }
 
     private void getDataFromIntent() {
@@ -174,32 +186,37 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         no_polisi.setText("" + motor.getNoPolisi());
         no_rangka.setText(motor.getNoRangka());
 
+        hjmMotor = motor.getHjm() + "";
+        hargaMotor = motor.getHarga() + "";
+        hargaTerjual = motor.getHargaTerjual() + "";
+        dpMotor = motor.getDp() + "";
+        cicilanMotor = motor.getCicilan() + "";
+
         if (motor.getHjm() == null || motor.getHjm() == 0) {
             hjm.setText("HJM belum terisi");
-        }
-        else {
-            hjm.setText(motor.getHjm()+"");
+        } else {
+            hjm.setText(createDot(hjmMotor));
         }
 
         tahun.setText("" + motor.getTahun());
-        harga.setText("" + motor.getHarga());
+        harga.setText(createDot(hargaMotor));
 
         if (motor.getHargaTerjual() == null || motor.getHargaTerjual() == 0) {
             harga_terjual.setText("");
         } else {
-            harga_terjual.setText("" + motor.getHargaTerjual());
+            harga_terjual.setText(createDot(hargaTerjual));
         }
 
         if (motor.getDp() == null || motor.getDp() == 0) {
             dp.setText("");
         } else {
-            dp.setText("" + motor.getDp());
+            dp.setText(createDot(dpMotor));
         }
 
         if (motor.getCicilan() == null || motor.getCicilan() == 0) {
             cicilan.setText("");
         } else {
-            cicilan.setText("" + motor.getCicilan());
+            cicilan.setText(createDot(cicilanMotor));
         }
 
         if (motor.getTenor() == null || motor.getTenor() == 0) {
@@ -494,12 +511,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         String mesin = no_mesin.getText().toString();
         String polisi = no_polisi.getText().toString();
         String rangka = no_rangka.getText().toString();
-        String hjmMotor = hjm.getText().toString();
         String tahunMotor = tahun.getText().toString();
-        String hargaMotor = harga.getText().toString();
-        String hargaTerjual = harga_terjual.getText().toString();
-        String dpMotor = dp.getText().toString();
-        String cicilanMotor = cicilan.getText().toString();
         String tenorMotor = tenor.getText().toString();
 
 
@@ -509,16 +521,16 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         builder.addFormDataPart("no_polisi", polisi);
         builder.addFormDataPart("no_mesin", mesin);
         builder.addFormDataPart("no_rangka", rangka);
-        builder.addFormDataPart("hjm", hjmMotor);
+        builder.addFormDataPart("hjm", clearDot(hjmMotor));
         builder.addFormDataPart("tahun", tahunMotor);
         builder.addFormDataPart("status", statusMotor);
         builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
         builder.addFormDataPart("merk", String.valueOf(merkMotor));
         builder.addFormDataPart("id_user", id);
-        builder.addFormDataPart("harga", hargaMotor);
-        builder.addFormDataPart("harga_terjual", hargaTerjual);
-        builder.addFormDataPart("dp", dpMotor);
-        builder.addFormDataPart("cicilan", cicilanMotor);
+        builder.addFormDataPart("harga", clearDot(hargaMotor));
+        builder.addFormDataPart("harga_terjual", clearDot(hargaTerjual));
+        builder.addFormDataPart("dp", clearDot(dpMotor));
+        builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
         builder.addFormDataPart("tenor", tenorMotor);
 
         if (motor.getGambar() != null) {
@@ -616,6 +628,128 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                 }
                 return;
             }
+        }
+    }
+
+    private void setInputMask() {
+
+        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                harga,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hargaMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        harga.addTextChangedListener(reversedListener);
+        harga.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener terjualListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                harga_terjual,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hargaTerjual = extractedValue;
+
+                    }
+                }
+        );
+
+        harga_terjual.addTextChangedListener(terjualListener);
+        harga_terjual.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener hjmListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                hjm,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hjmMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        hjm.addTextChangedListener(hjmListener);
+        hjm.setOnFocusChangeListener(this);
+
+
+        final MaskedTextChangedListener dpListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                dp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        dpMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        dp.addTextChangedListener(dpListener);
+        dp.setOnFocusChangeListener(this);
+
+
+        final MaskedTextChangedListener cicilanListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                cicilan,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        cicilanMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        cicilan.addTextChangedListener(cicilanListener);
+        cicilan.setOnFocusChangeListener(this);
+    }
+
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        switch (view.getId()) {
+            case R.id.harga:
+                if (hasFocus) {
+                    harga.setText(createDot(hargaMotor) + "");
+                }
+                break;
+
+            case R.id.hjm:
+                if (hasFocus) {
+                    hjm.setText(createDot(hjmMotor) + "");
+                }
+                break;
+
+            case R.id.harga_terjual:
+                if (hasFocus) {
+                    harga_terjual.setText(createDot(hargaTerjual));
+                }
+                break;
+
+            case R.id.dp:
+                if (hasFocus) {
+                    dp.setText(createDot(dpMotor));
+                }
+                break;
+
+            case R.id.cicilan:
+                if (hasFocus) {
+                    cicilan.setText(createDot(cicilanMotor));
+                }
+                break;
+
         }
     }
 }

@@ -77,6 +77,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Nomor Telepon"
+                        android:digits="1234567890+-() "
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -89,6 +90,7 @@
                         android:id="@+id/noWa"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="1234567890+-() "
                         android:hint="Whatsapp"
                         android:inputType="number" />
 

@@ -3,12 +3,14 @@ package com.yayanheryanto.larismotor.view.owner;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Customer;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
@@ -19,14 +21,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.yayanheryanto.larismotor.config.config.DATA_CUSTOMER;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDash;
 
 public class EditCustomerActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private TextView noKTP, nama, alamat, noTelp, whatsapp, instagram, facebook;
+    private EditText noKTP, nama, noTelp, whatsapp, instagram, facebook;
+    private android.support.v7.widget.AppCompatEditText alamat;
     private Button btnSave;
 
     private ProgressDialog dialog;
+
+    private String nomor;
+    private String wa;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,39 @@ public class EditCustomerActivity extends AppCompatActivity implements View.OnCl
         facebook = findViewById(R.id.fb);
         btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
+
+
+        final MaskedTextChangedListener telpListener = new MaskedTextChangedListener(
+                "[000]-[000]-[000]-[0009]",
+                noTelp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        nomor = extractedValue;
+
+                    }
+                }
+        );
+
+        noTelp.addTextChangedListener(telpListener);
+        noTelp.setOnFocusChangeListener(telpListener);
+
+        final MaskedTextChangedListener waListener = new MaskedTextChangedListener(
+                "[000]-[000]-[000]-[0009]",
+                whatsapp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        wa = extractedValue;
+
+                    }
+                }
+        );
+
+        whatsapp.addTextChangedListener(waListener);
+        whatsapp.setOnFocusChangeListener(waListener);
 
         initProgressDialog();
         fillDetail();
@@ -86,13 +127,14 @@ public class EditCustomerActivity extends AppCompatActivity implements View.OnCl
 
         dialog.show();
         String ktp = noKTP.getText().toString();
-        String nomor = noTelp.getText().toString();
-        String wa = whatsapp.getText().toString();
+
+        nomor = noTelp.getText().toString();
+        wa = whatsapp.getText().toString();
         String fb = facebook.getText().toString();
         String ig = instagram.getText().toString();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Customer> call = apiInterface.updateCustomer(ktp, nomor, wa, fb, ig);
+        Call<Customer> call = apiInterface.updateCustomer(ktp, clearDash(nomor) , clearDash(wa), fb, ig);
         call.enqueue(new Callback<Customer>() {
             @Override
             public void onResponse(Call<Customer> call, Response<Customer> response) {

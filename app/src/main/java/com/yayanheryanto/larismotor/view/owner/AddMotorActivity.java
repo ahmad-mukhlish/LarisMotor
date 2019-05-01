@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +34,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -66,6 +69,7 @@ import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
 
 public class AddMotorActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -84,6 +88,12 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private TextView labelStatus;
     private TextView hint;
     private File file, file2 = null;
+
+    private String hjmMotor;
+    private String hargaMotor;
+    private String hargaTerjual;
+    private String dpMotor;
+    private String cicilanMotor;
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
@@ -128,6 +138,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
+        setInputMask();
+
 
         if (pass == 1) {
             reveal();
@@ -137,7 +149,6 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         } else {
             hide();
         }
-
 
 
         check.setOnClickListener(new View.OnClickListener() {
@@ -159,9 +170,9 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                         } else if (response.body().getNoMesin().equals("0")) {
                             Toast.makeText(getBaseContext(), "Motor sudah tersedia", Toast.LENGTH_SHORT).show();
                         } else {
-                            Intent intent = new Intent(AddMotorActivity.this,EditMotorActivity.class) ;
-                            intent.putExtra(DATA_MOTOR,response.body()) ;
-                            intent.putExtra("ada",true) ;
+                            Intent intent = new Intent(AddMotorActivity.this, EditMotorActivity.class);
+                            intent.putExtra(DATA_MOTOR, response.body());
+                            intent.putExtra("ada", true);
 
                             startActivity(intent);
                         }
@@ -413,12 +424,17 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             String mesin = no_mesin.getText().toString();
             String polisi = no_polisi.getText().toString();
             String rangka = no_rangka.getText().toString();
-            String hjmMotor = hjm.getText().toString();
+
+            hjmMotor = hjm.getText().toString();
             String tahunMotor = tahun.getText().toString();
-            String hargaMotor = harga.getText().toString();
-            String hargaTerjual = harga_terjual.getText().toString();
-            String dpMotor = dp.getText().toString();
-            String cicilanMotor = cicilan.getText().toString();
+
+            hargaMotor = harga.getText().toString();
+
+
+            hargaTerjual = harga_terjual.getText().toString();
+
+            dpMotor = dp.getText().toString();
+            cicilanMotor = cicilan.getText().toString();
             String tenorMotor = tenor.getText().toString();
 
 
@@ -427,16 +443,16 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             builder.addFormDataPart("no_polisi", polisi);
             builder.addFormDataPart("no_mesin", mesin);
             builder.addFormDataPart("no_rangka", rangka);
-            builder.addFormDataPart("hjm", hjmMotor);
+            builder.addFormDataPart("hjm", clearDot(hjmMotor));
             builder.addFormDataPart("tahun", tahunMotor);
             builder.addFormDataPart("status", statusMotor);
             builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
             builder.addFormDataPart("merk", String.valueOf(merkMotor));
             builder.addFormDataPart("id_user", id);
-            builder.addFormDataPart("harga", hargaMotor);
-            builder.addFormDataPart("harga_terjual", hargaTerjual);
-            builder.addFormDataPart("dp", dpMotor);
-            builder.addFormDataPart("cicilan", cicilanMotor);
+            builder.addFormDataPart("harga", clearDot(hargaMotor));
+            builder.addFormDataPart("harga_terjual", clearDot(hargaTerjual));
+            builder.addFormDataPart("dp", clearDot(dpMotor));
+            builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
             builder.addFormDataPart("tenor", tenorMotor);
 
 
@@ -457,9 +473,15 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
 
+
+
+
             MultipartBody requestBody = builder.build();
             ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
             Call<Motor> call = apiInterface.addMotor(token, requestBody);
+
+
+
             call.enqueue(new Callback<Motor>() {
                 @Override
                 public void onResponse(Call<Motor> call, Response<Motor> response) {
@@ -609,4 +631,91 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         startActivity(new Intent(AddMotorActivity.this, MotorActivity.class));
         pass = 0;
     }
+
+    private void setInputMask() {
+
+        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                harga,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hargaMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        harga.addTextChangedListener(reversedListener);
+        harga.setOnFocusChangeListener(reversedListener);
+
+        final MaskedTextChangedListener terjualListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                harga_terjual,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hargaTerjual = extractedValue;
+
+                    }
+                }
+        );
+
+        harga_terjual.addTextChangedListener(terjualListener);
+        harga_terjual.setOnFocusChangeListener(terjualListener);
+
+        final MaskedTextChangedListener hjmListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                hjm,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hjmMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        hjm.addTextChangedListener(hjmListener);
+        hjm.setOnFocusChangeListener(hjmListener);
+
+
+        final MaskedTextChangedListener dpListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                dp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        dpMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        dp.addTextChangedListener(dpListener);
+        dp.setOnFocusChangeListener(dpListener);
+
+
+        final MaskedTextChangedListener cicilanListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                cicilan,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        cicilanMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        cicilan.addTextChangedListener(cicilanListener);
+        cicilan.setOnFocusChangeListener(cicilanListener);
+    }
+
+
 }

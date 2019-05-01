@@ -1,5 +1,8 @@
 package com.yayanheryanto.larismotor.helper;
 
+import android.util.Log;
+import android.view.View;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
@@ -14,6 +17,25 @@ public class HelperClass {
             format.setDecimalFormatSymbols(symbol);
 
             return format.format(Double.parseDouble(input));
+        } else {
+            return "";
+        }
+
+    }
+
+    public static String createDot(String input) {
+        if (!(input == null)) {
+            DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+            symbol.setGroupingSeparator('.');
+
+            DecimalFormat format = new DecimalFormat("###,###");
+            format.setDecimalFormatSymbols(symbol);
+
+            Log.v("cikk",format.format(Double.parseDouble(input))) ;
+
+
+            return format.format(Double.parseDouble(input));
+
         } else {
             return "";
         }
@@ -41,6 +63,20 @@ public class HelperClass {
         }
 
         return converted.toString();
+    }
+
+    public static String clearDot(String input) {
+
+        input = input.replace(".","") ;
+        Log.v("cik",input);
+        return input ;
+    }
+
+    public static String clearDash(String input) {
+
+        input = input.replace("-","") ;
+        Log.v("cik",input);
+        return input ;
     }
 
 

@@ -107,6 +107,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Harga (Tampilan Web)"
+                        android:digits="0123456789 -."
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -121,6 +122,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="HJM"
+                        android:digits="0123456789 -."
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -135,6 +137,7 @@
                         android:id="@+id/dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="DP"
                         android:inputType="number" />
 
@@ -149,6 +152,7 @@
                         android:id="@+id/cicilan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="Cicilan"
                         android:inputType="number" />
 
@@ -252,6 +256,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Harga Terjual"
+                        android:digits="0123456789 -."
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>

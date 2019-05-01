@@ -70,7 +70,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Tahun"
-                        android:inputType="number"/>
+                        android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -83,6 +83,7 @@
                         android:id="@+id/harga"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="Harga (Tampilan Web)"
                         android:inputType="number" />
 
@@ -97,11 +98,11 @@
                         android:id="@+id/hjm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="HJM"
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
-
 
 
                 <android.support.design.widget.TextInputLayout
@@ -113,6 +114,7 @@
                         android:id="@+id/dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="DP"
                         android:inputType="number" />
 
@@ -127,6 +129,7 @@
                         android:id="@+id/cicilan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="Cicilan"
                         android:inputType="number" />
 
@@ -172,8 +175,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_middle"
                     android:layout_marginTop="@dimen/spacing_middle"
+                    android:layout_marginBottom="@dimen/spacing_middle"
                     android:orientation="vertical">
 
                     <TextView
@@ -227,6 +230,7 @@
                         android:id="@+id/harga_terjual"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="Harga Terjual"
                         android:inputType="number" />
 
@@ -235,8 +239,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_middle"
                     android:layout_marginTop="@dimen/spacing_middle"
+                    android:layout_marginBottom="@dimen/spacing_middle"
                     android:orientation="horizontal">
 
 
