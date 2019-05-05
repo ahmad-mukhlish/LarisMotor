@@ -53,40 +53,12 @@ public class EditCustomerActivity extends AppCompatActivity implements View.OnCl
         btnSave.setOnClickListener(this);
 
 
-        final MaskedTextChangedListener telpListener = new MaskedTextChangedListener(
-                "[000]-[000]-[000]-[0009]",
-                noTelp,
-                new MaskedTextChangedListener.ValueListener() {
-                    @Override
-                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
 
-                        nomor = extractedValue;
-
-                    }
-                }
-        );
-
-        noTelp.addTextChangedListener(telpListener);
-        noTelp.setOnFocusChangeListener(telpListener);
-
-        final MaskedTextChangedListener waListener = new MaskedTextChangedListener(
-                "[000]-[000]-[000]-[0009]",
-                whatsapp,
-                new MaskedTextChangedListener.ValueListener() {
-                    @Override
-                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
-
-                        wa = extractedValue;
-
-                    }
-                }
-        );
-
-        whatsapp.addTextChangedListener(waListener);
-        whatsapp.setOnFocusChangeListener(waListener);
 
         initProgressDialog();
+        setInputMask();
         fillDetail();
+
     }
 
     private void fillDetail() {
@@ -154,5 +126,42 @@ public class EditCustomerActivity extends AppCompatActivity implements View.OnCl
                 Toast.makeText(EditCustomerActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setInputMask(){
+
+        final MaskedTextChangedListener telpListener = new MaskedTextChangedListener(
+                "[000]-[000]-[000]-[0009]",
+                noTelp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        nomor = extractedValue;
+
+                    }
+                }
+        );
+
+        noTelp.addTextChangedListener(telpListener);
+        noTelp.setOnFocusChangeListener(telpListener);
+
+        final MaskedTextChangedListener waListener = new MaskedTextChangedListener(
+                "[000]-[000]-[000]-[0009]",
+                whatsapp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        wa = extractedValue;
+
+                    }
+                }
+        );
+
+        whatsapp.addTextChangedListener(waListener);
+        whatsapp.setOnFocusChangeListener(waListener);
+
+
     }
 }

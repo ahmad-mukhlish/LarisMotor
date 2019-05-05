@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -135,7 +137,8 @@
                     android:id="@+id/tahun_trans"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Tahun" />
+                    android:hint="Tahun"
+                    android:inputType="number" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -150,7 +153,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:hint="Harga Jual Minimum" />
+                    android:digits="0123456789 -."
+                    android:hint="Harga Jual Minimum"
+                    android:inputType="number" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -179,7 +184,9 @@
                     android:id="@+id/harga"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Harga Jual" />
+                    android:digits="0123456789 -."
+                    android:hint="Harga Jual"
+                    android:inputType="number" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -193,7 +200,9 @@
                     android:id="@+id/dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="0123456789 -."
                     android:hint="DP PO"
+                    android:inputType="number"
                     android:visibility="gone" />
 
             </android.support.design.widget.TextInputLayout>
@@ -208,7 +217,9 @@
                     android:id="@+id/cicilan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="0123456789 -."
                     android:hint="Cicilan"
+                    android:inputType="number"
                     android:visibility="gone" />
 
             </android.support.design.widget.TextInputLayout>
@@ -224,6 +235,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Tenor (Bulan)"
+                    android:inputType="number"
                     android:visibility="gone" />
 
             </android.support.design.widget.TextInputLayout>
@@ -238,7 +250,9 @@
                     android:id="@+id/pencairan_leasing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="0123456789 -."
                     android:hint="Pencairan Leasing"
+                    android:inputType="number"
                     android:visibility="gone" />
 
             </android.support.design.widget.TextInputLayout>
@@ -253,23 +267,26 @@
                     android:id="@+id/subsidi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="0123456789 -."
                     android:hint="Subsidi"
+                    android:inputType="number"
                     android:visibility="gone" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/w_mediator"
-                >
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
 
                 <EditText
                     android:id="@+id/mediator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Mediator" />
+                    android:digits="0123456789 -."
+                    android:hint="Mediator"
+                    android:inputType="number" />
 
             </android.support.design.widget.TextInputLayout>
 

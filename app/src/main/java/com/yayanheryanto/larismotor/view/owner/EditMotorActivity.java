@@ -183,7 +183,14 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         Bundle data = getIntent().getExtras();
         motor = (Motor) data.getParcelable(DATA_MOTOR);
         no_mesin.setText(motor.getNoMesin());
-        no_polisi.setText("" + motor.getNoPolisi());
+
+        if (motor.getNoPolisi() == null) {
+            no_polisi.setText("");
+        } else {
+            no_polisi.setText("" + motor.getNoPolisi());
+        }
+
+
         no_rangka.setText(motor.getNoRangka());
 
         hjmMotor = motor.getHjm() + "";
@@ -515,6 +522,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         String tenorMotor = tenor.getText().toString();
 
 
+
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
         builder.addFormDataPart("no_mesin_awal", motor.getNoMesin());
@@ -533,6 +541,8 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
         builder.addFormDataPart("tenor", tenorMotor);
 
+
+
         if (motor.getGambar() != null) {
             builder.addFormDataPart("gambar", motor.getGambar());
         }
@@ -543,30 +553,25 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             builder.addFormDataPart("gambar2", motor.getGambar2());
         }
 
-        if (!(buttonCamera || buttonGallery)) {
+        if (!(buttonCamera || buttonGallery) || images == null) {
             file = null;
         } else {
-            if (images == null) {
-                Log.d(DEBUG, file.getName());
-                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-            } else {
 
-                for (int i = 0; i < images.size(); i++) {
-                    file2 = new File(images.get(i).path);
-                    try {
-                        file = new Compressor(this).compressToFile(file2);
+            for (int i = 0; i < images.size(); i++) {
+                file2 = new File(images.get(i).path);
+                try {
+                    file = new Compressor(this).compressToFile(file2);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e("Error", e.getMessage());
-                    }
-
-                    builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-                    Log.d(DEBUG, file.getName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("Error", e.getMessage());
                 }
-            }
-        }
 
+                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+                Log.d(DEBUG, file.getName());
+            }
+
+        }
         MultipartBody requestBody = builder.build();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<Motor> call = apiInterface.updateMotor(token, requestBody);
@@ -690,6 +695,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                     public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
 
                         dpMotor = extractedValue;
+//                        Log.v("cik2",clearDot(dpMotor));
 
                     }
                 }
@@ -739,13 +745,13 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.dp:
-                if (hasFocus) {
+                if (hasFocus && !(motor.getDp() == null)) {
                     dp.setText(createDot(dpMotor));
                 }
                 break;
 
             case R.id.cicilan:
-                if (hasFocus) {
+                if (hasFocus && !(motor.getCicilan() == null)) {
                     cicilan.setText(createDot(cicilanMotor));
                 }
                 break;

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
@@ -36,9 +39,11 @@ import retrofit2.Response;
 
 import static android.view.View.GONE;
 import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
+import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
-public class TransaksiActivity extends AppCompatActivity {
+public class TransaksiActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
 
     private Spinner spinnerCaraBayar;
@@ -65,9 +70,17 @@ public class TransaksiActivity extends AppCompatActivity {
     private String statusMotor;
     private int idTipe, idMerk;
     private List<Tipe> tipes;
-    private boolean flagDp, flagCicilan, flagTenor;
+    private boolean flagTenor;
     private TextInputLayout wHarga, wDp, wTenor, wCicilan, wSubsidi, wPencairanLeasing, wNomorMesin,
             wNomorRangka, wNomorPolisi, wTahun, wHargaJualMinimum, wMediator;
+
+    private String hjmMotor;
+    private String hargaMotor;
+    private String mediatorMotor;
+    private String dpMotor;
+    private String cicilanMotor;
+    private String subsidiMotor;
+    private String pencairanLeasingMotor;
 
 
     @Override
@@ -88,7 +101,7 @@ public class TransaksiActivity extends AppCompatActivity {
         pencairanLeasing = findViewById(R.id.pencairan_leasing);
         wPencairanLeasing = findViewById(R.id.w_pencairan_leasing);
         nomorMesin = findViewById(R.id.nomor_mesin_trans);
-        wNomorMesin = findViewById(R.id.w_nomor_mesin) ;
+        wNomorMesin = findViewById(R.id.w_nomor_mesin);
         nomorRangka = findViewById(R.id.nomor_rangka_trans);
         wNomorRangka = findViewById(R.id.w_nomor_rangka);
         nomorPolisi = findViewById(R.id.nomor_polisi_trans);
@@ -96,7 +109,7 @@ public class TransaksiActivity extends AppCompatActivity {
         tahun = findViewById(R.id.tahun_trans);
         wTahun = findViewById(R.id.w_tahun);
         hargaJualMinimum = findViewById(R.id.harga_jual_minimum_trans);
-        wHargaJualMinimum = findViewById(R.id.w_harga_jual_minimum) ;
+        wHargaJualMinimum = findViewById(R.id.w_harga_jual_minimum);
         checklist = findViewById(R.id.cheklist);
         tanggal = findViewById(R.id.tanggal);
         spinnerMerk = findViewById(R.id.spinnerMerk);
@@ -257,7 +270,7 @@ public class TransaksiActivity extends AppCompatActivity {
             pembayaran.setVisibility(View.VISIBLE);
             spinnerCaraBayar.setVisibility(View.VISIBLE);
             kondisi = 0;
-            
+
             spinnerMobar.setSelection(2);
             spinnerMobar.setEnabled(false);
 
@@ -345,44 +358,65 @@ public class TransaksiActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getData();
+                if (tahun.getText().toString().isEmpty() || nomorMesin.getText().toString().isEmpty()
+                        || nomorRangka.getText().toString().isEmpty() || hargaJualMinimum.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Data masih ada yang kosong", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (spinnerCaraBayar.getSelectedItemPosition() == 0) {
+
+                        Toast.makeText(getApplicationContext(), "Silakan pilih cara bayar", Toast.LENGTH_SHORT).show();
+
+
+                    } else if (spinnerCaraBayar.getSelectedItemPosition() == 1 &&
+                            (harga.getText().toString().isEmpty() || mediator.getText().toString().isEmpty())) {
+
+                        Toast.makeText(getApplicationContext(), "Silakan isi semua data cash (bila tidak ada isi dengan 0)", Toast.LENGTH_SHORT).show();
+
+
+                    } else if (spinnerCaraBayar.getSelectedItemPosition() == 2
+                            && spinnerMobar.getSelectedItemPosition() == 2 &&
+                            (dp.getText().toString().isEmpty() || cicilan.getText().toString().isEmpty()
+                                    || tenor.getText().toString().isEmpty()
+                                    || mediator.getText().toString().isEmpty() || pencairanLeasing.getText().toString().isEmpty())) {
+                        Toast.makeText(getApplicationContext(), "Silakan isi semua data mokas kredit (bila tidak ada isi dengan 0)", Toast.LENGTH_SHORT).show();
+
+                    } else if (spinnerCaraBayar.getSelectedItemPosition() == 2
+                            && spinnerMobar.getSelectedItemPosition() == 1 &&
+                            (dp.getText().toString().isEmpty() || cicilan.getText().toString().isEmpty()
+                                    || tenor.getText().toString().isEmpty()
+                                    || mediator.getText().toString().isEmpty() || subsidi.getText().toString().isEmpty())) {
+                        Toast.makeText(getApplicationContext(), "Silakan isi semua data mobar kredit (bila tidak ada isi dengan 0)", Toast.LENGTH_SHORT).show();
+                    } else {
+                        getData();
+
+
+                    }
+
+                }
             }
         });
 
+        setInputMask();
 
     }
 
     private void getData() {
 
         Motor motor = new Motor();
-        String noMesin, noRangka, tahunMotor, hjm, dpMotor, cicilanMotor,
-                tenorMotor, hargaTerjual, subsidiMotor, pencairanLeasingMotor, mediatorMotor;
+        String noMesin, noRangka, tahunMotor,
+                tenorMotor;
 
         if (kondisi == 0) {
             noMesin = nomorMesin.getText().toString();
 
             if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
-                hargaTerjual = harga.getText().toString();
-                motor.setHargaTerjual(Integer.valueOf(hargaTerjual));
+                motor.setHargaTerjual(Integer.valueOf(clearDot(hargaMotor)));
             } else {
-                dpMotor = dp.getText().toString();
-                cicilanMotor = cicilan.getText().toString();
                 tenorMotor = tenor.getText().toString();
-                pencairanLeasingMotor = pencairanLeasing.getText().toString();
 
 
-                if (flagDp) {
-                    motor.setDp(Integer.valueOf(dpMotor.substring(15)));
-                } else {
-                    motor.setDp(Integer.valueOf(dpMotor));
-
-                }
-
-                if (flagCicilan) {
-                    motor.setCicilan(Integer.valueOf(cicilanMotor.substring(15)));
-                } else {
-                    motor.setCicilan(Integer.valueOf(cicilanMotor));
-                }
+                motor.setDp(Integer.valueOf(clearDot(dpMotor)));
+                motor.setCicilan(Integer.valueOf(clearDot(cicilanMotor)));
 
                 if (flagTenor) {
                     motor.setTenor(Integer.valueOf(tenorMotor.substring(16)));
@@ -390,12 +424,11 @@ public class TransaksiActivity extends AppCompatActivity {
                     motor.setTenor(Integer.valueOf(tenorMotor));
                 }
 
-                motor.setPencairanLeasing(Integer.valueOf(pencairanLeasingMotor));
+                motor.setPencairanLeasing(Integer.valueOf(clearDot(pencairanLeasingMotor)));
             }
 
             motor.setNoMesin(noMesin);
             motor.setKondisi(kondisi);
-            mediatorMotor = mediator.getText().toString();
             if (mediatorMotor.isEmpty() || mediatorMotor.equals("")) {
                 motor.setMediator(null);
             } else {
@@ -411,34 +444,28 @@ public class TransaksiActivity extends AppCompatActivity {
             noMesin = nomorMesin.getText().toString();
             noRangka = nomorRangka.getText().toString();
             tahunMotor = tahun.getText().toString();
-            hjm = hargaJualMinimum.getText().toString();
+
 
             motor.setNoMesin(noMesin);
             motor.setNoRangka(noRangka);
             motor.setTahun(Integer.valueOf(tahunMotor));
-            motor.setHjm(Integer.valueOf(hjm));
+            motor.setHjm(Integer.valueOf(clearDot(hjmMotor)));
             motor.setKondisi(kondisi);
             motor.setIdTipe(idTipe);
             motor.setIdMerk(idMerk);
 
             if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
-                hargaTerjual = harga.getText().toString();
-                motor.setHargaTerjual(Integer.valueOf(hargaTerjual));
-                mediatorMotor = mediator.getText().toString();
+                motor.setHargaTerjual(Integer.valueOf(clearDot(hargaMotor)));
                 motor.setMediator(Integer.valueOf(mediatorMotor));
             } else {
 
-                dpMotor = dp.getText().toString();
-                cicilanMotor = cicilan.getText().toString();
                 tenorMotor = tenor.getText().toString();
-                subsidiMotor = subsidi.getText().toString();
-                mediatorMotor = mediator.getText().toString();
 
 
-                motor.setDp(Integer.valueOf(dpMotor));
-                motor.setCicilan(Integer.valueOf(cicilanMotor));
+                motor.setDp(Integer.valueOf(clearDot(dpMotor)));
+                motor.setCicilan(Integer.valueOf(clearDot(cicilanMotor)));
                 motor.setTenor(Integer.valueOf(tenorMotor));
-                motor.setSubsidi(Integer.valueOf(subsidiMotor));
+                motor.setSubsidi(Integer.valueOf(clearDot(subsidiMotor)));
                 motor.setMediator(Integer.valueOf(mediatorMotor));
 
 
@@ -615,12 +642,10 @@ public class TransaksiActivity extends AppCompatActivity {
 
                     if (motor.getDp() == null) {
                         dp.setText("");
-                        flagDp = false;
                     } else {
-                        dp.setText("DP       : Rp. " + motor.getDp());
+                        dp.setText(createDot(motor.getDp() + ""));
                         dp.setEnabled(false);
                         dp.setTextColor(Color.BLACK);
-                        flagDp = true;
                     }
 
 
@@ -637,12 +662,10 @@ public class TransaksiActivity extends AppCompatActivity {
 
                     if (motor.getCicilan() == null) {
                         cicilan.setText("");
-                        flagCicilan = false;
                     } else {
-                        cicilan.setText("Cicilan : Rp. " + motor.getCicilan());
+                        cicilan.setText(createDot(motor.getCicilan() + ""));
                         cicilan.setEnabled(false);
                         cicilan.setTextColor(Color.BLACK);
-                        flagCicilan = true;
                     }
 
                     Call<List<MerkTipe>> call2 = apiInterface.getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
@@ -687,7 +710,7 @@ public class TransaksiActivity extends AppCompatActivity {
                         hargaJualMinimum.setEnabled(false);
                         hargaJualMinimum.setTextColor(Color.BLACK);
                     } else {
-                        hargaJualMinimum.setText(formatter(motor.getHjm()+""));
+                        hargaJualMinimum.setText(formatter(motor.getHjm() + ""));
                         hargaJualMinimum.setEnabled(false);
                         hargaJualMinimum.setTextColor(Color.BLACK);
                     }
@@ -703,6 +726,172 @@ public class TransaksiActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setInputMask() {
+
+        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                hargaJualMinimum,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hjmMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        hargaJualMinimum.addTextChangedListener(reversedListener);
+        hargaJualMinimum.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener hargaListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                harga,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hargaMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        harga.addTextChangedListener(hargaListener);
+        harga.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener mediatorListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                mediator,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        mediatorMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        mediator.addTextChangedListener(mediatorListener);
+        mediator.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener dpListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                dp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        dpMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        dp.addTextChangedListener(dpListener);
+        dp.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener cicilanListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                cicilan,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        cicilanMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        cicilan.addTextChangedListener(cicilanListener);
+        cicilan.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener subsidiListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                subsidi,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        subsidiMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        subsidi.addTextChangedListener(subsidiListener);
+        subsidi.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener pencairanLeasingListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                pencairanLeasing,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        pencairanLeasingMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        pencairanLeasing.addTextChangedListener(pencairanLeasingListener);
+        pencairanLeasing.setOnFocusChangeListener(this);
+
+
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+
+        switch (view.getId()) {
+            case R.id.harga_jual_minimum_trans:
+                if (hasFocus && !hargaJualMinimum.getText().toString().isEmpty()) {
+                    hargaJualMinimum.setText(createDot(hjmMotor) + "");
+                }
+                break;
+
+            case R.id.harga:
+                if (hasFocus && !harga.getText().toString().isEmpty()) {
+                    harga.setText(createDot(hargaMotor) + "");
+                }
+                break;
+
+            case R.id.mediator:
+                if (hasFocus && !mediator.getText().toString().isEmpty()) {
+                    mediator.setText(createDot(mediatorMotor) + "");
+                }
+                break;
+
+            case R.id.dp:
+                if (hasFocus && !dp.getText().toString().isEmpty()) {
+                    dp.setText(createDot(dpMotor) + "");
+                }
+                break;
+
+            case R.id.cicilan:
+                if (hasFocus && !cicilan.getText().toString().isEmpty()) {
+                    cicilan.setText(createDot(cicilanMotor) + "");
+                }
+                break;
+
+            case R.id.subsidi:
+                if (hasFocus && !subsidi.getText().toString().isEmpty()) {
+                    subsidi.setText(createDot(subsidiMotor) + "");
+                }
+                break;
+
+            case R.id.pencairan_leasing:
+                if (hasFocus && !pencairanLeasing.getText().toString().isEmpty()) {
+                    pencairanLeasing.setText(createDot(pencairanLeasingMotor) + "");
+                }
+                break;
+        }
 
     }
 }

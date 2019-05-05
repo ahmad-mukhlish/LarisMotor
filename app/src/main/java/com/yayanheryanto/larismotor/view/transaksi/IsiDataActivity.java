@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Customer;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -45,6 +47,7 @@ import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.KTP_SALES;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDash;
 
 public class IsiDataActivity extends AppCompatActivity {
 
@@ -65,6 +68,9 @@ public class IsiDataActivity extends AppCompatActivity {
 
     private ProgressDialog dialog;
     private Motor motor;
+
+    private String nomor;
+    private String wa;
 
 
     @Override
@@ -193,12 +199,15 @@ public class IsiDataActivity extends AppCompatActivity {
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                startActivity(new Intent(IsiDataActivity.this, TransaksiActivity.class));
+                Intent intent = new Intent(IsiDataActivity.this, TransaksiActivity.class) ;
+                intent.putExtra("deal",false);
+                startActivity(intent);
 
 
             }
         });
+
+        setInputMask();
 
     }
 
@@ -288,7 +297,6 @@ public class IsiDataActivity extends AppCompatActivity {
         String nomorKtpTxt = nomorKtp.getText().toString();
         String namaTxt = nama.getText().toString();
         String alamatTxt = alamat.getText().toString();
-        String nomorTelpTxt = nomorTelp.getText().toString();
         String Agama = spinnerTxtAgama.getSelectedItem().toString();
 
 
@@ -304,7 +312,6 @@ public class IsiDataActivity extends AppCompatActivity {
         String tanggal = dateFormat.format(convertedDate);
 
         String pekerjaanTxt = pekerjaan.getText().toString();
-        String whatsappTxt = whatsapp.getText().toString();
         String instagramTxt = instagram.getText().toString();
         String facebookTxt = facebook.getText().toString();
 
@@ -319,7 +326,7 @@ public class IsiDataActivity extends AppCompatActivity {
                     motor.getPencairanLeasing() + "", motor.getMediator() + "");
         } else if (motor.getKondisi() == 0 && statusCustomer == 0) {
             //ubah status motor, simpan customer dan transaksi
-            call = apiInterface.mokasWithCust(token, motor.getNoMesin(), nomorKtpTxt, namaTxt, alamatTxt, nomorTelpTxt, tanggal, Agama, pekerjaanTxt, whatsappTxt, instagramTxt, facebookTxt,
+            call = apiInterface.mokasWithCust(token, motor.getNoMesin(), nomorKtpTxt, namaTxt, alamatTxt, clearDash(nomor), tanggal, Agama, pekerjaanTxt, clearDash(wa), instagramTxt, facebookTxt,
                     String.valueOf(motor.getHargaTerjual()), motor.getDp() + "", motor.getCicilan() + "",
                     motor.getTenor() + "", motor.getPencairanLeasing() + "", no_ktp_sales, motor.getMediator() + "");
         } else if (motor.getKondisi() == 1 && statusCustomer == 1) {
@@ -335,7 +342,7 @@ public class IsiDataActivity extends AppCompatActivity {
             call = apiInterface.mobarWithCust(token, motor.getNoMesin(), motor.getNoRangka(), String.valueOf(motor.getTahun()), String.valueOf(motor.getHjm()),
                     String.valueOf(motor.getIdTipe()), String.valueOf(motor.getIdMerk()), id, String.valueOf(motor.getHargaTerjual()),
                     String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()), motor.getSubsidi() + "",
-                    nomorKtpTxt, namaTxt, alamatTxt, nomorTelpTxt, Agama, pekerjaanTxt, whatsappTxt,
+                    nomorKtpTxt, namaTxt, alamatTxt, clearDash(nomor), Agama, pekerjaanTxt, clearDash(wa),
                     instagramTxt, facebookTxt, no_ktp_sales, tanggal, motor.getMediator() + "");
         }
         call.enqueue(new Callback<Motor>() {
@@ -415,5 +422,42 @@ public class IsiDataActivity extends AppCompatActivity {
             // Overriding onDateTimeCancel() is optional.
         }
     };
+
+    private void setInputMask(){
+
+        final MaskedTextChangedListener telpListener = new MaskedTextChangedListener(
+                "[000]-[000]-[000]-[0009]",
+                nomorTelp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        nomor = extractedValue;
+
+                    }
+                }
+        );
+
+        nomorTelp.addTextChangedListener(telpListener);
+        nomorTelp.setOnFocusChangeListener(telpListener);
+
+        final MaskedTextChangedListener waListener = new MaskedTextChangedListener(
+                "[000]-[000]-[000]-[0009]",
+                whatsapp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        wa = extractedValue;
+
+                    }
+                }
+        );
+
+        whatsapp.addTextChangedListener(waListener);
+        whatsapp.setOnFocusChangeListener(waListener);
+
+
+    }
 }
 

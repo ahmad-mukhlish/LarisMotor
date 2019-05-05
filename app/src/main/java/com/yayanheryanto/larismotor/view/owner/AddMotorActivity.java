@@ -70,8 +70,9 @@ import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
+import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 
-public class AddMotorActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddMotorActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private Button btnUpload, btnSave, btnCamera, check;
     private List<Merk> merk;
@@ -648,7 +649,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         );
 
         harga.addTextChangedListener(reversedListener);
-        harga.setOnFocusChangeListener(reversedListener);
+        harga.setOnFocusChangeListener(this);
 
         final MaskedTextChangedListener terjualListener = new ReversedMaskTextChangedListener(
                 "[000].[000].[000].[000].[000]",
@@ -664,7 +665,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         );
 
         harga_terjual.addTextChangedListener(terjualListener);
-        harga_terjual.setOnFocusChangeListener(terjualListener);
+        harga_terjual.setOnFocusChangeListener(this);
 
         final MaskedTextChangedListener hjmListener = new ReversedMaskTextChangedListener(
                 "[000].[000].[000].[000].[000]",
@@ -680,7 +681,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         );
 
         hjm.addTextChangedListener(hjmListener);
-        hjm.setOnFocusChangeListener(hjmListener);
+        hjm.setOnFocusChangeListener(this);
 
 
         final MaskedTextChangedListener dpListener = new ReversedMaskTextChangedListener(
@@ -697,7 +698,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         );
 
         dp.addTextChangedListener(dpListener);
-        dp.setOnFocusChangeListener(dpListener);
+        dp.setOnFocusChangeListener(this);
 
 
         final MaskedTextChangedListener cicilanListener = new ReversedMaskTextChangedListener(
@@ -714,8 +715,43 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         );
 
         cicilan.addTextChangedListener(cicilanListener);
-        cicilan.setOnFocusChangeListener(cicilanListener);
+        cicilan.setOnFocusChangeListener(this);
     }
 
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        switch (view.getId()) {
+            case R.id.harga:
+                if (hasFocus && !harga.getText().toString().isEmpty()) {
+                    harga.setText(createDot(hargaMotor) + "");
+                }
+                break;
+
+            case R.id.hjm:
+                if (hasFocus && !hjm.getText().toString().isEmpty()) {
+                    hjm.setText(createDot(hjmMotor) + "");
+                }
+                break;
+
+            case R.id.harga_terjual:
+                if (hasFocus && !harga_terjual.getText().toString().isEmpty()) {
+                    harga_terjual.setText(createDot(hargaTerjual));
+                }
+                break;
+
+            case R.id.dp:
+                if (hasFocus && !dp.getText().toString().isEmpty()) {
+                    dp.setText(createDot(dpMotor));
+                }
+                break;
+
+            case R.id.cicilan:
+                if (hasFocus && !cicilan.getText().toString().isEmpty()) {
+                    cicilan.setText(createDot(cicilanMotor));
+                }
+                break;
+
+        }
+    }
 }
