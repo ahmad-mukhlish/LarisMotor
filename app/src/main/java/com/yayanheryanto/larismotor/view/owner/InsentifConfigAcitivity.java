@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.KonfigInsentif;
@@ -34,8 +37,10 @@ import retrofit2.Response;
 
 import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
+import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 
-public class InsentifConfigAcitivity extends AppCompatActivity implements com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener {
+public class InsentifConfigAcitivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, View.OnFocusChangeListener {
 
     private ProgressDialog dialog;
     private ImageView dari, ke, persentase, mobar, lima, sepuluh, limaBelas, duaPuluh, duaSatu;
@@ -49,6 +54,14 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
 
     private Spinner spinnerSales;
     private final List<Sales> saleses = new ArrayList<>();
+
+    private String insentifMobar;
+    private String limaStr;
+    private String sepuluhStr;
+    private String limaBelasStr;
+    private String duaPuluhStr;
+    private String duaSatuStr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +92,8 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
         duaPuluhTxt = findViewById(R.id.insentif_mokas1620);
         duaSatuTxt = findViewById(R.id.insentif_mokas2125);
 
+        setInputMask();
+
         persentase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,10 +101,12 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 if (!persentaseTxt.isFocused()) {
                     persentaseTxt.setEnabled(true);
                     persentaseTxt.requestFocus();
+                    persentase.setImageResource(R.drawable.ic_save);
                 } else {
                     persentaseTxt.setEnabled(false);
                     persentaseTxt.clearFocus();
                     updateKonfigInsentif();
+                    persentase.setImageResource(R.drawable.ic_write_256);
                 }
 
             }
@@ -102,10 +119,12 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 if (!mobarTxt.isFocused()) {
                     mobarTxt.setEnabled(true);
                     mobarTxt.requestFocus();
+                    mobar.setImageResource(R.drawable.ic_save);
                 } else {
                     mobarTxt.setEnabled(false);
                     mobarTxt.clearFocus();
                     updateKonfigInsentif();
+                    mobar.setImageResource(R.drawable.ic_write_256);
                 }
 
             }
@@ -118,10 +137,14 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 if (!limaTxt.isFocused()) {
                     limaTxt.setEnabled(true);
                     limaTxt.requestFocus();
+                    lima.setImageResource(R.drawable.ic_save);
+
                 } else {
                     limaTxt.setEnabled(false);
                     limaTxt.clearFocus();
                     updateKonfigInsentif();
+                    lima.setImageResource(R.drawable.ic_write_256);
+
                 }
 
             }
@@ -134,10 +157,13 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 if (!sepuluhTxt.isFocused()) {
                     sepuluhTxt.setEnabled(true);
                     sepuluhTxt.requestFocus();
+                    sepuluh.setImageResource(R.drawable.ic_save);
+
                 } else {
                     sepuluhTxt.setEnabled(false);
                     sepuluhTxt.clearFocus();
                     updateKonfigInsentif();
+                    sepuluh.setImageResource(R.drawable.ic_write_256);
                 }
 
             }
@@ -150,10 +176,13 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 if (!limaBelasTxt.isFocused()) {
                     limaBelasTxt.setEnabled(true);
                     limaBelasTxt.requestFocus();
+                    limaBelas.setImageResource(R.drawable.ic_save);
+
                 } else {
                     limaBelasTxt.setEnabled(false);
                     limaBelasTxt.clearFocus();
                     updateKonfigInsentif();
+                    limaBelas.setImageResource(R.drawable.ic_write_256);
                 }
 
             }
@@ -166,10 +195,13 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 if (!duaPuluhTxt.isFocused()) {
                     duaPuluhTxt.setEnabled(true);
                     duaPuluhTxt.requestFocus();
+                    duaPuluh.setImageResource(R.drawable.ic_save);
+
                 } else {
                     duaPuluhTxt.setEnabled(false);
                     duaPuluhTxt.clearFocus();
                     updateKonfigInsentif();
+                    duaPuluh.setImageResource(R.drawable.ic_write_256);
                 }
 
             }
@@ -182,10 +214,14 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 if (!duaSatuTxt.isFocused()) {
                     duaSatuTxt.setEnabled(true);
                     duaSatuTxt.requestFocus();
+                    duaSatu.setImageResource(R.drawable.ic_save);
+
                 } else {
                     duaSatuTxt.setEnabled(false);
                     duaSatuTxt.clearFocus();
                     updateKonfigInsentif();
+                    duaSatu.setImageResource(R.drawable.ic_write_256);
+
                 }
 
             }
@@ -228,10 +264,10 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
 
                         Intent intent = new Intent(InsentifConfigAcitivity.this, InsentifHasilOwnerActivity.class);
                         intent.putExtra("sales", saleses.get(spinnerSales.getSelectedItemPosition() - 1));
-                        intent.putExtra("dari",dariTxt.getText().toString()) ;
-                        intent.putExtra("hingga",keTxt.getText().toString()) ;
-                        intent.putExtra("dariSql",tanggalDari) ;
-                        intent.putExtra("hinggaSql",tanggalKe) ;
+                        intent.putExtra("dari", dariTxt.getText().toString());
+                        intent.putExtra("hingga", keTxt.getText().toString());
+                        intent.putExtra("dariSql", tanggalDari);
+                        intent.putExtra("hinggaSql", tanggalKe);
                         startActivity(intent);
                     }
                 } catch (ParseException e) {
@@ -382,15 +418,24 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
                 dialog.dismiss();
                 List<KonfigInsentif> konfigInsentifs = response.body();
                 if (konfigInsentifs != null) {
-                    for (KonfigInsentif konfigInsentif : konfigInsentifs){
+                    for (KonfigInsentif konfigInsentif : konfigInsentifs) {
+
 
                         persentaseTxt.setText(konfigInsentif.getPersentase());
-                        mobarTxt.setText(konfigInsentif.getInsentifMobar());
-                        limaTxt.setText(konfigInsentif.getInsentifMokas15());
-                        sepuluhTxt.setText(konfigInsentif.getInsentifMokas610());
-                        limaBelasTxt.setText(konfigInsentif.getInsentifMokas1115());
-                        duaPuluhTxt.setText(konfigInsentif.getInsentifMokas1620());
-                        duaSatuTxt.setText(konfigInsentif.getInsentifMokas21());
+
+                        insentifMobar = konfigInsentif.getInsentifMobar();
+                        limaStr = konfigInsentif.getInsentifMokas15();
+                        sepuluhStr = konfigInsentif.getInsentifMokas610();
+                        limaBelasStr = konfigInsentif.getInsentifMokas1115();
+                        duaPuluhStr = konfigInsentif.getInsentifMokas1620();
+                        duaSatuStr = konfigInsentif.getInsentifMokas21();
+
+                        mobarTxt.setText(createDot(insentifMobar));
+                        limaTxt.setText(createDot(limaStr));
+                        sepuluhTxt.setText(createDot(sepuluhStr));
+                        limaBelasTxt.setText(createDot(limaBelasStr));
+                        duaPuluhTxt.setText(createDot(duaPuluhStr));
+                        duaSatuTxt.setText(createDot(duaSatuStr));
 
                     }
 
@@ -415,24 +460,18 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
         String token = pref.getString(ACCESTOKEN, "");
 
         String persen = persentaseTxt.getText().toString();
-        String insentifMobar = mobarTxt.getText().toString();
-        String lima = limaTxt.getText().toString();
-        String sepuluh = sepuluhTxt.getText().toString();
-        String limaBelas = limaBelasTxt.getText().toString();
-        String duaPuluh = duaPuluhTxt.getText().toString();
-        String duaSatu = duaSatuTxt.getText().toString();
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<KonfigInsentif> call = apiInterface.updateKonfigInsentif(token,persen, insentifMobar, lima,
-                sepuluh, limaBelas, duaPuluh, duaSatu);
+        Call<KonfigInsentif> call = apiInterface.updateKonfigInsentif(token, persen, clearDot(insentifMobar), clearDot(limaStr),
+                clearDot(sepuluhStr), clearDot(limaBelasStr), clearDot(duaPuluhStr), clearDot(duaSatuStr));
 
         call.enqueue(new Callback<KonfigInsentif>() {
             @Override
             public void onResponse(Call<KonfigInsentif> call, Response<KonfigInsentif> response) {
                 dialog.dismiss();
-                if (response.body().getMessage().equals("success")){
+                if (response.body().getMessage().equals("success")) {
                     Toast.makeText(InsentifConfigAcitivity.this, "Data Konfig Telah Disubmit", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Toast.makeText(InsentifConfigAcitivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -456,5 +495,147 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements com.wd
         dialog.setTitle("Loading");
         dialog.setMessage("Sedang Memproses..");
         dialog.setCancelable(false);
+    }
+
+
+    private void setInputMask() {
+
+        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                mobarTxt,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        insentifMobar = extractedValue;
+
+                    }
+                }
+        );
+
+        mobarTxt.addTextChangedListener(reversedListener);
+        mobarTxt.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener limaListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                limaTxt,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        limaStr = extractedValue;
+
+                    }
+                }
+        );
+
+        limaTxt.addTextChangedListener(limaListener);
+        limaTxt.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener sepuluhListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                sepuluhTxt,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        sepuluhStr = extractedValue;
+
+                    }
+                }
+        );
+
+        sepuluhTxt.addTextChangedListener(sepuluhListener);
+        sepuluhTxt.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener limaBelasListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                limaBelasTxt,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        limaBelasStr = extractedValue;
+
+                    }
+                }
+        );
+
+        limaBelasTxt.addTextChangedListener(limaBelasListener);
+        limaBelasTxt.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener duaPuluhListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                duaPuluhTxt,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        duaPuluhStr = extractedValue;
+
+                    }
+                }
+        );
+
+        duaPuluhTxt.addTextChangedListener(duaPuluhListener);
+        duaPuluhTxt.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener duaSatuListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                duaSatuTxt,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        duaSatuStr = extractedValue;
+
+                    }
+                }
+        );
+
+        duaSatuTxt.addTextChangedListener(duaSatuListener);
+        duaSatuTxt.setOnFocusChangeListener(this);
+
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+
+        switch (view.getId()) {
+            case R.id.insentif_mobar:
+                if (hasFocus) {
+                    mobarTxt.setText(createDot(insentifMobar) + "");
+                }
+                break;
+            case R.id.insentif_mokas15:
+                if (hasFocus) {
+                    limaTxt.setText(createDot(limaStr) + "");
+                }
+                break;
+            case R.id.insentif_mokas610:
+                if (hasFocus) {
+                    sepuluhTxt.setText(createDot(sepuluhStr) + "");
+                }
+                break;
+            case R.id.insentif_mokas1115:
+                if (hasFocus) {
+                    limaBelasTxt.setText(createDot(limaBelasStr) + "");
+                }
+                break;
+            case R.id.insentif_mokas1620:
+                if (hasFocus) {
+                    duaPuluhTxt.setText(createDot(duaPuluhStr) + "");
+                }
+                break;
+            case R.id.insentif_mokas2125:
+                if (hasFocus) {
+                    duaSatuTxt.setText(createDot(duaSatuStr) + "");
+                }
+                break;
+
+
+
+        }
+
     }
 }

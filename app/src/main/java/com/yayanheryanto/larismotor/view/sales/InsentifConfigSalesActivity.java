@@ -34,6 +34,7 @@ import retrofit2.Response;
 
 import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
 public class InsentifConfigSalesActivity extends AppCompatActivity implements com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener {
 
@@ -204,13 +205,13 @@ public class InsentifConfigSalesActivity extends AppCompatActivity implements co
                 if (konfigInsentifs != null) {
                     for (KonfigInsentif konfigInsentif : konfigInsentifs) {
 
-                        persentaseTxt.setText(konfigInsentif.getPersentase());
-                        mobarTxt.setText(konfigInsentif.getInsentifMobar());
-                        limaTxt.setText(konfigInsentif.getInsentifMokas15());
-                        sepuluhTxt.setText(konfigInsentif.getInsentifMokas610());
-                        limaBelasTxt.setText(konfigInsentif.getInsentifMokas1115());
-                        duaPuluhTxt.setText(konfigInsentif.getInsentifMokas1620());
-                        duaSatuTxt.setText(konfigInsentif.getInsentifMokas21());
+                        persentaseTxt.setText(konfigInsentif.getPersentase()+"%");
+                        mobarTxt.setText(formatter(konfigInsentif.getInsentifMobar()));
+                        limaTxt.setText(formatter(konfigInsentif.getInsentifMokas15()));
+                        sepuluhTxt.setText(formatter(konfigInsentif.getInsentifMokas610()));
+                        limaBelasTxt.setText(formatter(konfigInsentif.getInsentifMokas1115()));
+                        duaPuluhTxt.setText(formatter(konfigInsentif.getInsentifMokas1620()));
+                        duaSatuTxt.setText(formatter(konfigInsentif.getInsentifMokas21()));
 
                     }
 

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -15,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.KonfigInsentif;
 import com.yayanheryanto.larismotor.model.Sales;
@@ -29,9 +32,11 @@ import retrofit2.Response;
 
 import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
+import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
 
-public class InsentifHasilOwnerActivity extends AppCompatActivity {
+public class InsentifHasilOwnerActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
     private EditText lainTxt, persentaseMobarTxt;
     private ImageView edit, hapus, editPm, hapusPm;
@@ -41,12 +46,16 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
     private View batas, batasPm;
     private RelativeLayout holder, holderMargin, holderPm, holderMarginPm;
-    private int jumlahMobar, jumlahMokas, lain, persentaseMobar, persentaseMokas, nominalMobar, nominalMokas;
+    private int jumlahMobar = 0, jumlahMokas = 0, lain = 0, persentaseMobar = 0, persentaseMokas = 0,
+            nominalMobar = 0, nominalMokas = 0;
     private String dariSql, hinggaSql;
     private Sales salesNow;
     private KonfigInsentif konfigInsentif;
 
     private ProgressDialog dialog;
+
+    private String lainStr;
+    private String persentaseMobarStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +97,8 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
 
         persentaseMokasTxt = findViewById(R.id.persentase_mokas);
         totalTxt = findViewById(R.id.total);
+
+        setInputMask();
 
 
         salesTxt.setText(salesNow.getNama());
@@ -197,11 +208,10 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String token = pref.getString(ACCESTOKEN, "");
 
-        String lainParam = lainTxt.getText().toString();
-        lain = Integer.parseInt(lainParam);
+        lain = Integer.parseInt(clearDot(lainStr));
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<KonfigInsentif> call = apiInterface.updateLain(token, salesNow.getNoKtpSales(), lainParam);
+        Call<KonfigInsentif> call = apiInterface.updateLain(token, salesNow.getNoKtpSales(), clearDot(lainStr));
 
         call.enqueue(new Callback<KonfigInsentif>() {
             @Override
@@ -231,11 +241,10 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String token = pref.getString(ACCESTOKEN, "");
 
-        String persentaseMobarParam = persentaseMobarTxt.getText().toString();
-        persentaseMobar = Integer.parseInt(persentaseMobarParam);
+        persentaseMobar = Integer.parseInt(clearDot(persentaseMobarStr));
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<KonfigInsentif> call = apiInterface.updatePersentaseMobar(token, salesNow.getNoKtpSales(), persentaseMobarParam);
+        Call<KonfigInsentif> call = apiInterface.updatePersentaseMobar(token, salesNow.getNoKtpSales(), clearDot(persentaseMobarStr));
 
         call.enqueue(new Callback<KonfigInsentif>() {
             @Override
@@ -387,7 +396,8 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 lain = response.body();
-                lainTxt.setText(lain + "");
+                lainStr = response.body() + "";
+                lainTxt.setText(createDot(lainStr));
                 getTotal();
             }
 
@@ -408,7 +418,8 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 persentaseMobar = response.body();
-                persentaseMobarTxt.setText(persentaseMobar + "");
+                persentaseMobarStr = response.body() + "";
+                persentaseMobarTxt.setText(createDot(persentaseMobarStr));
                 getTotal();
             }
 
@@ -455,9 +466,60 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity {
         Log.v("cek5", lain + "");
 
 
-        totalTxt.setText(formatter(total+""));
+        totalTxt.setText(formatter(total + ""));
+
+    }
+
+    private void setInputMask() {
+
+        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                persentaseMobarTxt,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        persentaseMobarStr = extractedValue;
+
+                    }
+                }
+        );
+
+        persentaseMobarTxt.addTextChangedListener(reversedListener);
+        persentaseMobarTxt.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener lainListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                lainTxt,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        lainStr = extractedValue;
+
+                    }
+                }
+        );
+
+        lainTxt.addTextChangedListener(lainListener);
+        lainTxt.setOnFocusChangeListener(this);
 
     }
 
 
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+
+        switch (view.getId()) {
+            case R.id.persentase_mobar:
+                if (hasFocus) {
+                    persentaseMokasTxt.setText(createDot(persentaseMobarStr) + "");
+                }
+            case R.id.lain:
+                if (hasFocus) {
+                    lainTxt.setText(createDot(lainStr) + "");
+                }
+        }
+
+    }
 }

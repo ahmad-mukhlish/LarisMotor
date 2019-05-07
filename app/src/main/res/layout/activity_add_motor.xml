@@ -106,8 +106,8 @@
                         android:id="@+id/harga"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Harga (Tampilan Web)"
                         android:digits="0123456789 -."
+                        android:hint="Harga (Tampilan Web)"
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -121,8 +121,8 @@
                         android:id="@+id/hjm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="HJM"
                         android:digits="0123456789 -."
+                        android:hint="HJM"
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -198,8 +198,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_middle"
                     android:layout_marginTop="@dimen/spacing_middle"
+                    android:layout_marginBottom="@dimen/spacing_middle"
                     android:orientation="vertical">
 
                     <TextView
@@ -255,8 +255,8 @@
                         android:id="@+id/harga_terjual"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Harga Terjual"
                         android:digits="0123456789 -."
+                        android:hint="Harga Terjual"
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -264,8 +264,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_middle"
                     android:layout_marginTop="@dimen/spacing_middle"
+                    android:layout_marginBottom="@dimen/spacing_middle"
                     android:orientation="horizontal">
 
 

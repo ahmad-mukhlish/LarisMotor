@@ -328,21 +328,22 @@
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
 
             <EditText
                 android:id="@+id/persentase_mobar"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_margin="4dp"
-                android:enabled="false"
                 android:layout_centerInParent="true"
+                android:layout_margin="4dp"
+                android:digits="0123456789 -."
+                android:enabled="false"
+                android:inputType="number"
                 android:text="700000"
                 android:textColor="#000"
                 android:textSize="16sp" />
-
 
 
             <LinearLayout
@@ -371,20 +372,20 @@
 
                 <View
                     android:id="@+id/batas_pm"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#000" />
+                    android:background="#000"
+                    android:visibility="gone" />
 
                 <RelativeLayout
                     android:id="@+id/holder_pm"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginBottom="2dp"
                     android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="2dp"
                     android:layout_weight="1"
-                    android:background="@color/colorPrimary">
+                    android:background="@color/colorPrimary"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/hapus_pm"
@@ -395,7 +396,6 @@
 
 
                 </RelativeLayout>
-
 
 
             </LinearLayout>
@@ -429,21 +429,22 @@
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
 
             <EditText
                 android:id="@+id/lain"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_margin="4dp"
-                android:enabled="false"
                 android:layout_centerInParent="true"
+                android:layout_margin="4dp"
+                android:digits="0123456789 -."
+                android:enabled="false"
+                android:inputType="number"
                 android:text="700000"
                 android:textColor="#000"
                 android:textSize="16sp" />
-
 
 
             <LinearLayout
@@ -472,20 +473,20 @@
 
                 <View
                     android:id="@+id/batas"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#000" />
+                    android:background="#000"
+                    android:visibility="gone" />
 
                 <RelativeLayout
                     android:id="@+id/holder"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginBottom="2dp"
                     android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="2dp"
                     android:layout_weight="1"
-                    android:background="@color/colorPrimary">
+                    android:background="@color/colorPrimary"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/hapus"
@@ -496,7 +497,6 @@
 
 
                 </RelativeLayout>
-
 
 
             </LinearLayout>
