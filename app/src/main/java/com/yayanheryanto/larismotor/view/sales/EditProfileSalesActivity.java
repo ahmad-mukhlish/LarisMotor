@@ -4,19 +4,20 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.model.User;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,6 +27,7 @@ import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 import static com.yayanheryanto.larismotor.config.config.NAMA_USER;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDash;
 
 public class EditProfileSalesActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,6 +37,9 @@ public class EditProfileSalesActivity extends AppCompatActivity implements View.
     private Button btnSave;
 
     private ProgressDialog dialog;
+
+    private String ktp;
+    private String wa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +58,7 @@ public class EditProfileSalesActivity extends AppCompatActivity implements View.
 
         initProgressDialog();
         getDataSales();
-
+        setInputMask();
     }
 
 
@@ -114,14 +119,12 @@ public class EditProfileSalesActivity extends AppCompatActivity implements View.
         String token = pref.getString(ACCESTOKEN, "");
         final String nama = txtNama.getText().toString();
         String alamat = txtAlamat.getText().toString();
-        String no_ktp = txtNoKTP.getText().toString();
-        String no_wa = txtNoWa.getText().toString();
         String username = txtUsername.getText().toString();
         String password = txtPassword.getText().toString();
-        Log.d("ASU", token +" " + id+" " + nama+" " + alamat+" " + no_wa+" " + no_ktp+" " + username+" " + password+" " + user.getNoKtpSales());
+
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<User> call = apiInterface.updateProfileSales(token, id, nama, alamat, no_wa, no_ktp, username, password, user.getNoKtpSales());
+        Call<User> call = apiInterface.updateProfileSales(token, id, nama, alamat, clearDash(wa), clearDash(ktp), username, password, user.getNoKtpSales());
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -150,6 +153,43 @@ public class EditProfileSalesActivity extends AppCompatActivity implements View.
                 Toast.makeText(EditProfileSalesActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    private void setInputMask(){
+
+        final MaskedTextChangedListener ktpListener = new MaskedTextChangedListener(
+                "[0000]-[0000]-[0000]-[0000]",
+                txtNoKTP,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                       ktp = extractedValue;
+
+                    }
+                }
+        );
+
+        txtNoKTP.addTextChangedListener(ktpListener);
+        txtNoKTP.setOnFocusChangeListener(ktpListener);
+
+        final MaskedTextChangedListener waListener = new MaskedTextChangedListener(
+                "[000]-[000]-[000]-[0009]",
+                txtNoWa,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        wa = extractedValue;
+
+                    }
+                }
+        );
+
+        txtNoWa.addTextChangedListener(waListener);
+        txtNoWa.setOnFocusChangeListener(waListener);
+
 
     }
 }
