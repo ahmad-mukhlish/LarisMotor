@@ -18,8 +18,10 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -124,7 +127,6 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         image3 = findViewById(R.id.image3);
 
 
-
         initProgressDialog();
 
         getDataFromIntent();
@@ -161,7 +163,6 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         });
 
         btnUpload.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
 
         setInputMask();
@@ -213,12 +214,15 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
             Picasso.get().load(BASE_URL + "storage/motor/" + motor.getGambar2()).into(image3);
         }
 
+
         if (data.getBoolean("ada")) {
-            freeze();
+            addAda();
+        } else {
+            btnSave.setOnClickListener(this);
         }
     }
 
-    private void freeze() {
+    private void addAda() {
 
         no_mesin.setEnabled(false);
         no_mesin.setTextColor(Color.BLACK);
@@ -232,13 +236,12 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         tahun.setEnabled(false);
         tahun.setTextColor(Color.BLACK);
 
-        harga.setText("");
-        dp.setText("");
-        cicilan.setText("");
-        tenor.setText("");
-
-
-
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogueSaveAda();
+            }
+        });
 
     }
 
@@ -340,7 +343,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
                 break;
 
             case R.id.btnSave:
-                uploadImage();
+                uploadImage("0");
                 break;
 
             case R.id.btnCamera: {
@@ -392,7 +395,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         }
     }
 
-    private void uploadImage() {
+    private void uploadImage(String status) {
         dialog.show();
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String token = pref.getString(ACCESTOKEN, "");
@@ -413,7 +416,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         builder.addFormDataPart("no_mesin", mesin);
         builder.addFormDataPart("no_rangka", rangka);
         builder.addFormDataPart("tahun", tahunMotor);
-        builder.addFormDataPart("status", "0");
+        builder.addFormDataPart("status", status);
         builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
         builder.addFormDataPart("merk", String.valueOf(merkMotor));
         builder.addFormDataPart("id_user", id);
@@ -421,6 +424,8 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         builder.addFormDataPart("dp", clearDot(dpMotor));
         builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
         builder.addFormDataPart("tenor", tenorMotor);
+
+        Log.v("cikan",status);
 
         if (motor.getGambar() != null) {
             builder.addFormDataPart("gambar", motor.getGambar());
@@ -457,7 +462,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         }
 
 
-        MultipartBody requestBody = builder.build();
+        final MultipartBody requestBody = builder.build();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<Motor> call = apiInterface.updateMotor(token, requestBody);
         call.enqueue(new Callback<Motor>() {
@@ -645,5 +650,38 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
                 break;
 
         }
+    }
+
+    private void dialogueSaveAda() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditMotorSalesActivity.this);
+        final View rootDialog = LayoutInflater.from(EditMotorSalesActivity.this).inflate(R.layout.dialogue_save_ada, null);
+
+        final RadioGroup status = rootDialog.findViewById(R.id.status_dialogue);
+
+        builder.setView(rootDialog);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button ok = rootDialog.findViewById(R.id.ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                int selectedId = status.getCheckedRadioButtonId();
+
+                RadioButton radioButton = rootDialog.findViewById(selectedId);
+                String tersedia = radioButton.getText().toString();
+
+                String statusMotor = "1";
+                if (tersedia.equalsIgnoreCase("jadi tersedia")) {
+                    statusMotor = "0";
+                }
+
+                uploadImage(statusMotor);
+            }
+        });
+
+
     }
 }

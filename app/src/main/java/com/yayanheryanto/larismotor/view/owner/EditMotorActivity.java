@@ -733,7 +733,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.hjm:
-                if (hasFocus) {
+                if (hasFocus && !(motor.getHjm() == null)) {
                     hjm.setText(createDot(hjmMotor) + "");
                 }
                 break;
