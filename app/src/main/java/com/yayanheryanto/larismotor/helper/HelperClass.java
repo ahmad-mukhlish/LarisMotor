@@ -41,6 +41,7 @@ public class HelperClass {
 
     }
 
+
     public static String convertToTitleCaseIteratingChars(String text) {
         if (text == null || text.isEmpty()) {
             return text;

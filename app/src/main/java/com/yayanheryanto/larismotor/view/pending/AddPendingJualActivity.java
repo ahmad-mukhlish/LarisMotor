@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
@@ -39,8 +42,11 @@ import static com.yayanheryanto.larismotor.config.config.ACCESTOKEN;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDash;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
+import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 
-public class AddPendingJualActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class AddPendingJualActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, View.OnFocusChangeListener {
 
 
     private EditText txtNama, txtAlamat, txtNoTelepon, txtNoMesin, txtNoPolisi, txtTahun, txtHarga, txtTanggalJual;
@@ -53,6 +59,8 @@ public class AddPendingJualActivity extends AppCompatActivity implements View.On
     private ImageView tanggalJualImg;
     private String tanggalJual ;
     private Spinner spinnerMerk, spinnerTipe;
+    private String harga;
+    private String telepon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +74,7 @@ public class AddPendingJualActivity extends AppCompatActivity implements View.On
         txtNoMesin = findViewById(R.id.no_mesin);
         txtNoPolisi = findViewById(R.id.no_polisi);
         txtTahun = findViewById(R.id.tahun);
-        txtHarga = findViewById(R.id.harga);
+        txtHarga = findViewById(R.id.harga_add_pending_jual);
         btnSave = findViewById(R.id.btnSave);
         tanggalJualImg = findViewById(R.id.tanggal_jual_picker);
         txtTanggalJual = findViewById(R.id.tanggal_jual);
@@ -121,6 +129,8 @@ public class AddPendingJualActivity extends AppCompatActivity implements View.On
 
             }
         });
+
+        setInputMask();
     }
 
     private void getMerk() {
@@ -208,16 +218,17 @@ public class AddPendingJualActivity extends AppCompatActivity implements View.On
 
         String nama = txtNama.getText().toString();
         String alamat = txtAlamat.getText().toString();
-        String telepon = txtNoTelepon.getText().toString();
         String no_mesin = txtNoMesin.getText().toString();
         String no_polisi = txtNoPolisi.getText().toString();
         String tahun = txtTahun.getText().toString();
-        String harga = txtHarga.getText().toString();
 
         if (!nama.isEmpty() && !alamat.isEmpty() && !telepon.isEmpty() && !tahun.isEmpty() && !harga.isEmpty() && !tanggalJual.isEmpty()) {
+
+
+
             ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
             Call<PendingBeli> call = apiInterface.addPendingJual(token, Integer.valueOf(id), nama, alamat,
-                    telepon, merkMotor, tipeMotor, no_mesin, no_polisi, tahun, harga, tanggalJual);
+                    clearDash(telepon), merkMotor, tipeMotor, no_mesin, no_polisi, tahun, clearDot(harga), tanggalJual);
             call.enqueue(new Callback<PendingBeli>() {
                 @Override
                 public void onResponse(Call<PendingBeli> call, Response<PendingBeli> response) {
@@ -275,6 +286,57 @@ public class AddPendingJualActivity extends AppCompatActivity implements View.On
 
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setInputMask() {
+
+        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                txtHarga,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        harga = extractedValue;
+                        Log.v("cik1",harga);
+
+                    }
+                }
+        );
+
+        txtHarga.addTextChangedListener(reversedListener);
+        txtHarga.setOnFocusChangeListener(this);
+
+
+        final MaskedTextChangedListener telpListener = new MaskedTextChangedListener(
+                "[000]-[000]-[000]-[0009]",
+                txtNoTelepon,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        telepon = extractedValue;
+
+                    }
+                }
+        );
+
+        txtNoTelepon.addTextChangedListener(telpListener);
+        txtNoTelepon.setOnFocusChangeListener(telpListener);
+
+    }
+
+
+    @Override
+    public void onFocusChange(View view , boolean hasFocus) {
+        switch (view.getId()) {
+            case R.id.harga_add_pending_jual:
+                if (hasFocus && !txtHarga.getText().toString().isEmpty()) {
+                    txtHarga.setText(createDot(harga) + "");
+                }
+                break;
+
         }
     }
 }

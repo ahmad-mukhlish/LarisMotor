@@ -143,7 +143,7 @@ public class PendingBeliAdapter extends RecyclerView.Adapter<PendingBeliAdapter.
                                         if (response.body().getMessage().equals("success")){
                                             mList.remove(pendingBeli);
                                             adapter.notifyDataSetChanged();
-                                            Toast.makeText(mContext, "PendingBeli Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "Pending Beli Berhasil Dihapus", Toast.LENGTH_SHORT).show();
                                         }else {
                                             editor.putString(ID_USER,"");
                                             editor.putString(ACCESTOKEN, "");

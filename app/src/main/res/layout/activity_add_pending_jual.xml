@@ -81,8 +81,9 @@
                         android:id="@+id/telepon"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="No. Telepon"
-                        android:inputType="number"/>
+                        android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -94,7 +95,7 @@
                         android:id="@+id/no_mesin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="No. Mesin"/>
+                        android:hint="No. Mesin" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -107,7 +108,7 @@
                         android:id="@+id/no_polisi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="No. Polisi"/>
+                        android:hint="No. Polisi" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -153,14 +154,14 @@
 
 
                     <EditText
-                        android:id="@+id/harga"
+                        android:id="@+id/harga_add_pending_jual"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="Harga"
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
-
 
 
                 <Button

@@ -87,6 +87,7 @@
                     android:layout_height="wrap_content">
 
                     <EditText
+                        android:digits="0123456789 -."
                         android:id="@+id/telepon"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -162,7 +163,8 @@
 
 
                     <EditText
-                        android:id="@+id/harga"
+                        android:digits="0123456789 -."
+                        android:id="@+id/harga_edit_pending_jual"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Harga"

@@ -149,7 +149,7 @@ public class PendingJualAdapter extends RecyclerView.Adapter<PendingJualAdapter.
                                         if (response.body().getMessage().equals("success")){
                                             mList.remove(pending);
                                             adapter.notifyDataSetChanged();
-                                            Toast.makeText(mContext, "PendingBeli Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "Pending Jual Berhasil Dihapus", Toast.LENGTH_SHORT).show();
                                         }else {
                                             editor.putString(ID_USER,"");
                                             editor.putString(ACCESTOKEN, "");
