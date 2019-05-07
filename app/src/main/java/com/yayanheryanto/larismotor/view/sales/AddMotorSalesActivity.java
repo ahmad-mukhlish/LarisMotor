@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -63,8 +66,10 @@ import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
+import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 
-public class AddMotorSalesActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddMotorSalesActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
 
     private Button btnUpload, btnSave, btnCamera, check;
@@ -83,6 +88,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
     private static int pass;
 
+    private String hargaMotor;
+    private String dpMotor;
+    private String cicilanMotor;
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
@@ -118,6 +126,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
+        setInputMask();
 
         if (pass == 1) {
             reveal();
@@ -380,9 +389,6 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             String polisi = no_polisi.getText().toString();
             String rangka = no_rangka.getText().toString();
             String tahunMotor = tahun.getText().toString();
-            String hargaMotor = harga.getText().toString();
-            String dpMotor = dp.getText().toString();
-            String cicilanMotor = cicilan.getText().toString();
             String tenorMotor = tenor.getText().toString();
 
 
@@ -396,9 +402,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
             builder.addFormDataPart("merk", String.valueOf(merkMotor));
             builder.addFormDataPart("id_user", id);
-            builder.addFormDataPart("harga", hargaMotor);
-            builder.addFormDataPart("dp", dpMotor);
-            builder.addFormDataPart("cicilan", cicilanMotor);
+            builder.addFormDataPart("harga", clearDot(hargaMotor));
+            builder.addFormDataPart("dp", clearDot(dpMotor));
+            builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
             builder.addFormDataPart("tenor", tenorMotor);
 
             if (images == null) {
@@ -568,5 +574,85 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     public void onBackPressed() {
         startActivity(new Intent(AddMotorSalesActivity.this, MotorSalesActivity.class));
         pass = 0;
+    }
+
+    private void setInputMask() {
+
+        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                harga,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hargaMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        harga.addTextChangedListener(reversedListener);
+        harga.setOnFocusChangeListener(this);
+
+        final MaskedTextChangedListener dpListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                dp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        dpMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        dp.addTextChangedListener(dpListener);
+        dp.setOnFocusChangeListener(this);
+
+
+        final MaskedTextChangedListener cicilanListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                cicilan,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        cicilanMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        cicilan.addTextChangedListener(cicilanListener);
+        cicilan.setOnFocusChangeListener(this);
+    }
+
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+
+        switch (view.getId()) {
+            case R.id.harga:
+                if (hasFocus && !harga.getText().toString().isEmpty()) {
+                    harga.setText(createDot(hargaMotor) + "");
+                }
+                break;
+
+
+            case R.id.dp:
+                if (hasFocus && !dp.getText().toString().isEmpty()) {
+                    dp.setText(createDot(dpMotor));
+                }
+                break;
+
+            case R.id.cicilan:
+                if (hasFocus && !cicilan.getText().toString().isEmpty()) {
+                    cicilan.setText(createDot(cicilanMotor));
+                }
+                break;
+
+        }
+
     }
 }

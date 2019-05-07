@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,8 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.squareup.picasso.Picasso;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
@@ -64,9 +67,11 @@ import static com.yayanheryanto.larismotor.config.config.DATA_MOTOR;
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
+import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 
 
-public class EditMotorSalesActivity extends AppCompatActivity implements View.OnClickListener {
+public class EditMotorSalesActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
 
     private Button btnUpload, btnSave, btnCamera;
@@ -90,6 +95,10 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
 
     private File file, file2 = null;
 
+    private String hargaMotor;
+    private String dpMotor;
+    private String cicilanMotor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +114,10 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         no_polisi = findViewById(R.id.no_polisi);
         no_rangka = findViewById(R.id.no_rangka);
         tahun = findViewById(R.id.tahun);
-        harga = findViewById(R.id.harga);
-        cicilan = findViewById(R.id.cicilan);
+        harga = findViewById(R.id.harga_edit_sales);
+        cicilan = findViewById(R.id.cicilan_edit_sales);
         tenor = findViewById(R.id.tenor);
-        dp = findViewById(R.id.dp);
+        dp = findViewById(R.id.dp_edit_sales);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
@@ -155,6 +164,8 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         btnSave.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
 
+        setInputMask();
+
     }
 
     private void getDataFromIntent() {
@@ -165,19 +176,24 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         no_polisi.setText("" + motor.getNoPolisi());
         no_rangka.setText(motor.getNoRangka());
         tahun.setText("" + motor.getTahun());
-        harga.setText("" + motor.getHarga());
+
+        hargaMotor = motor.getHarga() + "";
+        dpMotor = motor.getDp() + "";
+        cicilanMotor = motor.getCicilan() + "";
+
+        harga.setText(createDot(hargaMotor));
 
 
         if (motor.getDp() == null || motor.getDp() == 0) {
             dp.setText("");
         } else {
-            dp.setText("" + motor.getDp());
+            dp.setText(createDot(dpMotor));
         }
 
         if (motor.getCicilan() == null || motor.getCicilan() == 0) {
             cicilan.setText("");
         } else {
-            cicilan.setText("" + motor.getCicilan());
+            cicilan.setText(createDot(cicilanMotor));
         }
 
         if (motor.getTenor() == null || motor.getTenor() == 0) {
@@ -387,9 +403,6 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         String polisi = no_polisi.getText().toString();
         String rangka = no_rangka.getText().toString();
         String tahunMotor = tahun.getText().toString();
-        String hargaMotor = harga.getText().toString();
-        String dpMotor = dp.getText().toString();
-        String cicilanMotor = cicilan.getText().toString();
         String tenorMotor = tenor.getText().toString();
 
 
@@ -404,9 +417,9 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
         builder.addFormDataPart("merk", String.valueOf(merkMotor));
         builder.addFormDataPart("id_user", id);
-        builder.addFormDataPart("harga", hargaMotor);
-        builder.addFormDataPart("dp", dpMotor);
-        builder.addFormDataPart("cicilan", cicilanMotor);
+        builder.addFormDataPart("harga", clearDot(hargaMotor));
+        builder.addFormDataPart("dp", clearDot(dpMotor));
+        builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
         builder.addFormDataPart("tenor", tenorMotor);
 
         if (motor.getGambar() != null) {
@@ -552,6 +565,85 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
                 }
                 return;
             }
+        }
+    }
+
+    private void setInputMask() {
+
+        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                harga,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        hargaMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        harga.addTextChangedListener(reversedListener);
+        harga.setOnFocusChangeListener(this);
+
+
+        final MaskedTextChangedListener dpListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                dp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        dpMotor = extractedValue;
+//                        Log.v("cik2",clearDot(dpMotor));
+
+                    }
+                }
+        );
+
+        dp.addTextChangedListener(dpListener);
+        dp.setOnFocusChangeListener(this);
+
+
+        final MaskedTextChangedListener cicilanListener = new ReversedMaskTextChangedListener(
+                "[000].[000].[000].[000].[000]",
+                cicilan,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        cicilanMotor = extractedValue;
+
+                    }
+                }
+        );
+
+        cicilan.addTextChangedListener(cicilanListener);
+        cicilan.setOnFocusChangeListener(this);
+    }
+
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        switch (view.getId()) {
+            case R.id.harga_edit_sales:
+                if (hasFocus) {
+                    harga.setText(createDot(hargaMotor) + "");
+                }
+                break;
+
+            case R.id.dp_edit_sales:
+                if (hasFocus && !(motor.getDp() == null)) {
+                    dp.setText(createDot(dpMotor));
+                }
+                break;
+
+            case R.id.cicilan_edit_sales:
+                if (hasFocus && !(motor.getCicilan() == null)) {
+                    cicilan.setText(createDot(cicilanMotor));
+                }
+                break;
+
         }
     }
 }

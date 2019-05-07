@@ -74,6 +74,9 @@ public class TransaksiActivity extends AppCompatActivity implements View.OnFocus
     private TextInputLayout wHarga, wDp, wTenor, wCicilan, wSubsidi, wPencairanLeasing, wNomorMesin,
             wNomorRangka, wNomorPolisi, wTahun, wHargaJualMinimum, wMediator;
 
+    private Spinner spinnerMobar;
+
+
     private String hjmMotor;
     private String hargaMotor;
     private String mediatorMotor;
@@ -127,7 +130,7 @@ public class TransaksiActivity extends AppCompatActivity implements View.OnFocus
         tanggal.setText(df.format(Calendar.getInstance().getTime()));
 
         final String[] mobarArray = {"Pilih Kondisi", "Mobar", "Mokas"};
-        final Spinner spinnerMobar = findViewById(R.id.mobar);
+        spinnerMobar = findViewById(R.id.mobar);
         ArrayAdapter<String> mobar = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mobarArray);
         spinnerMobar.setAdapter(mobar);
 
@@ -358,8 +361,8 @@ public class TransaksiActivity extends AppCompatActivity implements View.OnFocus
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tahun.getText().toString().isEmpty() || nomorMesin.getText().toString().isEmpty()
-                        || nomorRangka.getText().toString().isEmpty() || hargaJualMinimum.getText().toString().isEmpty()) {
+                if ((tahun.getText().toString().isEmpty() || nomorMesin.getText().toString().isEmpty()
+                        || nomorRangka.getText().toString().isEmpty() || hargaJualMinimum.getText().toString().isEmpty()) && spinnerMobar.getSelectedItemPosition() != 2) {
                     Toast.makeText(getApplicationContext(), "Data masih ada yang kosong", Toast.LENGTH_SHORT).show();
                 } else {
                     if (spinnerCaraBayar.getSelectedItemPosition() == 0) {
@@ -705,8 +708,8 @@ public class TransaksiActivity extends AppCompatActivity implements View.OnFocus
                     tahun.setEnabled(false);
                     tahun.setTextColor(Color.BLACK);
 
-                    if (motor.getHjm() == null) {
-                        hargaJualMinimum.setText("HJM Belum Terisi ");
+                    if (motor.getHjm() == null || motor.getHjm() == 0) {
+                        hargaJualMinimum.setText("-");
                         hargaJualMinimum.setEnabled(false);
                         hargaJualMinimum.setTextColor(Color.BLACK);
                     } else {
@@ -731,21 +734,24 @@ public class TransaksiActivity extends AppCompatActivity implements View.OnFocus
 
     private void setInputMask() {
 
-        final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
-                "[000].[000].[000].[000].[000]",
-                hargaJualMinimum,
-                new MaskedTextChangedListener.ValueListener() {
-                    @Override
-                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+        if (spinnerMobar.getSelectedItemPosition() != 2) {
+            final MaskedTextChangedListener reversedListener = new ReversedMaskTextChangedListener(
+                    "[000].[000].[000].[000].[000]",
+                    hargaJualMinimum,
+                    new MaskedTextChangedListener.ValueListener() {
+                        @Override
+                        public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
 
-                        hjmMotor = extractedValue;
+                            hjmMotor = extractedValue;
 
+                        }
                     }
-                }
-        );
+            );
 
-        hargaJualMinimum.addTextChangedListener(reversedListener);
-        hargaJualMinimum.setOnFocusChangeListener(this);
+
+            hargaJualMinimum.addTextChangedListener(reversedListener);
+            hargaJualMinimum.setOnFocusChangeListener(this);
+        }
 
         final MaskedTextChangedListener hargaListener = new ReversedMaskTextChangedListener(
                 "[000].[000].[000].[000].[000]",

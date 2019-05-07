@@ -71,6 +71,8 @@ public class IsiDataActivity extends AppCompatActivity {
 
     private String nomor;
     private String wa;
+    private String ktp;
+
 
 
     @Override
@@ -294,7 +296,6 @@ public class IsiDataActivity extends AppCompatActivity {
         String no_ktp_sales = pref.getString(KTP_SALES, "");
         Call<Motor> call = null;
 
-        String nomorKtpTxt = nomorKtp.getText().toString();
         String namaTxt = nama.getText().toString();
         String alamatTxt = alamat.getText().toString();
         String Agama = spinnerTxtAgama.getSelectedItem().toString();
@@ -321,19 +322,19 @@ public class IsiDataActivity extends AppCompatActivity {
         if (motor.getKondisi() == 0 && statusCustomer == 1) {
             //ubah status motor dan simpan ke transaksi, customer++
             Log.v("apa", no_ktp_sales);
-            call = apiInterface.mokasWithNoCust(token, motor.getNoMesin(), nomorKtpTxt, no_ktp_sales, String.valueOf(motor.getHargaTerjual()),
+            call = apiInterface.mokasWithNoCust(token, motor.getNoMesin(), clearDash(ktp), no_ktp_sales, String.valueOf(motor.getHargaTerjual()),
                     motor.getDp() + "", motor.getCicilan() + "", motor.getTenor() + "",
                     motor.getPencairanLeasing() + "", motor.getMediator() + "");
         } else if (motor.getKondisi() == 0 && statusCustomer == 0) {
             //ubah status motor, simpan customer dan transaksi
-            call = apiInterface.mokasWithCust(token, motor.getNoMesin(), nomorKtpTxt, namaTxt, alamatTxt, clearDash(nomor), tanggal, Agama, pekerjaanTxt, clearDash(wa), instagramTxt, facebookTxt,
+            call = apiInterface.mokasWithCust(token, motor.getNoMesin(), clearDash(ktp), namaTxt, alamatTxt, clearDash(nomor), tanggal, Agama, pekerjaanTxt, clearDash(wa), instagramTxt, facebookTxt,
                     String.valueOf(motor.getHargaTerjual()), motor.getDp() + "", motor.getCicilan() + "",
                     motor.getTenor() + "", motor.getPencairanLeasing() + "", no_ktp_sales, motor.getMediator() + "");
         } else if (motor.getKondisi() == 1 && statusCustomer == 1) {
             //simpan, simpan ke transaksi, customer++
 
 
-            call = apiInterface.mobarWithNoCust(token, nomorKtpTxt, no_ktp_sales, motor.getNoMesin(), motor.getNoRangka(), String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()),
+            call = apiInterface.mobarWithNoCust(token, clearDash(ktp), no_ktp_sales, motor.getNoMesin(), motor.getNoRangka(), String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()),
                     String.valueOf(motor.getTahun()), String.valueOf(motor.getHjm()), id, motor.getHargaTerjual() + "",
                     String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()),
                     motor.getSubsidi() + "", motor.getMediator() + "");
@@ -342,7 +343,7 @@ public class IsiDataActivity extends AppCompatActivity {
             call = apiInterface.mobarWithCust(token, motor.getNoMesin(), motor.getNoRangka(), String.valueOf(motor.getTahun()), String.valueOf(motor.getHjm()),
                     String.valueOf(motor.getIdTipe()), String.valueOf(motor.getIdMerk()), id, String.valueOf(motor.getHargaTerjual()),
                     String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()), motor.getSubsidi() + "",
-                    nomorKtpTxt, namaTxt, alamatTxt, clearDash(nomor), Agama, pekerjaanTxt, clearDash(wa),
+                    clearDash(ktp), namaTxt, alamatTxt, clearDash(nomor), Agama, pekerjaanTxt, clearDash(wa),
                     instagramTxt, facebookTxt, no_ktp_sales, tanggal, motor.getMediator() + "");
         }
         call.enqueue(new Callback<Motor>() {
@@ -456,6 +457,25 @@ public class IsiDataActivity extends AppCompatActivity {
 
         whatsapp.addTextChangedListener(waListener);
         whatsapp.setOnFocusChangeListener(waListener);
+
+        nomorTelp.addTextChangedListener(telpListener);
+        nomorTelp.setOnFocusChangeListener(telpListener);
+
+        final MaskedTextChangedListener ktpListener = new MaskedTextChangedListener(
+                "[0000]-[0000]-[0000]-[0000]",
+                nomorKtp,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+
+                        ktp = extractedValue;
+
+                    }
+                }
+        );
+
+        nomorKtp.addTextChangedListener(ktpListener);
+        nomorKtp.setOnFocusChangeListener(ktpListener);
 
 
     }

@@ -80,10 +80,11 @@
 
 
                     <EditText
-                        android:id="@+id/harga"
+                        android:id="@+id/harga_edit_sales"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Harga (Tampilan Web)"
+                        android:digits="0123456789 -."
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -95,10 +96,11 @@
 
 
                     <EditText
-                        android:id="@+id/dp"
+                        android:id="@+id/dp_edit_sales"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="DP"
+                        android:digits="0123456789 -."
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -109,9 +111,10 @@
 
 
                     <EditText
-                        android:id="@+id/cicilan"
+                        android:id="@+id/cicilan_edit_sales"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="0123456789 -."
                         android:hint="Cicilan"
                         android:inputType="number" />
 
@@ -126,7 +129,7 @@
                         android:id="@+id/tenor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Tenor"
+                        android:hint="Tenor (Bulan)"
                         android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>

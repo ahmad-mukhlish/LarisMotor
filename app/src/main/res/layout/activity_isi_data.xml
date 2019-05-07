@@ -23,6 +23,8 @@
 
 
                 <EditText
+                    android:digits="0123456789 -."
+                    android:inputType="number"
                     android:id="@+id/nomor_ktp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
