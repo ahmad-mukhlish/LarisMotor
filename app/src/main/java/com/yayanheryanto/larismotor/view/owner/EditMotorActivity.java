@@ -739,7 +739,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.harga_terjual:
-                if (hasFocus) {
+                if (hasFocus && !(motor.getHargaTerjual() == null)) {
                     harga_terjual.setText(createDot(hargaTerjual));
                 }
                 break;

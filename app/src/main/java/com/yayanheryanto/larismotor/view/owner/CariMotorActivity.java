@@ -1,6 +1,8 @@
 package com.yayanheryanto.larismotor.view.owner;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.MotorAdapter;
+import com.yayanheryanto.larismotor.adapter.MotorSalesAdapter;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
@@ -24,15 +27,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.yayanheryanto.larismotor.config.config.ID_USER;
+import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
+
 public class CariMotorActivity extends AppCompatActivity {
 
 
     private RecyclerView recyclerView;
     private MotorAdapter adapter;
+    private MotorSalesAdapter salesAdapter;
     private LinearLayoutManager layoutManager;
     private ProgressDialog dialog;
     private SearchView searchView;
     private MenuItem menuItem;
+    private boolean owner = true ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,9 @@ public class CariMotorActivity extends AppCompatActivity {
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        Bundle bundle = getIntent().getExtras();
+        owner = bundle.getBoolean("owner");
     }
 
 
@@ -56,12 +67,15 @@ public class CariMotorActivity extends AppCompatActivity {
 
     private void getMotor(String no){
         dialog.show();
+        dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<Motor>> call;
         if (no.contains(" ")) {
-            call = apiInterface.searchNoPol(no);
+            call = apiInterface.searchNoPol(id,no);
         }else{
-            call = apiInterface.searchNoMesin(no);
+            call = apiInterface.searchNoMesin(id,no);
         }
         call.enqueue(new Callback<List<Motor>>() {
             @Override
@@ -72,9 +86,16 @@ public class CariMotorActivity extends AppCompatActivity {
                 }else {
                     List<Motor> list = response.body();
 
-                    adapter = new MotorAdapter(getApplicationContext(), list, CariMotorActivity.this);
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+                    if (owner) {
+                        adapter = new MotorAdapter(getApplicationContext(), list, CariMotorActivity.this);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        salesAdapter = new MotorSalesAdapter(getApplicationContext(), list, CariMotorActivity.this);
+                        recyclerView.setAdapter(salesAdapter);
+                        salesAdapter.notifyDataSetChanged();
+                    }
+
                 }
 
             }

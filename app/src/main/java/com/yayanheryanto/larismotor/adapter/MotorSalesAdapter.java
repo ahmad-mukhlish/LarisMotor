@@ -226,6 +226,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
                 Intent intent = new Intent(mContext, TransaksiActivity.class);
                 intent.putExtra("deal",true);
                 intent.putExtra("data",motor.getNoMesin());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
         });

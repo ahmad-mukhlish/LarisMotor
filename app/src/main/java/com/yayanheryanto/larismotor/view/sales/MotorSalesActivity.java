@@ -125,6 +125,7 @@ public class MotorSalesActivity extends AppCompatActivity {
 
             case R.id.action_search:
                 Intent intent1 = new Intent(MotorSalesActivity.this, CariMotorActivity.class);
+                intent1.putExtra("owner",false);
                 startActivity(intent1);
                 return true;
 

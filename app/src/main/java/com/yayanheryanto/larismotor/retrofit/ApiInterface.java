@@ -120,7 +120,7 @@ public interface ApiInterface {
                             @Field("no_ktp_sales") String no_ktp_sales,
                             @Field("id_user") String id_user,
                             @Field("id_owner") String id_owner
-                            );
+    );
 
 
     @FormUrlEncoded
@@ -371,12 +371,14 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/searchNoPol")
-    Call<List<Motor>> searchNoPol(@Field("no_polisi") String no);
+    Call<List<Motor>> searchNoPol(@Field("id_user") String id_user,
+                                  @Field("no_polisi") String no);
 
 
     @FormUrlEncoded
     @POST("api/searchNoMesin")
-    Call<List<Motor>> searchNoMesin(@Field("no_mesin") String no);
+    Call<List<Motor>> searchNoMesin(@Field("id_user") String id_user,
+                                    @Field("no_mesin") String no);
 
     @GET("api/getFilterSales")
     Call<List<Sales>> getFilterSales(@Header("Authorization") String authorization);
