@@ -42,6 +42,8 @@ public class HelperClass {
     }
 
 
+
+
     public static String convertToTitleCaseIteratingChars(String text) {
         if (text == null || text.isEmpty()) {
             return text;
@@ -74,7 +76,7 @@ public class HelperClass {
 
     public static String clearDash(String input) {
 
-        if (!input.isEmpty()) {
+        if (input != null) {
             input = input.replace("-", "");
             Log.v("cik", input);
         } else {

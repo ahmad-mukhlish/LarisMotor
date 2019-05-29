@@ -4,9 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,10 +15,10 @@ import android.widget.Toast;
 
 import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.model.Sales;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,10 +64,13 @@ public class EditSalesActivity extends AppCompatActivity implements View.OnClick
         Bundle data = getIntent().getExtras();
         sales = data.getParcelable(DATA_SALES);
 
+        wa  = sales.getNoWa();
+        ktp = sales.getNoKtpSales();
+
         etNama.setText(sales.getNama());
-        etNoWa.setText(sales.getNoWa());
+        etNoWa.setText(wa);
         etAlamat.setText(sales.getAlamat());
-        etKtp.setText(sales.getNoKtpSales());
+        etKtp.setText(ktp);
     }
 
 
@@ -74,6 +78,7 @@ public class EditSalesActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btnSave :
+                view.requestFocus();
                 updateSales();
                 break;
         }
@@ -90,6 +95,10 @@ public class EditSalesActivity extends AppCompatActivity implements View.OnClick
         String namaSales = etNama.getText().toString();
         String alamatSales = etAlamat.getText().toString();
         String noKtpLama = sales.getNoKtpSales();
+
+        Log.v("cik",clearDash(wa));
+        Log.v("cik",clearDash(ktp));
+        Log.v("cik",noKtpLama);
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<Sales> call = apiInterface.updateSales(token,noKtpLama , namaSales, alamatSales,clearDash(wa),clearDash(ktp));

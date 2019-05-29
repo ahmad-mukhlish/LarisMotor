@@ -579,6 +579,12 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onResponse(Call<Motor> call, Response<Motor> response) {
                 dialog.dismiss();
+
+//                try {
+//                    Log.v("cik",response.errorBody().string());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
                 if (response.body().getMessage().equals("success")) {
                     Toast.makeText(EditMotorActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditMotorActivity.this, MotorActivity.class);
