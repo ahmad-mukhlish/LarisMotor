@@ -76,7 +76,11 @@
         <activity android:name=".view.owner.CariTipeActivity" />
         <activity android:name=".view.owner.InsentifHasilOwnerActivity" />
         <activity android:name=".view.sales.InsentifConfigSalesActivity" />
-        <activity android:name=".view.sales.InsentifHasilSalesActivity"></activity>
+        <activity android:name=".view.sales.InsentifHasilSalesActivity"/>
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

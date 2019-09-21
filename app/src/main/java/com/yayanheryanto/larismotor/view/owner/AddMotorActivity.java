@@ -36,6 +36,8 @@ import android.widget.Toast;
 
 import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
+import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCropActivity;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -98,6 +100,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
+
+    private int cropCode;
 
     private Uri tempUri;
     private static int pass;
@@ -475,12 +479,9 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             }
 
 
-
-
             MultipartBody requestBody = builder.build();
             ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
             Call<Motor> call = apiInterface.addMotor(token, requestBody);
-
 
 
             call.enqueue(new Callback<Motor>() {
@@ -526,25 +527,65 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             for (int i = 0; i < images.size(); i++) {
                 Uri uri = Uri.fromFile(new File(images.get(i).path));
                 if (i == 0) {
-                    image1.setImageURI(uri);
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this);
+                    cropCode = i;
+
                 }
                 if (i == 1) {
-                    image2.setImageURI(uri);
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(3, 4)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this);
+                    cropCode = i;
                 }
                 if (i == 2) {
-                    image3.setImageURI(uri);
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this);
+                    cropCode = i;
                 }
                 Log.d(DEBUG, String.valueOf(uri));
 
             }
         } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-
+            cropCode = 3;
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             image1.setImageBitmap(photo);
             tempUri = getImageUri(getApplicationContext(), photo);
-            file = new File(getRealPathFromURI(tempUri));
+            UCrop.of(tempUri, tempUri)
+//                    .withAspectRatio(16, 9)
+//                    .withMaxResultSize(512, 512)
+                    .start(this);
 
+        } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+
+            switch (cropCode)
+            {
+                case 0 : {
+                    image1.setImageURI(UCrop.getOutput(data));
+                    break;
+                }
+                case 1 : {
+                    image2.setImageURI(UCrop.getOutput(data));
+                    break;
+                }
+                case 2 : {
+                    image3.setImageURI(UCrop.getOutput(data));
+                    break;
+                }
+                case 3 : {
+
+                    file = new File(getRealPathFromURI(UCrop.getOutput(data)));
+                    break;
+                }
+            }
         }
+
+
     }
 
 
