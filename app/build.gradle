@@ -67,4 +67,5 @@ dependencies {
 
     //cropper
     implementation 'com.github.yalantis:ucrop:2.2.3'
+    implementation 'com.orhanobut:hawk:2.0.1'
 }

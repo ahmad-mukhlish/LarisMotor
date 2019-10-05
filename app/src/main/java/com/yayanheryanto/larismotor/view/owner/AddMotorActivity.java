@@ -34,10 +34,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.hawk.Hawk;
 import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropActivity;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -89,6 +89,11 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private ProgressDialog dialog;
     private TextInputLayout terjual;
     private TextView labelStatus;
+    private TextView labelAmbil;
+    private TextView labelDepan;
+    private TextView labelSamping;
+    private TextView labelBelakang;
+
     private TextView hint;
     private File file, file2 = null;
 
@@ -97,6 +102,9 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private String hargaTerjual;
     private String dpMotor;
     private String cicilanMotor;
+    private Uri uri1;
+    private Uri uri2;
+    private Uri uri3;
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
@@ -133,12 +141,46 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         dp = findViewById(R.id.dp);
         terjual = findViewById(R.id.terjual);
         labelStatus = findViewById(R.id.label_status);
+        labelAmbil = findViewById(R.id.label_ambil);
+        labelDepan = findViewById(R.id.label_depan);
+        labelSamping = findViewById(R.id.label_samping);
+        labelBelakang = findViewById(R.id.label_belakang);
         hint = findViewById(R.id.hint);
         check = findViewById(R.id.check);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
+
+        image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddMotorActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 1);
+            }
+        });
+
+        image2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddMotorActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 2);
+            }
+        });
+
+        image3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddMotorActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 3);
+            }
+        });
 
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
@@ -193,6 +235,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
+        setTitle("Cikandes");
+        Hawk.init(this).build();
     }
 
 
@@ -253,6 +297,10 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         spinnerMerk.setVisibility(GONE);
         spinnerTipe.setVisibility(GONE);
         labelStatus.setVisibility(GONE);
+        labelAmbil.setVisibility(GONE);
+        labelDepan.setVisibility(GONE);
+        labelSamping.setVisibility(GONE);
+        labelBelakang.setVisibility(GONE);
         status.setVisibility(GONE);
         image1.setVisibility(GONE);
         image2.setVisibility(GONE);
@@ -279,9 +327,14 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         image1.setVisibility(View.VISIBLE);
         image2.setVisibility(View.VISIBLE);
         image3.setVisibility(View.VISIBLE);
-        btnUpload.setVisibility(View.VISIBLE);
+        labelAmbil.setVisibility(View.VISIBLE);
+        labelDepan.setVisibility(View.VISIBLE);
+        labelSamping.setVisibility(View.VISIBLE);
+        labelBelakang.setVisibility(View.VISIBLE);
         btnSave.setVisibility(View.VISIBLE);
-        btnCamera.setVisibility(View.VISIBLE);
+
+//        btnUpload.setVisibility(View.VISIBLE);
+//        btnCamera.setVisibility(View.VISIBLE);
 
     }
 
@@ -354,11 +407,30 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnImage:
-                Intent intent = new Intent(this, AlbumSelectActivity.class);
-                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 3); // set limit for image selection
-                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-                break;
+
+//            case R.id.image1: {
+////                Intent intent = new Intent(this, AlbumSelectActivity.class);
+////                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+////                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+////                Hawk.put("codeImage", 1);
+//                break;
+//            }
+//
+//            case R.id.image2: {
+////                Intent intent = new Intent(this, AlbumSelectActivity.class);
+////                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+////                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+////                Hawk.put("codeImage", 2);
+//                break;
+//            }
+//
+//            case R.id.image3: {
+//                Intent intent = new Intent(this, AlbumSelectActivity.class);
+//                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+//                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+//                Hawk.put("codeImage", 3);
+//                break;
+//            }
 
             case R.id.btnSave:
                 uploadImage();
@@ -377,6 +449,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
             break;
+
+
         }
     }
 
@@ -521,69 +595,77 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             //The array list has the image paths of the selected images
+
             images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
+            Uri uri = Uri.fromFile(new File(images.get(0).path));
 
+            int codeImage = Hawk.get("codeImage");
+            switch (codeImage) {
 
-            for (int i = 0; i < images.size(); i++) {
-                Uri uri = Uri.fromFile(new File(images.get(i).path));
-                if (i == 0) {
+                case 1: {
                     UCrop.of(uri, uri)
                             .withAspectRatio(16, 9)
                             .withMaxResultSize(1024, 1024)
-                            .start(this);
-                    cropCode = i;
+                            .start(this, 202);
+                    break;
+                }
 
-                }
-                if (i == 1) {
-                    UCrop.of(uri, uri)
-                            .withAspectRatio(3, 4)
-                            .withMaxResultSize(1024, 1024)
-                            .start(this);
-                    cropCode = i;
-                }
-                if (i == 2) {
+                case 2: {
                     UCrop.of(uri, uri)
                             .withAspectRatio(16, 9)
                             .withMaxResultSize(1024, 1024)
-                            .start(this);
-                    cropCode = i;
+                            .start(this, 203);
+                    break;
                 }
-                Log.d(DEBUG, String.valueOf(uri));
+
+                case 3: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 204);
+                    break;
+                }
 
             }
+
+
         } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            cropCode = 3;
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             image1.setImageBitmap(photo);
             tempUri = getImageUri(getApplicationContext(), photo);
             UCrop.of(tempUri, tempUri)
-//                    .withAspectRatio(16, 9)
-//                    .withMaxResultSize(512, 512)
-                    .start(this);
+                    .withAspectRatio(16, 9)
+                    .withMaxResultSize(1023, 1024)
+                    .start(this, 205);
 
-        } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+        } else if (resultCode == RESULT_OK && requestCode == 202) {
 
-            switch (cropCode)
-            {
-                case 0 : {
-                    image1.setImageURI(UCrop.getOutput(data));
-                    break;
-                }
-                case 1 : {
-                    image2.setImageURI(UCrop.getOutput(data));
-                    break;
-                }
-                case 2 : {
-                    image3.setImageURI(UCrop.getOutput(data));
-                    break;
-                }
-                case 3 : {
+            Hawk.put("uri1", UCrop.getOutput(data));
+            uri1 = Hawk.get("uri1");
+            image1.setImageURI(uri1);
 
-                    file = new File(getRealPathFromURI(UCrop.getOutput(data)));
-                    break;
-                }
-            }
+        } else if (resultCode == RESULT_OK && requestCode == 203) {
+
+            Hawk.put("uri2", UCrop.getOutput(data));
+            uri2 = Hawk.get("uri2");
+            image2.setImageURI(uri2);
+
+        } else if (resultCode == RESULT_OK && requestCode == 204) {
+
+            Hawk.put("uri3", UCrop.getOutput(data));
+            uri3 = Hawk.get("uri3");
+            image3.setImageURI(uri3);
+
         }
+
+//        else if (resultCode == RESULT_OK && requestCode == 205) {
+//
+//            Hawk.put("uri3", UCrop.getOutput(data));
+//            uri1 = Hawk.get("uri1");
+//            image1.setImageURI(uri1);
+//
+//
+//        }
 
 
     }

@@ -53,7 +53,6 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailCustomerActivity.class);
                 intent.putExtra("coba", customer.getNoKtp());
-//                Log.v("coba", customer.getNoKtp()) ;
                 intent.putExtra(DATA_CUSTOMER, customer);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK) ;
 
