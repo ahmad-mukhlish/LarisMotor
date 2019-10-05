@@ -44,6 +44,9 @@ public class Customer implements Parcelable {
     @SerializedName("whatsapp")
     @Expose
     private String whatsapp;
+    @SerializedName("email")
+    @Expose
+    private String email;
     @SerializedName("instagram")
     @Expose
     private String instagram;
@@ -118,6 +121,14 @@ public class Customer implements Parcelable {
         this.whatsapp = whatsapp;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getInstagram() {
         return instagram;
     }
@@ -152,6 +163,7 @@ public class Customer implements Parcelable {
         agama = in.readString();
         pekerjaan = in.readString();
         whatsapp = in.readString();
+        email = in.readString();
         instagram = in.readString();
         facebook = in.readString();
         jumlahPembelian = in.readString();
@@ -172,6 +184,7 @@ public class Customer implements Parcelable {
         dest.writeString(agama);
         dest.writeString(pekerjaan);
         dest.writeString(whatsapp);
+        dest.writeString(email);
         dest.writeString(instagram);
         dest.writeString(facebook);
         dest.writeString(jumlahPembelian);

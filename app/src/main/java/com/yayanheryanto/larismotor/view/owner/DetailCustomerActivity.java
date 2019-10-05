@@ -20,7 +20,7 @@ import static com.yayanheryanto.larismotor.config.config.DATA_CUSTOMER;
 public class DetailCustomerActivity extends AppCompatActivity {
 
     private TextView noKTP, nama, alamat, ttl, noHp, pekerjaan,
-            agama, whatsapp, instagram, facebook, jumlahPembelian;
+            agama, whatsapp, instagram, facebook, jumlahPembelian, email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class DetailCustomerActivity extends AppCompatActivity {
         instagram = findViewById(R.id.instagram);
         facebook = findViewById(R.id.facebook);
         jumlahPembelian = findViewById(R.id.jumlah_pembelian);
+        email = findViewById(R.id.email);
 
         fillDetail();
     }
@@ -46,7 +47,7 @@ public class DetailCustomerActivity extends AppCompatActivity {
     private void fillDetail() {
 
         Bundle data = getIntent().getExtras();
-        Customer customer = data.getParcelable(DATA_CUSTOMER);
+        final Customer customer = data.getParcelable(DATA_CUSTOMER);
 
 
         noKTP.setText(customer.getNoKtp());
@@ -95,6 +96,18 @@ public class DetailCustomerActivity extends AppCompatActivity {
             }
         });
 
+        noHp.setTextColor(Color.parseColor("#0645AD"));
+        noHp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", customer.getNoTelp(), null));
+                startActivity(intent);
+
+            }
+        });
+
+
         facebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +131,24 @@ public class DetailCustomerActivity extends AppCompatActivity {
 
             }
         });
+
+        email.setText(customer.getEmail());
+        email.setTextColor(Color.parseColor("#0645AD"));
+        email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] adresses = new String[1];
+                adresses[0] = customer.getEmail();
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+                intent.putExtra(Intent.EXTRA_EMAIL, adresses);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+
+            }
+        });
+
 
     }
 

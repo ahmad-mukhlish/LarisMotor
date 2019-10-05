@@ -2,6 +2,7 @@ package com.yayanheryanto.larismotor.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,9 +37,6 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.customer_card, null, false);
         CustomerAdapter.CustomerViewHolder adapter = new CustomerAdapter.CustomerViewHolder(view);
-
-
-
         return adapter;
     }
 
@@ -55,7 +53,6 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
                 intent.putExtra("coba", customer.getNoKtp());
                 intent.putExtra(DATA_CUSTOMER, customer);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK) ;
-
                 mContext.startActivity(intent);
             }
         });
@@ -69,6 +66,8 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
                 mContext.startActivity(intent);
             }
         });
+
+
     }
 
     @Override

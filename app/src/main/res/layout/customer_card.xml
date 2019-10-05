@@ -67,6 +67,12 @@
                     android:layout_height="20dp"
                     android:src="@drawable/ig" />
 
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_email_list" />
+
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"
