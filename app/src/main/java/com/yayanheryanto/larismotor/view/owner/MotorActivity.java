@@ -131,7 +131,7 @@ public class MotorActivity extends AppCompatActivity {
 
             case R.id.action_search:
                 Intent intent1 = new Intent(MotorActivity.this, CariMotorActivity.class);
-                intent1.putExtra("owner",true);
+                intent1.putExtra("owner", true);
                 startActivity(intent1);
                 return true;
 
@@ -140,7 +140,7 @@ public class MotorActivity extends AppCompatActivity {
                 return true;
 
 
-            case R.id.hjm :
+            case R.id.hjm:
                 filterHjm();
                 return true;
 
@@ -377,11 +377,11 @@ public class MotorActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
-        Log.v("cik0",id);
-        Log.v("cik1",status);
-        Log.v("cik2",merk);
-        Log.v("cik3",tipe);
-        Log.v("cik4",tahun);
+        Log.v("cik0", id);
+        Log.v("cik1", status);
+        Log.v("cik2", merk);
+        Log.v("cik3", tipe);
+        Log.v("cik4", tahun);
 
 
         Call<List<Motor>> call = apiInterface.getFilteredMotor(id, status, merk, tipe, tahun);
@@ -423,6 +423,7 @@ public class MotorActivity extends AppCompatActivity {
 
     public void filterHjm() {
 
+        Log.v("cikandesu","trigger");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<Motor>> call = apiInterface.getHjmMotor();
         call.enqueue(new Callback<List<Motor>>() {

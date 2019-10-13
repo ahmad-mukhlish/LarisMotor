@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/hjm"
-        android:icon="@drawable/ic_pencil_edit_button"
+        android:icon="@drawable/ic_refresh_512"
         android:title="hjm"
         app:showAsAction="always" />
 

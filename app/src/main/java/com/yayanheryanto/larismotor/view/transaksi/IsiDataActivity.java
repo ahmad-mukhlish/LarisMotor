@@ -22,6 +22,7 @@ import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.yayanheryanto.larismotor.R;
+import com.yayanheryanto.larismotor.helper.HelperClass;
 import com.yayanheryanto.larismotor.model.Customer;
 import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
@@ -29,7 +30,6 @@ import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.owner.OwnerMenuActivity;
 import com.yayanheryanto.larismotor.view.sales.SalesMenuActivity;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,20 +51,20 @@ import static com.yayanheryanto.larismotor.helper.HelperClass.clearDash;
 
 public class IsiDataActivity extends AppCompatActivity {
 
-
-    Spinner spinnerTxtAgama;
-    EditText nomorKtp;
-    EditText nama;
-    EditText alamat;
-    EditText nomorTelp;
-    EditText ttl;
-    EditText pekerjaan;
-    EditText whatsapp;
-    EditText instagram;
-    EditText facebook;
-    Button checklistIsiData;
-    ImageView date;
-    int statusCustomer;
+    private Spinner spinnerTxtAgama;
+    private EditText nomorKtp;
+    private EditText nama;
+    private EditText alamat;
+    private EditText nomorTelp;
+    private EditText ttl;
+    private EditText pekerjaan;
+    private EditText whatsapp;
+    private EditText instagram;
+    private EditText facebook;
+    private EditText email;
+    private Button checklistIsiData;
+    private ImageView date;
+    private int statusCustomer;
 
     private ProgressDialog dialog;
     private Motor motor;
@@ -74,12 +74,10 @@ public class IsiDataActivity extends AppCompatActivity {
     private String ktp;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_isi_data);
-
         nomorKtp = findViewById(R.id.nomor_ktp);
         nama = findViewById(R.id.nama);
         alamat = findViewById(R.id.alamat);
@@ -89,6 +87,7 @@ public class IsiDataActivity extends AppCompatActivity {
         whatsapp = findViewById(R.id.whatsapp);
         instagram = findViewById(R.id.instagram);
         facebook = findViewById(R.id.facebook);
+        email = findViewById(R.id.email);
         checklistIsiData = findViewById(R.id.cheklist_isi_data);
         date = findViewById(R.id.date);
 
@@ -111,7 +110,7 @@ public class IsiDataActivity extends AppCompatActivity {
                 dialog.show();
                 String stringNomorKtp = nomorKtp.getText().toString();
                 final ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                Call<List<Customer>> call = apiInterface.getCustomerById(stringNomorKtp);
+                Call<List<Customer>> call = apiInterface.getCustomerById(HelperClass.clearDash(stringNomorKtp));
                 call.enqueue(new Callback<List<Customer>>() {
                     @Override
                     public void onResponse(Call<List<Customer>> call, Response<List<Customer>> response) {
@@ -167,6 +166,10 @@ public class IsiDataActivity extends AppCompatActivity {
                             facebook.setEnabled(false);
                             facebook.setTextColor(Color.BLACK);
 
+                            email.setText(customer.getEmail());
+                            email.setEnabled(false);
+                            email.setTextColor(Color.BLACK);
+
                         }
 
 
@@ -201,8 +204,8 @@ public class IsiDataActivity extends AppCompatActivity {
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(IsiDataActivity.this, TransaksiActivity.class) ;
-                intent.putExtra("deal",false);
+                Intent intent = new Intent(IsiDataActivity.this, TransaksiActivity.class);
+                intent.putExtra("deal", false);
                 startActivity(intent);
 
 
@@ -230,7 +233,7 @@ public class IsiDataActivity extends AppCompatActivity {
         whatsapp.setEnabled(false);
         instagram.setEnabled(false);
         facebook.setEnabled(false);
-
+        email.setEnabled(false);
     }
 
     private void enable() {
@@ -243,6 +246,7 @@ public class IsiDataActivity extends AppCompatActivity {
         whatsapp.setEnabled(true);
         instagram.setEnabled(true);
         facebook.setEnabled(true);
+        email.setEnabled(true);
 
         date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -256,18 +260,16 @@ public class IsiDataActivity extends AppCompatActivity {
                         .show();
 
 
-
             }
         });
 
     }
 
 
-
     private void getFromIntent() {
         Bundle bundle = getIntent().getExtras();
         motor = bundle.getParcelable(DATA_MOTOR);
-        Log.v("cik2",motor.getMediator()+"") ;
+        Log.v("cik2", motor.getMediator() + "");
 
 
     }
@@ -282,6 +284,7 @@ public class IsiDataActivity extends AppCompatActivity {
         instagram.setText("");
         facebook.setText("");
         nomorTelp.setText("");
+        email.setText("");
 
     }
 
@@ -315,7 +318,7 @@ public class IsiDataActivity extends AppCompatActivity {
         String pekerjaanTxt = pekerjaan.getText().toString();
         String instagramTxt = instagram.getText().toString();
         String facebookTxt = facebook.getText().toString();
-
+        String emailTxt = email.getText().toString();
 
         //bekas = 0;
         //customer ada = 1;
@@ -327,7 +330,7 @@ public class IsiDataActivity extends AppCompatActivity {
                     motor.getPencairanLeasing() + "", motor.getMediator() + "");
         } else if (motor.getKondisi() == 0 && statusCustomer == 0) {
             //ubah status motor, simpan customer dan transaksi
-            call = apiInterface.mokasWithCust(token, motor.getNoMesin(), clearDash(ktp), namaTxt, alamatTxt, clearDash(nomor), tanggal, Agama, pekerjaanTxt, clearDash(wa), instagramTxt, facebookTxt,
+            call = apiInterface.mokasWithCust(token, motor.getNoMesin(), clearDash(ktp), namaTxt, alamatTxt, clearDash(nomor), tanggal, Agama, pekerjaanTxt, clearDash(wa), instagramTxt, facebookTxt, emailTxt,
                     String.valueOf(motor.getHargaTerjual()), motor.getDp() + "", motor.getCicilan() + "",
                     motor.getTenor() + "", motor.getPencairanLeasing() + "", no_ktp_sales, motor.getMediator() + "");
         } else if (motor.getKondisi() == 1 && statusCustomer == 1) {
@@ -344,7 +347,7 @@ public class IsiDataActivity extends AppCompatActivity {
                     String.valueOf(motor.getIdTipe()), String.valueOf(motor.getIdMerk()), id, String.valueOf(motor.getHargaTerjual()),
                     String.valueOf(motor.getDp()), String.valueOf(motor.getCicilan()), String.valueOf(motor.getTenor()), motor.getSubsidi() + "",
                     clearDash(ktp), namaTxt, alamatTxt, clearDash(nomor), Agama, pekerjaanTxt, clearDash(wa),
-                    instagramTxt, facebookTxt, no_ktp_sales, tanggal, motor.getMediator() + "");
+                    instagramTxt, facebookTxt, emailTxt, no_ktp_sales, tanggal, motor.getMediator() + "");
         }
         call.enqueue(new Callback<Motor>() {
             @Override
@@ -378,18 +381,14 @@ public class IsiDataActivity extends AppCompatActivity {
     }
 
 
-
-
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
-        public void onDateTimeSet(Date date)
-        {
+        public void onDateTimeSet(Date date) {
             SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy", new Locale("ID"));
             String month;
 
-            int monthOfYear, year, dayOfMonth ;
-
+            int monthOfYear, year, dayOfMonth;
 
 
             Calendar cal = Calendar.getInstance();
@@ -397,7 +396,6 @@ public class IsiDataActivity extends AppCompatActivity {
             monthOfYear = cal.get(Calendar.MONTH);
             year = cal.get(Calendar.YEAR);
             dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-
 
 
             monthOfYear++;
@@ -418,13 +416,12 @@ public class IsiDataActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onDateTimeCancel()
-        {
+        public void onDateTimeCancel() {
             // Overriding onDateTimeCancel() is optional.
         }
     };
 
-    private void setInputMask(){
+    private void setInputMask() {
 
         final MaskedTextChangedListener telpListener = new MaskedTextChangedListener(
                 "[000]-[000]-[000]-[0009]",

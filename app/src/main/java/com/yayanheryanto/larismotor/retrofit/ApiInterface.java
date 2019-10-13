@@ -277,7 +277,8 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/mokasWithCust")
-    Call<Motor> mokasWithCust(@Header("Authorization") String authorization,
+    Call<Motor>
+    mokasWithCust(@Header("Authorization") String authorization,
                               @Field("no_mesin") String no_mesin,
                               @Field("no_ktp") String no_ktp,
                               @Field("nama") String nama,
@@ -289,6 +290,7 @@ public interface ApiInterface {
                               @Field("whatsapp") String whatsapp,
                               @Field("instagram") String instagram,
                               @Field("facebook") String facebook,
+                              @Field("email") String email,
                               @Field("harga_terjual") String harga_terjual,
                               @Field("dp") String dp,
                               @Field("cicilan") String cicilan,
@@ -342,6 +344,7 @@ public interface ApiInterface {
                               @Field("whatsapp") String whatsapp,
                               @Field("instagram") String instagram,
                               @Field("facebook") String facebook,
+                              @Field("email") String email,
                               @Field("no_ktp_sales") String no_ktp_sales,
                               @Field("ttl") String ttl,
                               @Field("mediator") String mediator);
