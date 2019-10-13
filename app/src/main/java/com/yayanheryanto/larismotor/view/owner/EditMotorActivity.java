@@ -30,11 +30,14 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.hawk.Hawk;
 import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.squareup.picasso.Picasso;
+import com.yalantis.ucrop.UCrop;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
@@ -43,6 +46,8 @@ import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.view.sales.AddMotorSalesActivity;
+import com.yayanheryanto.larismotor.view.sales.EditMotorSalesActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -71,6 +76,7 @@ import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
 import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
+import static com.yayanheryanto.larismotor.view.sales.AddMotorSalesActivity.checkImageResource;
 
 
 public class EditMotorActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
@@ -104,6 +110,14 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     private String dpMotor;
     private String cicilanMotor;
 
+    private TextView labelDepan;
+    private TextView labelSamping;
+    private TextView labelBelakang;
+    private TextView labelAmbil;
+
+    private Uri uri1;
+    private Uri uri2;
+    private Uri uri3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,11 +143,44 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         terjual = findViewById(R.id.terjual);
         sold = findViewById(R.id.radio_sold_out);
 
+        labelAmbil = findViewById(R.id.label_ambil);
+        labelDepan = findViewById(R.id.label_depan);
+        labelSamping = findViewById(R.id.label_samping);
+        labelBelakang = findViewById(R.id.label_belakang);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
 
+        image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditMotorActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 1);
+            }
+        });
+
+        image2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditMotorActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 2);
+            }
+        });
+
+        image3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditMotorActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 3);
+            }
+        });
 
         initProgressDialog();
 
@@ -175,6 +222,8 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         btnCamera.setOnClickListener(this);
 
         setInputMask();
+        setTitle("Edit Motor");
+        Hawk.init(this).build();
 
     }
 
@@ -427,30 +476,65 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            //The array list has the image paths of the selected images
             images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
+            Uri uri = Uri.fromFile(new File(images.get(0).path));
 
+            int codeImage = Hawk.get("codeImage");
+            switch (codeImage) {
 
-            for (int i = 0; i < images.size(); i++) {
-                Uri uri = Uri.fromFile(new File(images.get(i).path));
-                if (i == 0) {
-                    image1.setImageURI(uri);
+                case 1: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 202);
+                    break;
                 }
-                if (i == 1) {
-                    image2.setImageURI(uri);
+
+                case 2: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 203);
+                    break;
                 }
-                if (i == 2) {
-                    image3.setImageURI(uri);
+
+                case 3: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 204);
+                    break;
                 }
-                Log.d(DEBUG, String.valueOf(uri));
 
             }
+
+
         } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             image1.setImageBitmap(photo);
             tempUri = getImageUri(getApplicationContext(), photo);
             file = new File(getRealPathFromURI(tempUri));
+
+        } else if (resultCode == RESULT_OK && requestCode == 202) {
+
+            Hawk.put("uri1", UCrop.getOutput(data));
+            Log.v("cikan",UCrop.getOutput(data).toString());
+            uri1 = Hawk.get("uri1");
+            Log.v("cikan",uri1.toString());
+            image1.setImageURI(uri1);
+
+        } else if (resultCode == RESULT_OK && requestCode == 203) {
+
+            Hawk.put("uri2", UCrop.getOutput(data));
+            uri2 = Hawk.get("uri2");
+            image2.setImageURI(uri2);
+
+        } else if (resultCode == RESULT_OK && requestCode == 204) {
+
+            Hawk.put("uri3", UCrop.getOutput(data));
+            uri3 = Hawk.get("uri3");
+            image3.setImageURI(uri3);
 
         }
     }
@@ -502,44 +586,48 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void uploadImage() {
-        dialog.show();
-        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-        String token = pref.getString(ACCESTOKEN, "");
-        String id = pref.getString(ID_USER, "");
+        if (checkImageResource(this, image1, R.drawable.motorbike) || checkImageResource(this, image2, R.drawable.motorbike)
+                || checkImageResource(this, image3, R.drawable.motorbike)
+        ) {
+            Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
+        } else {
+            dialog.show();
+            SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+            String token = pref.getString(ACCESTOKEN, "");
+            String id = pref.getString(ID_USER, "");
 
-        int selectedId = status.getCheckedRadioButtonId();
-        RadioButton radioButton = (RadioButton) findViewById(selectedId);
-        String tersedia = radioButton.getText().toString();
-        String statusMotor = "1";
-        if (tersedia.equalsIgnoreCase("tersedia")) {
-            statusMotor = "0";
-        }
+            int selectedId = status.getCheckedRadioButtonId();
+            RadioButton radioButton = (RadioButton) findViewById(selectedId);
+            String tersedia = radioButton.getText().toString();
+            String statusMotor = "1";
+            if (tersedia.equalsIgnoreCase("tersedia")) {
+                statusMotor = "0";
+            }
 
-        String mesin = no_mesin.getText().toString();
-        String polisi = no_polisi.getText().toString();
-        String rangka = no_rangka.getText().toString();
-        String tahunMotor = tahun.getText().toString();
-        String tenorMotor = tenor.getText().toString();
+            String mesin = no_mesin.getText().toString();
+            String polisi = no_polisi.getText().toString();
+            String rangka = no_rangka.getText().toString();
+            String tahunMotor = tahun.getText().toString();
+            String tenorMotor = tenor.getText().toString();
 
 
-
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart("no_mesin_awal", motor.getNoMesin());
-        builder.addFormDataPart("no_polisi", polisi);
-        builder.addFormDataPart("no_mesin", mesin);
-        builder.addFormDataPart("no_rangka", rangka);
-        builder.addFormDataPart("hjm", clearDot(hjmMotor));
-        builder.addFormDataPart("tahun", tahunMotor);
-        builder.addFormDataPart("status", statusMotor);
-        builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
-        builder.addFormDataPart("merk", String.valueOf(merkMotor));
-        builder.addFormDataPart("id_user", id);
-        builder.addFormDataPart("harga", clearDot(hargaMotor));
-        builder.addFormDataPart("harga_terjual", clearDot(hargaTerjual));
-        builder.addFormDataPart("dp", clearDot(dpMotor));
-        builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
-        builder.addFormDataPart("tenor", tenorMotor);
+            MultipartBody.Builder builder = new MultipartBody.Builder();
+            builder.setType(MultipartBody.FORM);
+            builder.addFormDataPart("no_mesin_awal", motor.getNoMesin());
+            builder.addFormDataPart("no_polisi", polisi);
+            builder.addFormDataPart("no_mesin", mesin);
+            builder.addFormDataPart("no_rangka", rangka);
+            builder.addFormDataPart("hjm", clearDot(hjmMotor));
+            builder.addFormDataPart("tahun", tahunMotor);
+            builder.addFormDataPart("status", statusMotor);
+            builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
+            builder.addFormDataPart("merk", String.valueOf(merkMotor));
+            builder.addFormDataPart("id_user", id);
+            builder.addFormDataPart("harga", clearDot(hargaMotor));
+            builder.addFormDataPart("harga_terjual", clearDot(hargaTerjual));
+            builder.addFormDataPart("dp", clearDot(dpMotor));
+            builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
+            builder.addFormDataPart("tenor", tenorMotor);
 
 
 
@@ -553,60 +641,67 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             builder.addFormDataPart("gambar2", motor.getGambar2());
         }
 
-        if (!(buttonCamera || buttonGallery) || images == null) {
-            file = null;
-        } else {
+//
 
-            for (int i = 0; i < images.size(); i++) {
-                file2 = new File(images.get(i).path);
-                try {
-                    file = new Compressor(this).compressToFile(file2);
+                for (int i = 0; i < 3; i++) {
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("Error", e.getMessage());
+                    if (i == 0) {
+                        file2 = new File(uri1.getPath());
+                    } else if (i == 1) {
+                        file2 = new File(uri2.getPath());
+                    } else {
+                        file2 = new File(uri3.getPath());
+                    }
+
+                    try {
+                        file = new Compressor(this).compressToFile(file2);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.e("Error", e.getMessage());
+                    }
+                    builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+                    Log.d(DEBUG, file.getName());
                 }
 
-                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-                Log.d(DEBUG, file.getName());
-            }
+//            }
+            final MultipartBody requestBody = builder.build();
+            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+            Call<Motor> call = apiInterface.updateMotor(token, requestBody);
+            call.enqueue(new Callback<Motor>() {
+                @Override
+                public void onResponse(Call<Motor> call, Response<Motor> response) {
+                    dialog.dismiss();
 
+//                    try {
+//                        Log.v("coba",response.errorBody().string());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+
+                    if (response.body().getMessage().equals("success")) {
+                        Toast.makeText(EditMotorActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EditMotorActivity.this, MotorActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(EditMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EditMotorActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Motor> call, Throwable t) {
+                    dialog.dismiss();
+                    t.printStackTrace();
+                    Toast.makeText(EditMotorActivity.this, "Terjadi kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
-        MultipartBody requestBody = builder.build();
-        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Motor> call = apiInterface.updateMotor(token, requestBody);
-        call.enqueue(new Callback<Motor>() {
-            @Override
-            public void onResponse(Call<Motor> call, Response<Motor> response) {
-                dialog.dismiss();
-
-//                try {
-//                    Log.v("cik",response.errorBody().string());
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-                if (response.body().getMessage().equals("success")) {
-                    Toast.makeText(EditMotorActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(EditMotorActivity.this, MotorActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(EditMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(EditMotorActivity.this, LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Motor> call, Throwable t) {
-                dialog.dismiss();
-                t.printStackTrace();
-                Toast.makeText(EditMotorActivity.this, "Terjadi kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void request() {

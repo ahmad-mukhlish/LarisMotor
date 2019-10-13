@@ -31,11 +31,14 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.hawk.Hawk;
 import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
 import com.squareup.picasso.Picasso;
+import com.yalantis.ucrop.UCrop;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.MerkTipe;
@@ -44,6 +47,7 @@ import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -102,6 +106,15 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
     private String dpMotor;
     private String cicilanMotor;
 
+    private TextView labelDepan;
+    private TextView labelSamping;
+    private TextView labelBelakang;
+    private TextView labelAmbil;
+
+    private Uri uri1;
+    private Uri uri2;
+    private Uri uri3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,17 +139,52 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
 
+        labelAmbil = findViewById(R.id.label_ambil);
+        labelDepan = findViewById(R.id.label_depan);
+        labelSamping = findViewById(R.id.label_samping);
+        labelBelakang = findViewById(R.id.label_belakang);
 
         initProgressDialog();
 
         getDataFromIntent();
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
-        adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
+        adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
 
 
         getMerkById(String.valueOf(motor.getIdMerk()), String.valueOf(motor.getIdTipe()));
         getMerk();
+
+        image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditMotorSalesActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 1);
+            }
+        });
+
+        image2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditMotorSalesActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 2);
+            }
+        });
+
+        image3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditMotorSalesActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 3);
+            }
+        });
+
 
         spinnerMerk.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -166,6 +214,9 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         btnCamera.setOnClickListener(this);
 
         setInputMask();
+        setTitle("Edit Motor");
+        Hawk.init(this).build();
+
 
     }
 
@@ -369,28 +420,64 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
+            Uri uri = Uri.fromFile(new File(images.get(0).path));
 
+            int codeImage = Hawk.get("codeImage");
+            switch (codeImage) {
 
-            for (int i = 0; i < images.size(); i++) {
-                Uri uri = Uri.fromFile(new File(images.get(i).path));
-                if (i == 0) {
-                    image1.setImageURI(uri);
+                case 1: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 202);
+                    break;
                 }
-                if (i == 1) {
-                    image2.setImageURI(uri);
+
+                case 2: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 203);
+                    break;
                 }
-                if (i == 2) {
-                    image3.setImageURI(uri);
+
+                case 3: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 204);
+                    break;
                 }
-                Log.d(DEBUG, String.valueOf(uri));
 
             }
+
+
         } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             image1.setImageBitmap(photo);
             tempUri = getImageUri(getApplicationContext(), photo);
             file = new File(getRealPathFromURI(tempUri));
+
+        } else if (resultCode == RESULT_OK && requestCode == 202) {
+
+            Hawk.put("uri1", UCrop.getOutput(data));
+            Log.v("cikan", UCrop.getOutput(data).toString());
+            uri1 = Hawk.get("uri1");
+            Log.v("cikan", uri1.toString());
+            image1.setImageURI(uri1);
+
+        } else if (resultCode == RESULT_OK && requestCode == 203) {
+
+            Hawk.put("uri2", UCrop.getOutput(data));
+            uri2 = Hawk.get("uri2");
+            image2.setImageURI(uri2);
+
+        } else if (resultCode == RESULT_OK && requestCode == 204) {
+
+            Hawk.put("uri3", UCrop.getOutput(data));
+            uri3 = Hawk.get("uri3");
+            image3.setImageURI(uri3);
 
         }
     }
@@ -425,7 +512,7 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
         builder.addFormDataPart("tenor", tenorMotor);
 
-        Log.v("cikan",status);
+        Log.v("cikan", status);
 
         if (motor.getGambar() != null) {
             builder.addFormDataPart("gambar", motor.getGambar());
@@ -437,30 +524,27 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
             builder.addFormDataPart("gambar2", motor.getGambar2());
         }
 
-        if (!(buttonCamera || buttonGallery)) {
-            file = null;
-        } else {
-            if (images == null) {
-                Log.d(DEBUG, file.getName());
-                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+
+        for (int i = 0; i < 3; i++) {
+
+            if (i == 0) {
+                file2 = new File(uri1.getPath());
+            } else if (i == 1) {
+                file2 = new File(uri2.getPath());
             } else {
-
-                for (int i = 0; i < images.size(); i++) {
-                    file2 = new File(images.get(i).path);
-                    try {
-                        file = new Compressor(this).compressToFile(file2);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e("Error", e.getMessage());
-                    }
-
-                    builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-                    Log.d(DEBUG, file.getName());
-                }
+                file2 = new File(uri3.getPath());
             }
-        }
 
+            try {
+                file = new Compressor(this).compressToFile(file2);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("Error", e.getMessage());
+            }
+            builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+            Log.d(DEBUG, file.getName());
+        }
 
         final MultipartBody requestBody = builder.build();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);

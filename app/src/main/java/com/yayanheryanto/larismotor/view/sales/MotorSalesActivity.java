@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -101,7 +102,7 @@ public class MotorSalesActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Motor>> call, Throwable t) {
                 dialog.dismiss();
-                t.printStackTrace();
+                Log.v("coba",t.getMessage());
                 Toast.makeText(MotorSalesActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });

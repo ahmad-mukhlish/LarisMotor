@@ -235,7 +235,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        setTitle("Cikandes");
+        setTitle("Tambah Motor");
         Hawk.init(this).build();
     }
 
@@ -333,9 +333,6 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         labelBelakang.setVisibility(View.VISIBLE);
         btnSave.setVisibility(View.VISIBLE);
 
-//        btnUpload.setVisibility(View.VISIBLE);
-//        btnCamera.setVisibility(View.VISIBLE);
-
     }
 
 
@@ -408,30 +405,6 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
 
-//            case R.id.image1: {
-////                Intent intent = new Intent(this, AlbumSelectActivity.class);
-////                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
-////                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-////                Hawk.put("codeImage", 1);
-//                break;
-//            }
-//
-//            case R.id.image2: {
-////                Intent intent = new Intent(this, AlbumSelectActivity.class);
-////                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
-////                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-////                Hawk.put("codeImage", 2);
-//                break;
-//            }
-//
-//            case R.id.image3: {
-//                Intent intent = new Intent(this, AlbumSelectActivity.class);
-//                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
-//                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
-//                Hawk.put("codeImage", 3);
-//                break;
-//            }
-
             case R.id.btnSave:
                 uploadImage();
                 break;
@@ -448,6 +421,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                     goToCamera();
                 }
             }
+
             break;
 
 
@@ -481,7 +455,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void uploadImage() {
-        if (checkImageResource(this, image1, R.drawable.motorbike)) {
+        if (checkImageResource(this, image1, R.drawable.motorbike) || checkImageResource(this, image2, R.drawable.motorbike)
+                || checkImageResource(this, image3, R.drawable.motorbike)) {
             Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
         } else {
             dialog.show();
@@ -538,8 +513,16 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             if (images == null) {
                 builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
             } else {
-                for (int i = 0; i < images.size(); i++) {
-                    file2 = new File(images.get(i).path);
+                for (int i = 0; i < 3; i++) {
+
+                    if (i == 0) {
+                        file2 = new File(uri1.getPath());
+                    } else if (i == 1) {
+                        file2 = new File(uri2.getPath());
+                    } else {
+                        file2 = new File(uri3.getPath());
+                    }
+
                     try {
                         file = new Compressor(this).compressToFile(file2);
 
@@ -643,6 +626,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             Hawk.put("uri1", UCrop.getOutput(data));
             uri1 = Hawk.get("uri1");
             image1.setImageURI(uri1);
+
 
         } else if (resultCode == RESULT_OK && requestCode == 203) {
 

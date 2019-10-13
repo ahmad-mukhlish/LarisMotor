@@ -179,6 +179,15 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/label_ambil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/spacing_medium"
+                    android:paddingRight="@dimen/spacing_medium"
+                    android:text="Ambil Gambar"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/grey_90" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -187,27 +196,78 @@
                     android:layout_marginBottom="@dimen/spacing_middle"
                     android:orientation="horizontal">
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/image1"
-                        android:layout_width="80dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/motorbike" />
 
-                    <ImageView
-                        android:id="@+id/image2"
-                        android:layout_width="80dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/motorbike" />
+                        <ImageView
+                            android:layout_marginRight="10dp"
+                            android:id="@+id/image1"
+                            android:layout_width="80dp"
+                            android:layout_height="60dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/motorbike" />
 
-                    <ImageView
-                        android:id="@+id/image3"
-                        android:layout_width="80dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/motorbike" />
+
+                        <TextView
+                            android:id="@+id/label_depan"
+                            android:textAlignment="center"
+                            android:layout_marginTop="5dp"
+                            android:text="Tampak\nDepan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:layout_marginRight="10dp"
+                            android:id="@+id/image2"
+                            android:layout_width="80dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/motorbike" />
+
+                        <TextView
+                            android:id="@+id/label_samping"
+                            android:textAlignment="center"
+                            android:layout_marginTop="5dp"
+                            android:text="Tampak\nSamping"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:id="@+id/image3"
+                            android:layout_width="80dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/motorbike" />
+
+                        <TextView
+                            android:id="@+id/label_belakang"
+                            android:textAlignment="center"
+                            android:layout_marginTop="5dp"
+                            android:text="Tampak\nBelakang"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
 
                 </LinearLayout>
-
                 <Button
                     android:id="@+id/btnCamera"
                     android:layout_width="match_parent"

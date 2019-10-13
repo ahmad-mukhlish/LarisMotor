@@ -31,8 +31,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.hawk.Hawk;
 import com.redmadrobot.inputmask.MaskedTextChangedListener;
 import com.redmadrobot.inputmask.ReversedMaskTextChangedListener;
+import com.yalantis.ucrop.UCrop;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.model.Motor;
@@ -85,6 +87,10 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
     private File file, file2 = null;
     private Uri tempUri;
     private TextView hint;
+    private TextView labelDepan;
+    private TextView labelSamping;
+    private TextView labelBelakang;
+    private TextView labelAmbil;
 
     private static int pass;
 
@@ -94,6 +100,10 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
+
+    private Uri uri1;
+    private Uri uri2;
+    private Uri uri3;
 
 
     @Override
@@ -118,10 +128,44 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         dp = findViewById(R.id.dp);
         check = findViewById(R.id.check);
         hint = findViewById(R.id.hint);
+        labelAmbil = findViewById(R.id.label_ambil);
+        labelDepan = findViewById(R.id.label_depan);
+        labelSamping = findViewById(R.id.label_samping);
+        labelBelakang = findViewById(R.id.label_belakang);
 
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
         image3 = findViewById(R.id.image3);
+
+        image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddMotorSalesActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 1);
+            }
+        });
+
+        image2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddMotorSalesActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 2);
+            }
+        });
+
+        image3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddMotorSalesActivity.this, AlbumSelectActivity.class);
+                intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
+                startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
+                Hawk.put("codeImage", 3);
+            }
+        });
 
         btnUpload.setOnClickListener(this);
         btnSave.setOnClickListener(this);
@@ -177,6 +221,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             }
         });
 
+
+        setTitle("Tambah Motor");
+        Hawk.init(this).build();
     }
 
 
@@ -196,6 +243,10 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         btnUpload.setVisibility(View.GONE);
         btnSave.setVisibility(View.GONE);
         btnCamera.setVisibility(View.GONE);
+        labelAmbil.setVisibility(GONE);
+        labelDepan.setVisibility(GONE);
+        labelSamping.setVisibility(GONE);
+        labelBelakang.setVisibility(GONE);
 
     }
 
@@ -212,9 +263,12 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         image1.setVisibility(View.VISIBLE);
         image2.setVisibility(View.VISIBLE);
         image3.setVisibility(View.VISIBLE);
-        btnUpload.setVisibility(View.VISIBLE);
         btnSave.setVisibility(View.VISIBLE);
-        btnCamera.setVisibility(View.VISIBLE);
+        labelAmbil.setVisibility(View.VISIBLE);
+        labelDepan.setVisibility(View.VISIBLE);
+        labelSamping.setVisibility(View.VISIBLE);
+        labelBelakang.setVisibility(View.VISIBLE);
+
 
     }
 
@@ -373,7 +427,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
 
     private void uploadImage() {
 
-        if (checkImageResource(this, image1, R.drawable.motorbike)) {
+        if (checkImageResource(this, image1, R.drawable.motorbike) || checkImageResource(this, image2, R.drawable.motorbike)
+        || checkImageResource(this, image3, R.drawable.motorbike)
+        ) {
             Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
         } else {
             dialog.show();
@@ -410,8 +466,16 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             if (images == null) {
                 builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
             } else {
-                for (int i = 0; i < images.size(); i++) {
-                    file2 = new File(images.get(i).path);
+                for (int i = 0; i < 3; i++) {
+
+                    if (i == 0) {
+                        file2 = new File(uri1.getPath());
+                    } else if (i == 1) {
+                        file2 = new File(uri2.getPath());
+                    } else {
+                        file2 = new File(uri3.getPath());
+                    }
+
                     try {
                         file = new Compressor(this).compressToFile(file2);
 
@@ -463,31 +527,78 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            //The array list has the image paths of the selected images
+
             images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);
+            Uri uri = Uri.fromFile(new File(images.get(0).path));
 
+            int codeImage = Hawk.get("codeImage");
+            switch (codeImage) {
 
-            for (int i = 0; i < images.size(); i++) {
-                Uri uri = Uri.fromFile(new File(images.get(i).path));
-                if (i == 0) {
-                    image1.setImageURI(uri);
+                case 1: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 202);
+                    break;
                 }
-                if (i == 1) {
-                    image2.setImageURI(uri);
+
+                case 2: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 203);
+                    break;
                 }
-                if (i == 2) {
-                    image3.setImageURI(uri);
+
+                case 3: {
+                    UCrop.of(uri, uri)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
+                            .start(this, 204);
+                    break;
                 }
-                Log.d(DEBUG, String.valueOf(uri));
 
             }
-        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 
+
+        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             image1.setImageBitmap(photo);
             tempUri = getImageUri(getApplicationContext(), photo);
-            file = new File(getRealPathFromURI(tempUri));
+            UCrop.of(tempUri, tempUri)
+                    .withAspectRatio(16, 9)
+                    .withMaxResultSize(1023, 1024)
+                    .start(this, 205);
+
+        } else if (resultCode == RESULT_OK && requestCode == 202) {
+
+            Hawk.put("uri1", UCrop.getOutput(data));
+            uri1 = Hawk.get("uri1");
+            image1.setImageURI(uri1);
+
+        } else if (resultCode == RESULT_OK && requestCode == 203) {
+
+            Hawk.put("uri2", UCrop.getOutput(data));
+            uri2 = Hawk.get("uri2");
+            image2.setImageURI(uri2);
+
+        } else if (resultCode == RESULT_OK && requestCode == 204) {
+
+            Hawk.put("uri3", UCrop.getOutput(data));
+            uri3 = Hawk.get("uri3");
+            image3.setImageURI(uri3);
 
         }
+
+//        else if (resultCode == RESULT_OK && requestCode == 205) {
+//
+//            Hawk.put("uri3", UCrop.getOutput(data));
+//            uri1 = Hawk.get("uri1");
+//            image1.setImageURI(uri1);
+//
+//
+//        }
     }
 
     private void goToCamera() {
