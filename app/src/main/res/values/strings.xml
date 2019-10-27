@@ -13,17 +13,24 @@
     <string name="lbl_hjm">HJM</string>
     <string name="lbl_status">Status</string>
 
+    <string name="otr"> Harga On The Road </string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="harga_terjual">Harga Terjual</string>
+
+    <string name="pembeli">Pembeli</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
     <string-array name="mobar">
         <item>Mobar</item>
         <item>Mokas</item>
     </string-array>
-
     <string-array name="caraBayar">
         <item>Pilih Cara Bayar</item>
         <item>Cash</item>
         <item>Kredit</item>
     </string-array>
-
     <string-array name="txtAgama">
         <item>Islam</item>
         <item>Kristen</item>
@@ -32,13 +39,6 @@
         <item>Budha</item>
         <item>Konghucu</item>
     </string-array>
-
-    <string name="otr"> Harga On The Road </string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="harga_terjual">Harga Terjual</string>
-    <string name="pembeli">Pembeli</string>
 
     <string-array name="bulan">
         <item>Bulan</item>

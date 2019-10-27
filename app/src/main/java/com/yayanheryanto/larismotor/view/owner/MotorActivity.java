@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.sales.EditMotorSalesActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -125,8 +128,7 @@ public class MotorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.tambah:
-                Intent intent = new Intent(MotorActivity.this, AddMotorActivity.class);
-                startActivity(intent);
+                dialogueMotorBaru();
                 return true;
 
             case R.id.action_search:
@@ -423,7 +425,7 @@ public class MotorActivity extends AppCompatActivity {
 
     public void filterHjm() {
 
-        Log.v("cikandesu","trigger");
+        Log.v("cikandesu", "trigger");
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<Motor>> call = apiInterface.getHjmMotor();
         call.enqueue(new Callback<List<Motor>>() {
@@ -460,5 +462,43 @@ public class MotorActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         startActivity(new Intent(MotorActivity.this, OwnerMenuActivity.class));
+    }
+
+    private void dialogueMotorBaru() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MotorActivity.this);
+        final View rootDialog = LayoutInflater.from(MotorActivity.this).inflate(R.layout.dialogue_motor_baru, null);
+
+        final RadioGroup status = rootDialog.findViewById(R.id.status_dialogue);
+
+        builder.setView(rootDialog);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button ok = rootDialog.findViewById(R.id.ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                int selectedId = status.getCheckedRadioButtonId();
+
+                RadioButton radioButton = rootDialog.findViewById(selectedId);
+                String tersedia = radioButton.getText().toString();
+
+                Intent intent;
+
+                if (tersedia.equalsIgnoreCase("Motor Bekas")) {
+                    intent = new Intent(MotorActivity.this, AddMotorActivity.class);
+                } else {
+                    intent = new Intent(MotorActivity.this, AddMotorBaruActivity.class);
+
+                }
+                startActivity(intent);
+
+
+            }
+        });
+
+
     }
 }

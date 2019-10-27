@@ -54,6 +54,10 @@ public interface ApiInterface {
     Call<Motor> addMotor(@Header("Authorization") String authorization,
                          @Body RequestBody file);
 
+
+    @POST("api/addMotorBaru")
+    Call<Motor> addMotorBaru(@Header("Authorization") String authorization,
+                         @Body RequestBody file);
     @FormUrlEncoded
     @POST("api/addSales")
     Call<Sales> addSales(@Header("Authorization") String authorization,

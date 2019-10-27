@@ -762,7 +762,6 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
                     statusMotor = "0";
                 }
 
-                uploadImage(statusMotor);
             }
         });
 

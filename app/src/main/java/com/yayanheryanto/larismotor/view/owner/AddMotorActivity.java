@@ -109,7 +109,6 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     private final int CAMERA_REQUEST = 110;
     private final int READ_EXTERNAL_STORAGE = 123;
 
-    private int cropCode;
 
     private Uri tempUri;
     private static int pass;
@@ -235,7 +234,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        setTitle("Tambah Motor");
+        setTitle("Tambah Motor Bekas");
         Hawk.init(this).build();
     }
 
@@ -733,6 +732,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+
 
     @Override
     public void onBackPressed() {
