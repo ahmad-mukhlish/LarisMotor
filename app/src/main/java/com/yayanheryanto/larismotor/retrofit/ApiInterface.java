@@ -368,7 +368,8 @@ public interface ApiInterface {
                                        @Query("status") String status,
                                        @Query("merk") String merk,
                                        @Query("tipe") String tipe,
-                                       @Query("tahun") String tahun);
+                                       @Query("tahun") String tahun,
+                                       @Query("kondisi") String kondisi);
 
     @FormUrlEncoded
     @POST("api/searchCustomer")

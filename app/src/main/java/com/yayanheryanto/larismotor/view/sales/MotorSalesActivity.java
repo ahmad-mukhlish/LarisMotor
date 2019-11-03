@@ -353,7 +353,7 @@ public class MotorSalesActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
-        Call<List<Motor>> call = apiInterface.getFilteredMotor(id, "0", merk, tipe, tahun);
+        Call<List<Motor>> call = apiInterface.getFilteredMotor(id, "0", merk, tipe, tahun,"0");
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
