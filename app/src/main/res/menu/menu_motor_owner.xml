@@ -7,7 +7,7 @@
         android:id="@+id/hjm"
         android:icon="@drawable/ic_refresh_512"
         android:title="hjm"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
 
 
     <item
@@ -15,18 +15,24 @@
         android:icon="@android:drawable/ic_menu_search"
         android:title="Search"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
+        app:showAsAction="collapseActionView" />
 
     <item
         android:id="@+id/filter"
         android:icon="@drawable/filter"
         android:title="Filter"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
 
 
     <item
         android:id="@+id/tambah"
         android:icon="@drawable/ic_plus"
+        android:title="Tambah"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/approve"
+        android:icon="@drawable/ic_approval"
         android:title="Tambah"
         app:showAsAction="always" />
 

@@ -87,13 +87,12 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
         if (motor.getHjm() == null || motor.getHjm() == 0) {
             motorViewHolder.textHjm.setText("HJM belum terisi");
             motorViewHolder.textHjm.setTextColor(Color.parseColor("#F44336"));
-        }
-        else {
-            motorViewHolder.textHjm.setText(formatter(motor.getHjm()+""));
+        } else {
+            motorViewHolder.textHjm.setText(formatter(motor.getHjm() + ""));
             motorViewHolder.textHjm.setTextColor(Color.parseColor("#388E3C"));
 
         }
-        motorViewHolder.textHarga.setText(formatter(motor.getHarga()+""));
+        motorViewHolder.textHarga.setText(formatter(motor.getHarga() + ""));
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
@@ -102,13 +101,16 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             @Override
             public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
 
-                Log.v("coba",response.body().toString()) ;
+                Log.v("coba", response.body().toString());
 
                 String merk = response.body().get(0).getNamaMerk();
                 String tipe = response.body().get(0).getNamaTipe();
 
-                motorViewHolder.title.setText(merk + " " + tipe + " (" + motor.getTahun() + ")");
-
+                if (motor.getTahun() == 0) {
+                    motorViewHolder.title.setText(merk + " " + tipe + " (Baru)");
+                } else {
+                    motorViewHolder.title.setText(merk + " " + tipe + " (" + motor.getTahun() + ")");
+                }
             }
 
             @Override
@@ -141,7 +143,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, EditMotorActivity.class);
                 intent.putExtra(DATA_MOTOR, motor);
-                intent.putExtra("ada",false) ;
+                intent.putExtra("ada", false);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
@@ -161,12 +163,10 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             motorViewHolder.imgDeelete.setVisibility(View.GONE);
             motorViewHolder.imgDeal.setVisibility(View.GONE);
 
-        }
-        else {
+        } else {
             motorViewHolder.imgDeelete.setVisibility(View.VISIBLE);
             motorViewHolder.imgDeal.setVisibility(View.VISIBLE);
         }
-
 
 
         motorViewHolder.imgDeelete.setOnClickListener(new View.OnClickListener() {
@@ -230,8 +230,8 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, TransaksiActivity.class);
-                intent.putExtra("deal",true);
-                intent.putExtra("data",motor.getNoMesin());
+                intent.putExtra("deal", true);
+                intent.putExtra("data", motor.getNoMesin());
                 mContext.startActivity(intent);
             }
         });

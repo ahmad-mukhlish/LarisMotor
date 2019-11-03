@@ -53,6 +53,8 @@ public class MotorSalesActivity extends AppCompatActivity {
     private Spinner spinnerTipe;
     private Spinner spinnerTahun;
     private Spinner spinnerStatus;
+    private Spinner spinnerKondisi;
+
 
     private ArrayAdapter<String> merkAdapter;
     private ArrayAdapter<String> tipeAdapter;
@@ -155,6 +157,13 @@ public class MotorSalesActivity extends AppCompatActivity {
         spinnerStatus.setAdapter(statusAdapter);
 
         spinnerStatus.setVisibility(GONE);
+
+
+        final String[] kondisi = {"Pilih Kondisi","Mokas", "Mobar"};
+        spinnerKondisi = rootDialog.findViewById(R.id.spinner_kondisi);
+        ArrayAdapter<String> kondisiAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, kondisi);
+        spinnerKondisi.setAdapter(kondisiAdapter);
+
 
         getMerk();
         getTahun();
@@ -329,7 +338,7 @@ public class MotorSalesActivity extends AppCompatActivity {
     private void setFilter() {
 
 
-        String merk, tipe, tahun;
+        String merk, tipe, tahun, kondisi;
 
 
         if (spinnerMerk.getSelectedItemPosition() != 0) {
@@ -350,10 +359,19 @@ public class MotorSalesActivity extends AppCompatActivity {
             tahun = "-1";
         }
 
+        if (spinnerKondisi.getSelectedItemPosition() == 0) {
+            kondisi = "-1";
+        } else if (spinnerKondisi.getSelectedItemPosition() == 1) {
+            kondisi = "0";
+        } else {
+            kondisi = "1";
+        }
+
+
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
-        Call<List<Motor>> call = apiInterface.getFilteredMotor(id, "0", merk, tipe, tahun,"0");
+        Call<List<Motor>> call = apiInterface.getFilteredMotor(id, "0", merk, tipe, tahun,kondisi);
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
