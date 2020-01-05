@@ -63,8 +63,7 @@ public class SearchTipeAdapter extends RecyclerView.Adapter<SearchTipeAdapter.Ti
     public void onBindViewHolder(@NonNull TipeViewHolder holder, int position) {
         initProgressDialog();
         final MerkTipe tipe = mList.get(position);
-        holder.txtNamaTipe.setText(tipe.getNamaTipe());
-        holder.txtNamaMerk.setText(tipe.getNamaMerk());
+        holder.txtNamaMerk.setText(tipe.getNamaMerk() + " - "+tipe.getNamaTipe());
 
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,14 +150,13 @@ public class SearchTipeAdapter extends RecyclerView.Adapter<SearchTipeAdapter.Ti
 
     public class TipeViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView txtIdTipe, txtNamaTipe, txtNamaMerk;
+        private TextView  txtNamaMerk;
         private ImageView imgDelete, imgEdit;
 
         public TipeViewHolder(View itemView) {
             super(itemView);
 
             txtNamaMerk = itemView.findViewById(R.id.txt_nama_merk);
-            txtNamaTipe = itemView.findViewById(R.id.txt_nama_tipe);
             imgDelete = itemView.findViewById(R.id.imgDelete);
             imgEdit = itemView.findViewById(R.id.imgEdit);
         }

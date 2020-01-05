@@ -13,9 +13,11 @@ import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.MerkAdapter;
+import com.yayanheryanto.larismotor.interfaces.MerkToTipeInterface;
 import com.yayanheryanto.larismotor.model.Merk;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.owner.MasterActivity;
 
 import java.util.List;
 
@@ -26,13 +28,14 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MerkFragment extends Fragment {
+public class MerkFragment extends Fragment implements MerkToTipeInterface {
 
 
     private RecyclerView recyclerView;
     private MerkAdapter adapter;
     private LinearLayoutManager layoutManager;
     private ProgressDialog dialog;
+    private MerkFragment merkFragment;
 
     public MerkFragment() {
         // Required empty public constructor
@@ -43,17 +46,17 @@ public class MerkFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_merk, container, false);
 
-        view = inflater.inflate(R.layout.fragment_merk, container, false);
+        View view = inflater.inflate(R.layout.fragment_merk, container, false);
 
         initProgressDialog();
         recyclerView = view.findViewById(R.id.rvMerk);
 
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-
+        merkFragment = this;
         getMerk();
+
 
         return view;
     }
@@ -68,7 +71,7 @@ public class MerkFragment extends Fragment {
                 dialog.dismiss();
                 List<Merk> list = response.body();
 
-                adapter = new MerkAdapter(getContext(),list, getFragmentManager());
+                adapter = new MerkAdapter(getContext(),list,getFragmentManager(),merkFragment);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
@@ -90,4 +93,8 @@ public class MerkFragment extends Fragment {
         dialog.setCancelable(false);
     }
 
+    @Override
+    public void moveToTipe(int halaman) {
+        MasterActivity.view_pager.setCurrentItem(halaman);
+    }
 }

@@ -143,6 +143,10 @@ public class MotorActivity extends AppCompatActivity {
                 return true;
 
 
+            case R.id.approve:
+                sortApprove();
+                return true;
+
             case R.id.hjm:
                 filterHjm();
                 return true;
@@ -150,6 +154,39 @@ public class MotorActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void sortApprove() {
+        dialog.show();
+        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        String id = pref.getString(ID_USER, "");
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<List<Motor>> call = apiInterface.getMotorApprove(id);
+        call.enqueue(new Callback<List<Motor>>() {
+            @Override
+            public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
+                dialog.dismiss();
+                List<Motor> list = response.body();
+
+                adapter = new MotorAdapter(getApplicationContext(), list, MotorActivity.this);
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+//
+//                try {
+//                    Log.v("eh",response.errorBody().string());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Motor>> call, Throwable t) {
+                dialog.dismiss();
+                t.printStackTrace();
+                Toast.makeText(MotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

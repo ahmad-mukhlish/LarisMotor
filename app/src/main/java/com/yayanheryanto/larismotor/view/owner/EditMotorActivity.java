@@ -45,9 +45,6 @@ import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
-import com.yayanheryanto.larismotor.view.LoginActivity;
-import com.yayanheryanto.larismotor.view.sales.AddMotorSalesActivity;
-import com.yayanheryanto.larismotor.view.sales.EditMotorSalesActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -519,9 +516,9 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         } else if (resultCode == RESULT_OK && requestCode == 202) {
 
             Hawk.put("uri1", UCrop.getOutput(data));
-            Log.v("cikan",UCrop.getOutput(data).toString());
+            Log.v("cikan", UCrop.getOutput(data).toString());
             uri1 = Hawk.get("uri1");
-            Log.v("cikan",uri1.toString());
+            Log.v("cikan", uri1.toString());
             image1.setImageURI(uri1);
 
         } else if (resultCode == RESULT_OK && requestCode == 203) {
@@ -630,29 +627,35 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             builder.addFormDataPart("tenor", tenorMotor);
 
 
-
-        if (motor.getGambar() != null) {
-            builder.addFormDataPart("gambar", motor.getGambar());
-        }
-        if (motor.getGambar1() != null) {
-            builder.addFormDataPart("gambar1", motor.getGambar1());
-        }
-        if (motor.getGambar2() != null) {
-            builder.addFormDataPart("gambar2", motor.getGambar2());
-        }
+            if (motor.getGambar() != null) {
+                builder.addFormDataPart("gambar", motor.getGambar());
+            }
+            if (motor.getGambar1() != null) {
+                builder.addFormDataPart("gambar1", motor.getGambar1());
+            }
+            if (motor.getGambar2() != null) {
+                builder.addFormDataPart("gambar2", motor.getGambar2());
+            }
 
 //
 
-                for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
 
-                    if (i == 0) {
+                if (i == 0) {
+                    if (uri1 != null) {
                         file2 = new File(uri1.getPath());
-                    } else if (i == 1) {
+                    }
+                } else if (i == 1) {
+                    if (uri2 != null) {
                         file2 = new File(uri2.getPath());
-                    } else {
+                    }
+                } else {
+                    if (uri3 != null) {
                         file2 = new File(uri3.getPath());
                     }
+                }
 
+                if (file2 != null) {
                     try {
                         file = new Compressor(this).compressToFile(file2);
 
@@ -663,6 +666,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                     builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
                     Log.d(DEBUG, file.getName());
                 }
+            }
 
 //            }
             final MultipartBody requestBody = builder.build();
@@ -673,25 +677,25 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                 public void onResponse(Call<Motor> call, Response<Motor> response) {
                     dialog.dismiss();
 
-//                    try {
-//                        Log.v("coba",response.errorBody().string());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-
-                    if (response.body().getMessage().equals("success")) {
-                        Toast.makeText(EditMotorActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(EditMotorActivity.this, MotorActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(EditMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(EditMotorActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                    try {
+                        Log.v("coba", response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
+//                    if (response.body().getMessage().equals("success")) {
+//                        Toast.makeText(EditMotorActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
+//                        Intent intent = new Intent(EditMotorActivity.this, MotorActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        startActivity(intent);
+//                    } else {
+//                        Toast.makeText(EditMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+//                        Intent intent = new Intent(EditMotorActivity.this, LoginActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        startActivity(intent);
+//                    }
                 }
 
                 @Override

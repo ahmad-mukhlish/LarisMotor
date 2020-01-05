@@ -13,18 +13,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.orhanobut.hawk.Hawk;
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.fragment.MerkFragment;
 import com.yayanheryanto.larismotor.fragment.TipeFragment;
+import com.yayanheryanto.larismotor.interfaces.MerkToTipeInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.yayanheryanto.larismotor.config.config.DEBUG;
 
-public class MasterActivity extends AppCompatActivity {
+public class MasterActivity extends AppCompatActivity implements MerkToTipeInterface {
 
-    private ViewPager view_pager;
+    public static ViewPager view_pager;
     private TabLayout tab_layout;
     private int currentPage = 0;
     private SearchView searchView;
@@ -36,6 +38,9 @@ public class MasterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_master);
 
         initComponent();
+        getSupportActionBar().setElevation(0);
+        setTitle("Master Menu");
+
     }
 
     @Override
@@ -73,10 +78,10 @@ public class MasterActivity extends AppCompatActivity {
     }
 
     private void initComponent() {
-        view_pager = (ViewPager) findViewById(R.id.view_pager);
+        view_pager = findViewById(R.id.view_pager);
         setupViewPager(view_pager);
 
-        tab_layout = (TabLayout) findViewById(R.id.tab_layout);
+        tab_layout = findViewById(R.id.tab_layout);
         tab_layout.setupWithViewPager(view_pager);
     }
 
@@ -85,6 +90,9 @@ public class MasterActivity extends AppCompatActivity {
         adapter.addFragment(new MerkFragment(), "Merk");
         adapter.addFragment(new TipeFragment(), "Tipe");
         viewPager.setAdapter(adapter);
+
+
+
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -103,6 +111,12 @@ public class MasterActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void moveToTipe(int halaman) {
+        view_pager.setCurrentItem(halaman);
+    }
+
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 

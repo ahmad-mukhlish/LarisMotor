@@ -83,6 +83,9 @@ public class Motor implements Parcelable {
     @SerializedName("mediator")
     @Expose
     private Integer mediator;
+    @SerializedName("approved")
+    @Expose
+    private Integer approved;
 
     public Motor() {
     }
@@ -258,13 +261,18 @@ public class Motor implements Parcelable {
     }
 
 
+    public Integer getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Integer approved) {
+        this.approved = approved;
+    }
+
     @Override
     public String toString() {
         return super.toString();
     }
-
-
-
 
 
     protected Motor(Parcel in) {
@@ -290,6 +298,7 @@ public class Motor implements Parcelable {
         subsidi = in.readByte() == 0x00 ? null : in.readInt();
         pencairanLeasing = in.readByte() == 0x00 ? null : in.readInt();
         mediator = in.readByte() == 0x00 ? null : in.readInt();
+        approved = in.readByte() == 0x00 ? null : in.readInt();
     }
 
     @Override
@@ -395,6 +404,12 @@ public class Motor implements Parcelable {
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeInt(mediator);
+        }
+        if (approved == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(approved);
         }
     }
 

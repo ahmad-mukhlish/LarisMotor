@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -86,7 +87,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
                 .load(BASE_URL + "storage/motor/" + motor.getGambar()).error(R.drawable.mobar)
                 .into(holder.imageMotor);
 
-        holder.textHjm.setText(formatter(motor.getHarga()+""));
+        holder.textHjm.setText(formatter(motor.getHarga() + ""));
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<List<MerkTipe>> call = apiInterface.getMerkById(motor.getIdMerk() + "", motor.getIdTipe() + "");
@@ -138,11 +139,10 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
         String id = pref.getString(ID_USER, "");
 
 
-        if (!id.equals(motor.getIdUser()+"")) {
+        if (!id.equals(motor.getIdUser() + "")) {
             holder.imgEdit.setVisibility(View.GONE);
             holder.imgDeelete.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             holder.imgEdit.setVisibility(View.VISIBLE);
             holder.imgDeelete.setVisibility(View.VISIBLE);
         }
@@ -152,7 +152,7 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, EditMotorSalesActivity.class);
                 intent.putExtra(DATA_MOTOR, motor);
-                intent.putExtra("ada",false) ;
+                intent.putExtra("ada", false);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
@@ -225,16 +225,38 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
             }
         });
 
-        holder.imgDeal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, TransaksiActivity.class);
-                intent.putExtra("deal",true);
-                intent.putExtra("data",motor.getNoMesin());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
-            }
-        });
+        if (motor.getApproved() == 0) {
+
+            holder.imgDeal.setImageResource(R.drawable.ic_seru);
+            holder.imgDeal.setBackgroundColor(Color.parseColor("#F44336"));
+            holder.imgDeal.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext,"Motor Belum Diapprove",Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
+
+
+
+        } else {
+            holder.imgDeal.setImageResource(R.drawable.handshake);
+            holder.imgDeal.setBackgroundColor(Color.parseColor("#4CAF50"));
+            holder.imgDeal.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, TransaksiActivity.class);
+                    intent.putExtra("deal", true);
+                    intent.putExtra("data", motor.getNoMesin());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                }
+            });
+
+
+        }
+
 
     }
 
@@ -246,7 +268,8 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
     public class MotorViewHolder extends RecyclerView.ViewHolder {
 
 
-        private ImageView imageMotor, imgDeelete, imgEdit, imgDeal;;
+        private ImageView imageMotor, imgDeelete, imgEdit, imgDeal;
+        ;
         private TextView textNopol, textHjm, txtStatus, title;
         private View view;
 

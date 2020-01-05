@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.hawk.Hawk;
 import com.yayanheryanto.larismotor.R;
+import com.yayanheryanto.larismotor.interfaces.MerkToTipeInterface;
 import com.yayanheryanto.larismotor.view.owner.EditMerkActivity;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.view.owner.MasterActivity;
@@ -36,7 +39,7 @@ import static com.yayanheryanto.larismotor.config.config.DATA_MERK;
 import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
-public class MerkAdapter extends RecyclerView.Adapter<MerkAdapter.MerkViewHolder> {
+public class MerkAdapter extends RecyclerView.Adapter<MerkAdapter.MerkViewHolder>{
 
 
     private Context mContext;
@@ -44,13 +47,15 @@ public class MerkAdapter extends RecyclerView.Adapter<MerkAdapter.MerkViewHolder
     private FragmentManager parentActivity;
     private MerkAdapter adapter;
     private ProgressDialog progressDialog = null;
+    private MerkToTipeInterface merkToTipeInterface;
 
 
-    public MerkAdapter(Context mContext, List<Merk> mList, FragmentManager parentActivity) {
+    public MerkAdapter(Context mContext, List<Merk> mList, FragmentManager parentActivity, MerkToTipeInterface merkToTipeInterface) {
         this.mContext = mContext;
         this.mList = mList;
         this.parentActivity = parentActivity;
         this.adapter = this;
+        this.merkToTipeInterface = merkToTipeInterface;
     }
 
     @Override
@@ -63,17 +68,27 @@ public class MerkAdapter extends RecyclerView.Adapter<MerkAdapter.MerkViewHolder
     }
 
     private void initProgressDialog() {
-        progressDialog = new ProgressDialog((MasterActivity)mContext);
+        progressDialog = new ProgressDialog(mContext);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Sedang Memproses..");
         progressDialog.setCancelable(false);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MerkAdapter.MerkViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MerkAdapter.MerkViewHolder holder, final int position) {
         initProgressDialog();
         final Merk merk = mList.get(position);
         holder.txtNamaMerk.setText(merk.getNamaMerk());
+
+        holder.imgLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Hawk.init(mContext).build();
+                Hawk.put("merk",mList.get(position).getIdMerk());
+                merkToTipeInterface.moveToTipe(1);
+
+            }
+        });
 
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +155,8 @@ public class MerkAdapter extends RecyclerView.Adapter<MerkAdapter.MerkViewHolder
 
                         .create();
                 dialog.show();
+
+
             }
         });
     }
@@ -149,10 +166,11 @@ public class MerkAdapter extends RecyclerView.Adapter<MerkAdapter.MerkViewHolder
         return mList.size();
     }
 
+
     public class MerkViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtIdMerk, txtNamaMerk;
-        private ImageView imgDelete, imgEdit;
+        private ImageView imgDelete, imgEdit, imgLink;
 
         public MerkViewHolder(View itemView) {
             super(itemView);
@@ -160,7 +178,7 @@ public class MerkAdapter extends RecyclerView.Adapter<MerkAdapter.MerkViewHolder
             txtNamaMerk = itemView.findViewById(R.id.txt_nama_merk);
             imgDelete = itemView.findViewById(R.id.imgDelete);
             imgEdit = itemView.findViewById(R.id.imgEdit);
-
+            imgLink = itemView.findViewById(R.id.imgLink);
         }
     }
 }

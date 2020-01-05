@@ -57,7 +57,8 @@ public interface ApiInterface {
 
     @POST("api/addMotorBaru")
     Call<Motor> addMotorBaru(@Header("Authorization") String authorization,
-                         @Body RequestBody file);
+                             @Body RequestBody file);
+
     @FormUrlEncoded
     @POST("api/addSales")
     Call<Sales> addSales(@Header("Authorization") String authorization,
@@ -142,7 +143,7 @@ public interface ApiInterface {
 
 
     @GET("api/getTipeMotor")
-    Call<List<MerkTipe>> getTipeMotor();
+    Call<List<MerkTipe>> getTipeMotor(@Query("merk") Integer merk);
 
 
     @POST("api/getPendingBeli")
@@ -283,25 +284,25 @@ public interface ApiInterface {
     @POST("api/mokasWithCust")
     Call<Motor>
     mokasWithCust(@Header("Authorization") String authorization,
-                              @Field("no_mesin") String no_mesin,
-                              @Field("no_ktp") String no_ktp,
-                              @Field("nama") String nama,
-                              @Field("alamat") String alamat,
-                              @Field("no_telp") String no_telp,
-                              @Field("ttl") String ttl,
-                              @Field("agama") String agama,
-                              @Field("pekerjaan") String pekerjaan,
-                              @Field("whatsapp") String whatsapp,
-                              @Field("instagram") String instagram,
-                              @Field("facebook") String facebook,
-                              @Field("email") String email,
-                              @Field("harga_terjual") String harga_terjual,
-                              @Field("dp") String dp,
-                              @Field("cicilan") String cicilan,
-                              @Field("tenor") String tenor,
-                              @Field("pencairanLeasing") String pencairanLeasing,
-                              @Field("no_ktp_sales") String no_ktp_sales,
-                              @Field("mediator") String mediator);
+                  @Field("no_mesin") String no_mesin,
+                  @Field("no_ktp") String no_ktp,
+                  @Field("nama") String nama,
+                  @Field("alamat") String alamat,
+                  @Field("no_telp") String no_telp,
+                  @Field("ttl") String ttl,
+                  @Field("agama") String agama,
+                  @Field("pekerjaan") String pekerjaan,
+                  @Field("whatsapp") String whatsapp,
+                  @Field("instagram") String instagram,
+                  @Field("facebook") String facebook,
+                  @Field("email") String email,
+                  @Field("harga_terjual") String harga_terjual,
+                  @Field("dp") String dp,
+                  @Field("cicilan") String cicilan,
+                  @Field("tenor") String tenor,
+                  @Field("pencairanLeasing") String pencairanLeasing,
+                  @Field("no_ktp_sales") String no_ktp_sales,
+                  @Field("mediator") String mediator);
 
 
     @FormUrlEncoded
@@ -488,5 +489,14 @@ public interface ApiInterface {
 
     @GET("api/getHjmMotor")
     Call<List<Motor>> getHjmMotor();
+
+    @FormUrlEncoded
+    @POST("api/approve")
+    Call<Motor> approve(@Header("Authorization") String authorization,
+                              @Field("no_mesin") String nomorMesin);
+
+
+    @POST("api/getMotorApprove")
+    Call<List<Motor>> getMotorApprove(@Query("id_user") String id_user);
 }
 

@@ -47,7 +47,6 @@ import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
-import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -528,22 +527,30 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         for (int i = 0; i < 3; i++) {
 
             if (i == 0) {
-                file2 = new File(uri1.getPath());
+                if (uri1 != null) {
+                    file2 = new File(uri1.getPath());
+                }
             } else if (i == 1) {
-                file2 = new File(uri2.getPath());
+                if (uri2 != null) {
+                    file2 = new File(uri2.getPath());
+                }
             } else {
-                file2 = new File(uri3.getPath());
+                if (uri3 != null) {
+                    file2 = new File(uri3.getPath());
+                }
             }
 
-            try {
-                file = new Compressor(this).compressToFile(file2);
+            if (file2 != null) {
+                try {
+                    file = new Compressor(this).compressToFile(file2);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e("Error", e.getMessage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("Error", e.getMessage());
+                }
+                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+                Log.d(DEBUG, file.getName());
             }
-            builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-            Log.d(DEBUG, file.getName());
         }
 
         final MultipartBody requestBody = builder.build();

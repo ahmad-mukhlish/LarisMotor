@@ -77,7 +77,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
 
 
     @Override
-    public void onBindViewHolder(final MotorAdapter.MotorViewHolder motorViewHolder, int i) {
+    public void onBindViewHolder(final MotorAdapter.MotorViewHolder motorViewHolder, final int i) {
         initProgressDialog();
         final Motor motor = mList.get(i);
         Picasso.get()
@@ -168,6 +168,71 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             motorViewHolder.imgDeal.setVisibility(View.VISIBLE);
         }
 
+        if (motor.getApproved() == 0) {
+
+            motorViewHolder.imgDeal.setImageResource(R.drawable.ic_seru);
+            motorViewHolder.imgDeal.setBackgroundColor(Color.parseColor("#F44336"));
+            motorViewHolder.imgDeal.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    SharedPreferences pref = mContext.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+                    final SharedPreferences.Editor editor = pref.edit();
+                    String id = pref.getString(ID_USER, "");
+                    String token = pref.getString(ACCESTOKEN, "");
+
+                    ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+                    Call<Motor> call = apiInterface.approve(token, motor.getNoMesin());
+                    call.enqueue(new Callback<Motor>() {
+                        @Override
+                        public void onResponse(Call<Motor> call, Response<Motor> response) {
+                            progressDialog.dismiss();
+                            if (response.body().getMessage().equals("success")) {
+                                motorViewHolder.imgDeal.setImageResource(R.drawable.handshake);
+                                motorViewHolder.imgDeal.setBackgroundColor(Color.parseColor("#4CAF50"));
+                                motorViewHolder.imgDeal.setVisibility(View.VISIBLE);
+                                motorViewHolder.imgDeal.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(mContext, TransaksiActivity.class);
+                                        intent.putExtra("deal", true);
+                                        intent.putExtra("data", motor.getNoMesin());
+                                        mContext.startActivity(intent);
+                                    }
+                                });
+                                Toast.makeText(mContext, "Data Motor Berhasil Diapprove", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(mContext, "Token Tidak Valid", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Motor> call, Throwable t) {
+                            progressDialog.dismiss();
+                            t.printStackTrace();
+                            Toast.makeText(parentActivity, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+
+
+        } else {
+            motorViewHolder.imgDeal.setImageResource(R.drawable.handshake);
+            motorViewHolder.imgDeal.setBackgroundColor(Color.parseColor("#4CAF50"));
+            motorViewHolder.imgDeal.setVisibility(View.VISIBLE);
+            motorViewHolder.imgDeal.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, TransaksiActivity.class);
+                    intent.putExtra("deal", true);
+                    intent.putExtra("data", motor.getNoMesin());
+                    mContext.startActivity(intent);
+                }
+            });
+
+        }
+
 
         motorViewHolder.imgDeelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,15 +291,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
             }
         });
 
-        motorViewHolder.imgDeal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, TransaksiActivity.class);
-                intent.putExtra("deal", true);
-                intent.putExtra("data", motor.getNoMesin());
-                mContext.startActivity(intent);
-            }
-        });
+
     }
 
 

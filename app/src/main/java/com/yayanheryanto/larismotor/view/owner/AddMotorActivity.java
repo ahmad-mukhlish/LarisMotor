@@ -575,7 +575,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ConstantsCustomGallery.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == ConstantsCustomGallery.REQUEST_CODE &&
+                resultCode == Activity.RESULT_OK && data != null) {
             //The array list has the image paths of the selected images
 
             images = data.getParcelableArrayListExtra(ConstantsCustomGallery.INTENT_EXTRA_IMAGES);

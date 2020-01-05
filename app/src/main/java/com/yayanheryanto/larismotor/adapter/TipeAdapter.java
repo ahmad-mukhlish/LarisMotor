@@ -76,8 +76,7 @@ public class TipeAdapter extends RecyclerView.Adapter<TipeAdapter.TipeViewHolder
     public void onBindViewHolder(@NonNull TipeAdapter.TipeViewHolder holder, int position) {
         initProgressDialog();
         final MerkTipe tipe = mList.get(position);
-        holder.txtNamaTipe.setText(tipe.getNamaTipe());
-        holder.txtNamaMerk.setText(tipe.getNamaMerk());
+        holder.txtNamaMerk.setText(tipe.getNamaMerk() + " - "+tipe.getNamaTipe());
 
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,7 +161,6 @@ public class TipeAdapter extends RecyclerView.Adapter<TipeAdapter.TipeViewHolder
             super(itemView);
 
             txtNamaMerk = itemView.findViewById(R.id.txt_nama_merk);
-            txtNamaTipe = itemView.findViewById(R.id.txt_nama_tipe);
             imgDelete = itemView.findViewById(R.id.imgDelete);
             imgEdit = itemView.findViewById(R.id.imgEdit);
         }
