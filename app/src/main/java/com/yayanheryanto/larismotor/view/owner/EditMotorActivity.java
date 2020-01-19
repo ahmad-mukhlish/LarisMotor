@@ -477,28 +477,29 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             Uri uri = Uri.fromFile(new File(images.get(0).path));
 
             int codeImage = Hawk.get("codeImage");
+
+            UCrop.Options options = new UCrop.Options();
+            options.setFreeStyleCropEnabled(true);
+
             switch (codeImage) {
 
                 case 1: {
                     UCrop.of(uri, uri)
-                            .withAspectRatio(16, 9)
-                            .withMaxResultSize(1024, 1024)
+                            .withOptions(options)
                             .start(this, 202);
                     break;
                 }
 
                 case 2: {
                     UCrop.of(uri, uri)
-                            .withAspectRatio(16, 9)
-                            .withMaxResultSize(1024, 1024)
+                            .withOptions(options)
                             .start(this, 203);
                     break;
                 }
 
                 case 3: {
                     UCrop.of(uri, uri)
-                            .withAspectRatio(16, 9)
-                            .withMaxResultSize(1024, 1024)
+                            .withOptions(options)
                             .start(this, 204);
                     break;
                 }
@@ -677,25 +678,25 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                 public void onResponse(Call<Motor> call, Response<Motor> response) {
                     dialog.dismiss();
 
-                    try {
-                        Log.v("coba", response.errorBody().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-//                    if (response.body().getMessage().equals("success")) {
-//                        Toast.makeText(EditMotorActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
-//                        Intent intent = new Intent(EditMotorActivity.this, MotorActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(intent);
-//                    } else {
-//                        Toast.makeText(EditMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
-//                        Intent intent = new Intent(EditMotorActivity.this, LoginActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(intent);
+//                    try {
+//                        Log.v("coba", response.errorBody().string());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
 //                    }
+
+                    if (response.body().getMessage().equals("success")) {
+                        Toast.makeText(EditMotorActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EditMotorActivity.this, MotorActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(EditMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EditMotorActivity.this, EditMotorActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
                 }
 
                 @Override

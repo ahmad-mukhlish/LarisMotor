@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -467,28 +468,32 @@ public class AddMotorBaruActivity extends AppCompatActivity implements View.OnFo
             Uri uri = Uri.fromFile(new File(images.get(0).path));
 
             int codeImage = Hawk.get("codeImageMobar");
+
+            UCrop.Options options = new UCrop.Options();
+            options.setFreeStyleCropEnabled(true);
+
             switch (codeImage) {
 
                 case 1: {
+
+
+
                     UCrop.of(uri, uri)
-                            .withAspectRatio(16, 9)
-                            .withMaxResultSize(1024, 1024)
+                            .withOptions(options)
                             .start(this, 202);
                     break;
                 }
 
                 case 2: {
                     UCrop.of(uri, uri)
-                            .withAspectRatio(16, 9)
-                            .withMaxResultSize(1024, 1024)
+                            .withOptions(options)
                             .start(this, 203);
                     break;
                 }
 
                 case 3: {
                     UCrop.of(uri, uri)
-                            .withAspectRatio(16, 9)
-                            .withMaxResultSize(1024, 1024)
+                            .withOptions(options)
                             .start(this, 204);
                     break;
                 }
