@@ -25,7 +25,7 @@ import retrofit2.Response;
 public class LaporanActivity extends AppCompatActivity {
 
     private static final String[] TABLE_HEADERS = {"No.", "Tanggal", "Nopol/Nosin", "Pembeli", "Sales",
-            "Kondisi", "Bayar", "Harga Terjual", "Subsidi", "Mediator", "Netto"
+            "Kondisi", "Bayar", "Harga Terjual", "HJM" , "Subsidi", "Mediator", "Netto"
     };
     private TableView tableView;
     private LaporanAdapter adapter;
@@ -44,7 +44,7 @@ public class LaporanActivity extends AppCompatActivity {
 
         tableView = findViewById(R.id.tableView);
         tableView.setHeaderAdapter(new SimpleTableHeaderAdapter(this, TABLE_HEADERS));
-        TableColumnDpWidthModel columnModel = new TableColumnDpWidthModel(this, 11, 100);
+        TableColumnDpWidthModel columnModel = new TableColumnDpWidthModel(this, 12, 100);
         columnModel.setColumnWidth(0, 60);
         columnModel.setColumnWidth(1, 120);
         columnModel.setColumnWidth(2, 150);
@@ -53,6 +53,7 @@ public class LaporanActivity extends AppCompatActivity {
         columnModel.setColumnWidth(8, 200);
         columnModel.setColumnWidth(9, 200);
         columnModel.setColumnWidth(10, 200);
+        columnModel.setColumnWidth(11, 200);
         tableView.setColumnModel(columnModel);
 
         getTransaksi();

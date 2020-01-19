@@ -38,7 +38,17 @@ public class Transaksi {
     @SerializedName("harga_terjual")
     @Expose
     private String terjual;
+    @SerializedName("hjm")
+    @Expose
+    private String hjm;
 
+    public String getHjm() {
+        return hjm;
+    }
+
+    public void setHjm(String hjm) {
+        this.hjm = hjm;
+    }
 
     private int nomor;
     private boolean sama;

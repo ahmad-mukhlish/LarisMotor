@@ -87,5 +87,10 @@ public class HelperClass {
 
     }
 
+    public static String getFirstName(String fullname) {
+        String[] parts = fullname.split(" ");
+        return parts[0];
+    }
+
 
 }

@@ -16,6 +16,7 @@ import java.util.Locale;
 import de.codecrafters.tableview.TableDataAdapter;
 
 import static com.yayanheryanto.larismotor.helper.HelperClass.formatter;
+import static com.yayanheryanto.larismotor.helper.HelperClass.getFirstName;
 
 public class LaporanAdapter extends TableDataAdapter<Transaksi> {
 
@@ -53,12 +54,15 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
                 renderedView = renderHargaTerjual(transaksi);
                 break;
             case 8:
-                renderedView = renderSubsidi(transaksi);
+                renderedView = renderHJM(transaksi);
                 break;
             case 9:
-                renderedView = renderMediator(transaksi);
+                renderedView = renderSubsidi(transaksi);
                 break;
             case 10:
+                renderedView = renderMediator(transaksi);
+                break;
+            case 11:
                 renderedView = renderNetto(transaksi);
                 break;
 
@@ -105,7 +109,7 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
 
 
     private View renderSales(final Transaksi transaksi) {
-        return renderString(transaksi.getSales());
+        return renderString(getFirstName(transaksi.getSales()));
     }
 
     private View renderKondisi(final Transaksi transaksi) {
@@ -156,6 +160,12 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
         }
         return renderString(formatter(hasil));
     }
+
+    private View renderHJM(final Transaksi transaksi) {
+        return renderString(formatter(transaksi.getHjm() + ""));
+    }
+
+
 
     private View renderSubsidi(final Transaksi transaksi) {
 
