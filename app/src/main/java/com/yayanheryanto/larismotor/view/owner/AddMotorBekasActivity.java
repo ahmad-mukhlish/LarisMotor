@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -75,7 +74,7 @@ import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
 import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
 
-public class AddMotorActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class AddMotorBekasActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private Button btnUpload, btnSave, btnCamera, check;
     private List<Merk> merk;
@@ -155,7 +154,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         image1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AddMotorActivity.this, AlbumSelectActivity.class);
+                Intent intent = new Intent(AddMotorBekasActivity.this, AlbumSelectActivity.class);
                 intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
                 startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
                 Hawk.put("codeImage", 1);
@@ -165,7 +164,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         image2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AddMotorActivity.this, AlbumSelectActivity.class);
+                Intent intent = new Intent(AddMotorBekasActivity.this, AlbumSelectActivity.class);
                 intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
                 startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
                 Hawk.put("codeImage", 2);
@@ -175,7 +174,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         image3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AddMotorActivity.this, AlbumSelectActivity.class);
+                Intent intent = new Intent(AddMotorBekasActivity.this, AlbumSelectActivity.class);
                 intent.putExtra(ConstantsCustomGallery.INTENT_EXTRA_LIMIT, 1); // set limit for image selection
                 startActivityForResult(intent, ConstantsCustomGallery.REQUEST_CODE);
                 Hawk.put("codeImage", 3);
@@ -217,7 +216,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                         } else if (response.body().getNoMesin().equals("0")) {
                             Toast.makeText(getBaseContext(), "Motor sudah tersedia", Toast.LENGTH_SHORT).show();
                         } else {
-                            Intent intent = new Intent(AddMotorActivity.this, EditMotorActivity.class);
+                            Intent intent = new Intent(AddMotorBekasActivity.this, EditMotorActivity.class);
                             intent.putExtra(DATA_MOTOR, response.body());
                             intent.putExtra("ada", true);
 
@@ -364,7 +363,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onFailure(Call<List<Merk>> call, Throwable t) {
                 t.printStackTrace();
-                Toast.makeText(AddMotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddMotorBekasActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -395,7 +394,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             public void onFailure(Call<List<Tipe>> call, Throwable t) {
                 dialog.dismiss();
                 t.printStackTrace();
-                Toast.makeText(AddMotorActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddMotorBekasActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -406,7 +405,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         switch (view.getId()) {
 
             case R.id.btnSave:
-                uploadImage();
+                uploadData();
                 break;
 
             case R.id.btnCamera: {
@@ -454,11 +453,21 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
         return result;
     }
 
-    private void uploadImage() {
+    private void uploadData() {
+
+        String mesin = no_mesin.getText().toString();
+        String polisi = no_polisi.getText().toString();
+        String rangka = no_rangka.getText().toString();
+        String tahunMotor = tahun.getText().toString();
+
+
         if (checkImageResource(this, image1, R.drawable.motorbike) || checkImageResource(this, image2, R.drawable.motorbike)
                 || checkImageResource(this, image3, R.drawable.motorbike)) {
             Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
-        } else {
+        }
+        else if (mesin.length() < 4 || rangka.length() < 4 || tahunMotor.length() != 4 || hargaMotor == null) {
+            Toast.makeText(this, "Data Motor Masih Belum Valid", Toast.LENGTH_SHORT).show();
+        } else  {
             dialog.show();
 
 
@@ -475,12 +484,8 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                 statusMotor = "0";
             }
 
-            String mesin = no_mesin.getText().toString();
-            String polisi = no_polisi.getText().toString();
-            String rangka = no_rangka.getText().toString();
 
             hjmMotor = hjm.getText().toString();
-            String tahunMotor = tahun.getText().toString();
 
             hargaMotor = harga.getText().toString();
 
@@ -505,8 +510,19 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
             builder.addFormDataPart("id_user", id);
             builder.addFormDataPart("harga", clearDot(hargaMotor));
             builder.addFormDataPart("harga_terjual", clearDot(hargaTerjual));
-            builder.addFormDataPart("dp", clearDot(dpMotor));
-            builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
+
+            if (dpMotor != null) {
+
+                builder.addFormDataPart("dp", clearDot(dpMotor));
+
+            }
+
+            if (cicilanMotor != null) {
+
+                builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
+
+            }
+
             builder.addFormDataPart("tenor", tenorMotor);
 
 
@@ -546,16 +562,16 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                 public void onResponse(Call<Motor> call, Response<Motor> response) {
                     dialog.dismiss();
                     if (response.body().getMessage().equals("success")) {
-                        Toast.makeText(AddMotorActivity.this, "Motor Berhasil Ditambah", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AddMotorActivity.this, MotorActivity.class);
+                        Toast.makeText(AddMotorBekasActivity.this, "Motor Berhasil Ditambah", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddMotorBekasActivity.this, MotorActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         pass = 0;
                         finish();
                     } else {
-                        Toast.makeText(AddMotorActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AddMotorActivity.this, LoginActivity.class);
+                        Toast.makeText(AddMotorBekasActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddMotorBekasActivity.this, LoginActivity.class);
                         startActivity(intent);
                         pass = 0;
                         finish();
@@ -566,7 +582,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
                 public void onFailure(Call<Motor> call, Throwable t) {
                     dialog.dismiss();
                     t.printStackTrace();
-                    Toast.makeText(AddMotorActivity.this, "Terjadi kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddMotorBekasActivity.this, "Terjadi kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -741,7 +757,7 @@ public class AddMotorActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(AddMotorActivity.this, MotorActivity.class));
+        startActivity(new Intent(AddMotorBekasActivity.this, MotorActivity.class));
         pass = 0;
     }
 

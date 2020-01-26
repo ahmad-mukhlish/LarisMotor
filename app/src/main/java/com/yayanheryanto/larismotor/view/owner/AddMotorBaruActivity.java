@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -64,7 +62,7 @@ import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
 import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
-import static com.yayanheryanto.larismotor.view.owner.AddMotorActivity.checkImageResource;
+import static com.yayanheryanto.larismotor.view.owner.AddMotorBekasActivity.checkImageResource;
 
 public class AddMotorBaruActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -277,6 +275,8 @@ public class AddMotorBaruActivity extends AppCompatActivity implements View.OnFo
                 checkImageResource(this, image2, R.drawable.motorbike)
                 || checkImageResource(this, image3, R.drawable.motorbike)) {
             Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
+        } else if (hargaMotor == null) {
+            Toast.makeText(this, "Harga Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
         } else {
             dialog.show();
             SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
@@ -475,7 +475,6 @@ public class AddMotorBaruActivity extends AppCompatActivity implements View.OnFo
             switch (codeImage) {
 
                 case 1: {
-
 
 
                     UCrop.of(uri, uri)

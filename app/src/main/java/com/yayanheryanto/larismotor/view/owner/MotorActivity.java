@@ -30,9 +30,7 @@ import com.yayanheryanto.larismotor.model.Motor;
 import com.yayanheryanto.larismotor.model.Tipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
-import com.yayanheryanto.larismotor.view.sales.EditMotorSalesActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -537,7 +535,7 @@ public class MotorActivity extends AppCompatActivity {
                 Intent intent;
 
                 if (tersedia.equalsIgnoreCase("Motor Bekas")) {
-                    intent = new Intent(MotorActivity.this, AddMotorActivity.class);
+                    intent = new Intent(MotorActivity.this, AddMotorBekasActivity.class);
                 } else {
                     intent = new Intent(MotorActivity.this, AddMotorBaruActivity.class);
 

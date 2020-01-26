@@ -24,7 +24,7 @@
         <activity android:name=".view.owner.DetailMotorActivity" />
         <activity android:name=".view.owner.CustomerActivity" />
         <activity android:name=".view.LoginActivity" />
-        <activity android:name=".view.owner.AddMotorActivity" />
+        <activity android:name=".view.owner.AddMotorBekasActivity" />
         <activity android:name=".view.owner.EditMotorActivity" />
         <activity android:name=".view.owner.SalesActivity" />
         <activity android:name=".view.owner.AddSalesActivity" />

@@ -431,14 +431,14 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         String polisi = no_polisi.getText().toString();
         String rangka = no_rangka.getText().toString();
         String tahunMotor = tahun.getText().toString();
-        String tenorMotor = tenor.getText().toString();
+
 
 
         if (checkImageResource(this, image1, R.drawable.motorbike) || checkImageResource(this, image2, R.drawable.motorbike)
         || checkImageResource(this, image3, R.drawable.motorbike)
         ) {
             Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
-        } else if (mesin.length() < 4 || rangka.length() < 4 || tahunMotor.length() != 4 || Integer.parseInt(hargaMotor) == 0) {
+        } else if (mesin.length() < 4 || rangka.length() < 4 || tahunMotor.length() != 4 || hargaMotor == null) {
             Toast.makeText(this, "Data Motor Masih Belum Valid", Toast.LENGTH_SHORT).show();
         } else  {
             dialog.show();
@@ -449,6 +449,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             String id = pref.getString(ID_USER, "");
             String token = pref.getString(ACCESTOKEN, "");
 
+            String tenorMotor = tenor.getText().toString();
 
 
 
