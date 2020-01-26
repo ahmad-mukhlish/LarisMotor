@@ -162,7 +162,15 @@ public class LaporanAdapter extends TableDataAdapter<Transaksi> {
     }
 
     private View renderHJM(final Transaksi transaksi) {
-        return renderString(formatter(transaksi.getHjm() + ""));
+
+        String hasil = "-" ;
+
+        if (transaksi.getHjm() != null) {
+            hasil = formatter(transaksi.getHjm() + "");
+        }
+
+
+        return renderString(hasil);
     }
 
 

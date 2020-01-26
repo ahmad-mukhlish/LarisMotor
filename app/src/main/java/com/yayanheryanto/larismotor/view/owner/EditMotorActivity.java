@@ -690,6 +690,9 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             }
 
 //            }
+
+
+
             final MultipartBody requestBody = builder.build();
             ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
             Call<Motor> call = apiInterface.updateMotor(token, requestBody);

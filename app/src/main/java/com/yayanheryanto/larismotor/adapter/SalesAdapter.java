@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.owner.DetailSalesActivity;
-import com.yayanheryanto.larismotor.view.owner.EditSalesActivity;
-import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.model.Sales;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.view.owner.DetailSalesActivity;
+import com.yayanheryanto.larismotor.view.owner.EditSalesActivity;
 
 import java.util.List;
 
@@ -114,17 +115,17 @@ public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.SalesViewHol
 
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<Sales> call = apiInterface.deleteSales(token, sales.getNoKtpSales(), sales.getIdUser()+"",id);
+                                Call<Sales> call = apiInterface.deleteSales(token, sales.getNoKtpSales(), sales.getIdUser() + "", id);
                                 call.enqueue(new Callback<Sales>() {
                                     @Override
                                     public void onResponse(Call<Sales> call, Response<Sales> response) {
                                         progressDialog.dismiss();
-                                        if (response.body().getMessage().equals("success")){
+                                        if (response.body().getMessage().equals("success")) {
                                             mList.remove(sales);
                                             adapter.notifyDataSetChanged();
                                             Toast.makeText(parentActivity, "Sales Berhasil Dihapus", Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            editor.putString(ID_USER,"");
+                                        } else {
+                                            editor.putString(ID_USER, "");
                                             editor.putString(ACCESTOKEN, "");
                                             editor.commit();
                                             Toast.makeText(parentActivity, "Token Tidak Valid", Toast.LENGTH_SHORT).show();
@@ -137,6 +138,7 @@ public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.SalesViewHol
                                     @Override
                                     public void onFailure(Call<Sales> call, Throwable t) {
                                         progressDialog.dismiss();
+                                        Log.v("errorcuy", t.getMessage());
                                         t.printStackTrace();
                                         Toast.makeText(parentActivity, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
                                     }
