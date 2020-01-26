@@ -27,6 +27,7 @@ import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.view.owner.DetailMotorActivity;
 import com.yayanheryanto.larismotor.view.owner.EditMotorActivity;
+import com.yayanheryanto.larismotor.view.owner.MotorActivity;
 import com.yayanheryanto.larismotor.view.transaksi.TransaksiActivity;
 
 import java.util.List;
@@ -258,6 +259,7 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
                                         if (response.body().getMessage().equals("success")) {
                                             mList.remove(motor);
                                             adapter.notifyDataSetChanged();
+                                            mContext.startActivity(new Intent(mContext, MotorActivity.class));
                                             Toast.makeText(parentActivity, "Data Motor Berhasil Dihapus", Toast.LENGTH_SHORT).show();
                                         } else {
                                             editor.putString(ID_USER, "");

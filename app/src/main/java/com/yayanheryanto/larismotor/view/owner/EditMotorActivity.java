@@ -222,6 +222,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         setTitle("Edit Motor");
         Hawk.init(this).build();
 
+
     }
 
     private void getDataFromIntent() {
@@ -251,7 +252,16 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             hjm.setText(createDot(hjmMotor));
         }
 
-        tahun.setText("" + motor.getTahun());
+        if (motor.getKondisi() == 1) {
+
+            tahun.setVisibility(View.GONE);
+
+        } else {
+
+            tahun.setText("" + motor.getTahun());
+
+        }
+
         harga.setText(createDot(hargaMotor));
 
         if (motor.getHargaTerjual() == null || motor.getHargaTerjual() == 0) {
@@ -444,7 +454,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.btnSave:
-                uploadImage();
+                uploadData();
                 break;
 
 
@@ -583,7 +593,7 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
         return path;
     }
 
-    private void uploadImage() {
+    private void uploadData() {
         if (checkImageResource(this, image1, R.drawable.motorbike) || checkImageResource(this, image2, R.drawable.motorbike)
                 || checkImageResource(this, image3, R.drawable.motorbike)
         ) {
@@ -605,7 +615,10 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             String mesin = no_mesin.getText().toString();
             String polisi = no_polisi.getText().toString();
             String rangka = no_rangka.getText().toString();
-            String tahunMotor = tahun.getText().toString();
+            String tahunMotor = null;
+            if (motor.getKondisi() == 0) {
+                tahunMotor = tahun.getText().toString();
+            }
             String tenorMotor = tenor.getText().toString();
 
 
@@ -616,7 +629,14 @@ public class EditMotorActivity extends AppCompatActivity implements View.OnClick
             builder.addFormDataPart("no_mesin", mesin);
             builder.addFormDataPart("no_rangka", rangka);
             builder.addFormDataPart("hjm", clearDot(hjmMotor));
-            builder.addFormDataPart("tahun", tahunMotor);
+
+            if (motor.getKondisi() == 0) {
+                builder.addFormDataPart("tahun", tahunMotor);
+            } else {
+                builder.addFormDataPart("tahun", "0000");
+
+            }
+
             builder.addFormDataPart("status", statusMotor);
             builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
             builder.addFormDataPart("merk", String.valueOf(merkMotor));

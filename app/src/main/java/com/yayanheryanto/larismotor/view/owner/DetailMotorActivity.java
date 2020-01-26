@@ -174,6 +174,7 @@ public class DetailMotorActivity extends AppCompatActivity {
                     } else {
                         nilaiSubsidi.setText(formatter(motor.getSubsidi()));
                     }
+                    tahun.setText("Baru");
 
                 } else {
                     kondisi.setText("Bekas");
