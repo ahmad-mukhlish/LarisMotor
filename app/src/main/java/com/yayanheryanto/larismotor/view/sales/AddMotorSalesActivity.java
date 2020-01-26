@@ -379,7 +379,7 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
                 break;
 
             case R.id.btnSave:
-                uploadImage();
+                uploadData();
                 break;
 
             case R.id.btnCamera: {
@@ -425,13 +425,22 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
         return result;
     }
 
-    private void uploadImage() {
+    private void uploadData() {
+
+        String mesin = no_mesin.getText().toString();
+        String polisi = no_polisi.getText().toString();
+        String rangka = no_rangka.getText().toString();
+        String tahunMotor = tahun.getText().toString();
+        String tenorMotor = tenor.getText().toString();
+
 
         if (checkImageResource(this, image1, R.drawable.motorbike) || checkImageResource(this, image2, R.drawable.motorbike)
         || checkImageResource(this, image3, R.drawable.motorbike)
         ) {
             Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (mesin.length() < 4 || rangka.length() < 4 || tahunMotor.length() != 4 || Integer.parseInt(hargaMotor) == 0) {
+            Toast.makeText(this, "Data Motor Masih Belum Valid", Toast.LENGTH_SHORT).show();
+        } else  {
             dialog.show();
 
 
@@ -441,11 +450,6 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             String token = pref.getString(ACCESTOKEN, "");
 
 
-            String mesin = no_mesin.getText().toString();
-            String polisi = no_polisi.getText().toString();
-            String rangka = no_rangka.getText().toString();
-            String tahunMotor = tahun.getText().toString();
-            String tenorMotor = tenor.getText().toString();
 
 
             MultipartBody.Builder builder = new MultipartBody.Builder();
@@ -459,8 +463,20 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             builder.addFormDataPart("merk", String.valueOf(merkMotor));
             builder.addFormDataPart("id_user", id);
             builder.addFormDataPart("harga", clearDot(hargaMotor));
-            builder.addFormDataPart("dp", clearDot(dpMotor));
-            builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
+
+            if (dpMotor != null) {
+
+                builder.addFormDataPart("dp", clearDot(dpMotor));
+
+            }
+
+            if (cicilanMotor != null) {
+
+                builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
+
+            }
+
+
             builder.addFormDataPart("tenor", tenorMotor);
 
             if (images == null) {
@@ -494,6 +510,9 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             call.enqueue(new Callback<Motor>() {
                 @Override
                 public void onResponse(Call<Motor> call, Response<Motor> response) {
+
+
+
                     dialog.dismiss();
                     if (response.body().getMessage().equals("success")) {
                         Toast.makeText(AddMotorSalesActivity.this, "Motor Berhasil Ditambah", Toast.LENGTH_SHORT).show();
@@ -533,32 +552,32 @@ public class AddMotorSalesActivity extends AppCompatActivity implements View.OnC
             Uri uri = Uri.fromFile(new File(images.get(0).path));
 
             int codeImage = Hawk.get("codeImage");
-            UCrop.Options options = new UCrop.Options();
-            options.setFreeStyleCropEnabled(true);
 
             switch (codeImage) {
 
                 case 1: {
                     UCrop.of(uri, uri)
-                            .withOptions(options)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
                             .start(this, 202);
                     break;
                 }
 
                 case 2: {
                     UCrop.of(uri, uri)
-                            .withOptions(options)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
                             .start(this, 203);
                     break;
                 }
 
                 case 3: {
                     UCrop.of(uri, uri)
-                            .withOptions(options)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
                             .start(this, 204);
                     break;
                 }
-
             }
 
 

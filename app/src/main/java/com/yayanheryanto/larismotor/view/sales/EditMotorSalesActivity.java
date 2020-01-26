@@ -75,6 +75,7 @@ import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 import static com.yayanheryanto.larismotor.helper.HelperClass.clearDot;
 import static com.yayanheryanto.larismotor.helper.HelperClass.createDot;
+import static com.yayanheryanto.larismotor.view.sales.AddMotorSalesActivity.checkImageResource;
 
 
 public class EditMotorSalesActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
@@ -422,27 +423,28 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
             Uri uri = Uri.fromFile(new File(images.get(0).path));
 
             int codeImage = Hawk.get("codeImage");
-            UCrop.Options options = new UCrop.Options();
-            options.setFreeStyleCropEnabled(true);
             switch (codeImage) {
 
                 case 1: {
                     UCrop.of(uri, uri)
-                            .withOptions(options)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
                             .start(this, 202);
                     break;
                 }
 
                 case 2: {
                     UCrop.of(uri, uri)
-                            .withOptions(options)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
                             .start(this, 203);
                     break;
                 }
 
                 case 3: {
                     UCrop.of(uri, uri)
-                            .withOptions(options)
+                            .withAspectRatio(16, 9)
+                            .withMaxResultSize(1024, 1024)
                             .start(this, 204);
                     break;
                 }
@@ -481,10 +483,6 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
     }
 
     private void uploadImage(String status) {
-        dialog.show();
-        SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-        String token = pref.getString(ACCESTOKEN, "");
-        String id = pref.getString(ID_USER, "");
 
 
         String mesin = no_mesin.getText().toString();
@@ -494,94 +492,119 @@ public class EditMotorSalesActivity extends AppCompatActivity implements View.On
         String tenorMotor = tenor.getText().toString();
 
 
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart("no_mesin_awal", motor.getNoMesin());
-        builder.addFormDataPart("no_polisi", polisi);
-        builder.addFormDataPart("no_mesin", mesin);
-        builder.addFormDataPart("no_rangka", rangka);
-        builder.addFormDataPart("tahun", tahunMotor);
-        builder.addFormDataPart("status", status);
-        builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
-        builder.addFormDataPart("merk", String.valueOf(merkMotor));
-        builder.addFormDataPart("id_user", id);
-        builder.addFormDataPart("harga", clearDot(hargaMotor));
-        builder.addFormDataPart("dp", clearDot(dpMotor));
-        builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
-        builder.addFormDataPart("tenor", tenorMotor);
+        if (checkImageResource(this, image1, R.drawable.motorbike) || checkImageResource(this, image2, R.drawable.motorbike)
+                || checkImageResource(this, image3, R.drawable.motorbike)
+        ) {
+            Toast.makeText(this, "Gambar Motor Belum Dimasukan", Toast.LENGTH_SHORT).show();
+        } else if (mesin.length() < 4 || rangka.length() < 4 || tahunMotor.length() != 4 || Integer.parseInt(hargaMotor) == 0) {
+            Toast.makeText(this, "Data Motor Masih Belum Valid", Toast.LENGTH_SHORT).show();
+        } else {
 
-        Log.v("cikan", status);
+            dialog.show();
+            SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+            String token = pref.getString(ACCESTOKEN, "");
+            String id = pref.getString(ID_USER, "");
 
-        if (motor.getGambar() != null) {
-            builder.addFormDataPart("gambar", motor.getGambar());
-        }
-        if (motor.getGambar1() != null) {
-            builder.addFormDataPart("gambar1", motor.getGambar1());
-        }
-        if (motor.getGambar2() != null) {
-            builder.addFormDataPart("gambar2", motor.getGambar2());
-        }
+            MultipartBody.Builder builder = new MultipartBody.Builder();
+            builder.setType(MultipartBody.FORM);
+            builder.addFormDataPart("no_mesin_awal", motor.getNoMesin());
+            builder.addFormDataPart("no_polisi", polisi);
+            builder.addFormDataPart("no_mesin", mesin);
+            builder.addFormDataPart("no_rangka", rangka);
+            builder.addFormDataPart("tahun", tahunMotor);
+            builder.addFormDataPart("status", status);
+            builder.addFormDataPart("tipe", String.valueOf(tipeMotor));
+            builder.addFormDataPart("merk", String.valueOf(merkMotor));
+            builder.addFormDataPart("id_user", id);
+            builder.addFormDataPart("harga", clearDot(hargaMotor));
 
+            if (dpMotor != null) {
 
-        for (int i = 0; i < 3; i++) {
+                builder.addFormDataPart("dp", clearDot(dpMotor));
 
-            if (i == 0) {
-                if (uri1 != null) {
-                    file2 = new File(uri1.getPath());
-                }
-            } else if (i == 1) {
-                if (uri2 != null) {
-                    file2 = new File(uri2.getPath());
-                }
-            } else {
-                if (uri3 != null) {
-                    file2 = new File(uri3.getPath());
-                }
             }
 
-            if (file2 != null) {
-                try {
-                    file = new Compressor(this).compressToFile(file2);
+            if (cicilanMotor != null) {
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("Error", e.getMessage());
-                }
-                builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
-                Log.d(DEBUG, file.getName());
+                builder.addFormDataPart("cicilan", clearDot(cicilanMotor));
+
             }
-        }
 
-        final MultipartBody requestBody = builder.build();
-        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<Motor> call = apiInterface.updateMotor(token, requestBody);
-        call.enqueue(new Callback<Motor>() {
-            @Override
-            public void onResponse(Call<Motor> call, Response<Motor> response) {
-                dialog.dismiss();
-                Log.d(DEBUG, String.valueOf(response.body().getMessage()));
-                if (response.body().getMessage().equals("success")) {
-                    Toast.makeText(EditMotorSalesActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(EditMotorSalesActivity.this, MotorSalesActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+            builder.addFormDataPart("tenor", tenorMotor);
+
+            Log.v("cikan", status);
+
+            if (motor.getGambar() != null) {
+                builder.addFormDataPart("gambar", motor.getGambar());
+            }
+            if (motor.getGambar1() != null) {
+                builder.addFormDataPart("gambar1", motor.getGambar1());
+            }
+            if (motor.getGambar2() != null) {
+                builder.addFormDataPart("gambar2", motor.getGambar2());
+            }
+
+
+            for (int i = 0; i < 3; i++) {
+
+                if (i == 0) {
+                    if (uri1 != null) {
+                        file2 = new File(uri1.getPath());
+                    }
+                } else if (i == 1) {
+                    if (uri2 != null) {
+                        file2 = new File(uri2.getPath());
+                    }
                 } else {
-                    Toast.makeText(EditMotorSalesActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(EditMotorSalesActivity.this, LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    if (uri3 != null) {
+                        file2 = new File(uri3.getPath());
+                    }
+                }
+
+                if (file2 != null) {
+                    try {
+                        file = new Compressor(this).compressToFile(file2);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.e("Error", e.getMessage());
+                    }
+                    builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+                    Log.d(DEBUG, file.getName());
                 }
             }
 
-            @Override
-            public void onFailure(Call<Motor> call, Throwable t) {
-                dialog.dismiss();
-                t.printStackTrace();
-                Toast.makeText(EditMotorSalesActivity.this, "Terjadi kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
-            }
-        });
+            final MultipartBody requestBody = builder.build();
+            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+            Call<Motor> call = apiInterface.updateMotor(token, requestBody);
+            call.enqueue(new Callback<Motor>() {
+                @Override
+                public void onResponse(Call<Motor> call, Response<Motor> response) {
+                    dialog.dismiss();
+                    Log.d(DEBUG, String.valueOf(response.body().getMessage()));
+                    if (response.body().getMessage().equals("success")) {
+                        Toast.makeText(EditMotorSalesActivity.this, "Data Motor Berhasil Diubah", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EditMotorSalesActivity.this, MotorSalesActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(EditMotorSalesActivity.this, "Token Tidak Valid, Silahkan Login", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EditMotorSalesActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Motor> call, Throwable t) {
+                    dialog.dismiss();
+                    t.printStackTrace();
+                    Toast.makeText(EditMotorSalesActivity.this, "Terjadi kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void goToCamera() {
