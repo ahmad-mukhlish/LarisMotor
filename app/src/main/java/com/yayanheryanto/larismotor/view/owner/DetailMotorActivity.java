@@ -33,7 +33,7 @@ public class DetailMotorActivity extends AppCompatActivity {
     private Slider slider;
     private TextView noMesin, noPolisi, noRangka, merk, tipe, tahun, hjm, status,
             kondisi, harga, dp, cicilan, tenor, nilaiSubsidi,
-            hargaTerjual, pembeli, telpPembeli, labelSubsidi;
+            hargaTerjual, pembeli, telpPembeli, labelSubsidi, namaSales;
     private ProgressDialog dialog;
     LinearLayout terjual, nopol, tersubsidi;
 
@@ -66,6 +66,7 @@ public class DetailMotorActivity extends AppCompatActivity {
         nilaiSubsidi = findViewById(R.id.subsidi);
         tersubsidi = findViewById(R.id.tersubsidi);
         labelSubsidi = findViewById(R.id.label_subsidi);
+        namaSales = findViewById(R.id.nama_sales);
 
         initProgressDialog();
 
@@ -94,6 +95,7 @@ public class DetailMotorActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Detail> call, Response<Detail> response) {
                 dialog.dismiss();
+                Log.v("cek",response.raw().body().toString());
                 Detail motor = response.body();
                 noMesin.setText(motor.getNoMesin());
                 noPolisi.setText(motor.getNoPolisi());
@@ -101,6 +103,7 @@ public class DetailMotorActivity extends AppCompatActivity {
                 merk.setText(motor.getNamaMerk());
                 tipe.setText(motor.getNamaTipe());
                 tahun.setText("" + motor.getTahun());
+                namaSales.setText(motor.getNamaSales());
 
                 if (motor.getHjm() == null) {
                     hjm.setText("-");

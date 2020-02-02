@@ -13,7 +13,6 @@ import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.KonfigInsentif;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
-import com.yayanheryanto.larismotor.view.owner.InsentifHasilOwnerActivity;
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class InsentifHasilSalesActivity extends AppCompatActivity {
 
         initProgressDialog();
 
-        salesTxt = findViewById(R.id.sales);
+        salesTxt = findViewById(R.id.nama_sales);
         dariTxt = findViewById(R.id.dari);
         hinggaTxt = findViewById(R.id.hingga);
         jumlahMobarTxt = findViewById(R.id.jumlah_mobar_sales);

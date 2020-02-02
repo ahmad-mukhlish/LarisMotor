@@ -78,7 +78,7 @@ public class InsentifHasilOwnerActivity extends AppCompatActivity implements Vie
         editPm = findViewById(R.id.edit_pm);
         hapusPm = findViewById(R.id.hapus_pm);
 
-        salesTxt = findViewById(R.id.sales);
+        salesTxt = findViewById(R.id.nama_sales);
         dariTxt = findViewById(R.id.dari);
         hinggaTxt = findViewById(R.id.hingga);
 

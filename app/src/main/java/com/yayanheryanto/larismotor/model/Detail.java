@@ -68,6 +68,13 @@ public class Detail implements Parcelable {
     @SerializedName("pencairan_leasing")
     @Expose
     private String pencairanLeasing;
+    @SerializedName("nama")
+    @Expose
+    private String namaSales;
+
+    public String getNamaSales() {
+        return namaSales;
+    }
 
     public String getNoMesin() {
         return noMesin;
