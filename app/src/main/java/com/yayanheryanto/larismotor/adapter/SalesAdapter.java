@@ -25,6 +25,7 @@ import com.yayanheryanto.larismotor.view.LoginActivity;
 import com.yayanheryanto.larismotor.view.owner.DetailSalesActivity;
 import com.yayanheryanto.larismotor.view.owner.EditSalesActivity;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -115,12 +116,18 @@ public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.SalesViewHol
 
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<Sales> call = apiInterface.deleteSales(token, sales.getNoKtpSales(), sales.getIdUser() + "", id);
-                                call.enqueue(new Callback<Sales>() {
+                                Call<String> call = apiInterface.deleteSales(token, sales.getNoKtpSales(), sales.getIdUser() + "", id);
+//                                try {
+//                                    Log.v("cikan",call.execute().toString());
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+                                call.enqueue(new Callback<String>() {
                                     @Override
-                                    public void onResponse(Call<Sales> call, Response<Sales> response) {
+                                    public void onResponse(Call<String> call, Response<String> response) {
                                         progressDialog.dismiss();
-                                        if (response.body().getMessage().equals("success")) {
+
+                                        if (response.body().equals("success")) {
                                             mList.remove(sales);
                                             adapter.notifyDataSetChanged();
                                             Toast.makeText(parentActivity, "Sales Berhasil Dihapus", Toast.LENGTH_SHORT).show();
@@ -136,7 +143,7 @@ public class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.SalesViewHol
                                     }
 
                                     @Override
-                                    public void onFailure(Call<Sales> call, Throwable t) {
+                                    public void onFailure(Call<String> call, Throwable t) {
                                         progressDialog.dismiss();
                                         Log.v("errorcuy", t.getMessage());
                                         t.printStackTrace();

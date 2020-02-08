@@ -63,15 +63,21 @@ public class SearchTipeAdapter extends RecyclerView.Adapter<SearchTipeAdapter.Ti
     public void onBindViewHolder(@NonNull TipeViewHolder holder, int position) {
         initProgressDialog();
         final MerkTipe tipe = mList.get(position);
-        holder.txtNamaMerk.setText(tipe.getNamaMerk() + " - "+tipe.getNamaTipe());
+        holder.txtNamaMerk.setText(tipe.getNamaMerk() + " - " + tipe.getNamaTipe());
 
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, EditTipeActivity.class);
-                intent.putExtra(DATA_TIPE, tipe);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
+                if (tipe.getNamaTipe().equalsIgnoreCase("Default")) {
+
+                    Toast.makeText(mContext, "default tidak boleh diedit", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Intent intent = new Intent(mContext, EditTipeActivity.class);
+                    intent.putExtra(DATA_TIPE, tipe);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                }
             }
         });
 
@@ -92,28 +98,30 @@ public class SearchTipeAdapter extends RecyclerView.Adapter<SearchTipeAdapter.Ti
                                 String token = pref.getString(ACCESTOKEN, "");
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<MerkTipe> call = apiInterface.deleteTipe(token, tipe.getIdTipe());
-                                call.enqueue(new Callback<MerkTipe>() {
+                                Call<String> call = apiInterface.deleteTipe(token, tipe.getIdTipe());
+                                call.enqueue(new Callback<String>() {
                                     @Override
-                                    public void onResponse(Call<MerkTipe> call, Response<MerkTipe> response) {
+                                    public void onResponse(Call<String> call, Response<String> response) {
                                         progressDialog.dismiss();
-                                        if (response.body().getMessage().equals("success")) {
+                                        if (response.body().equals("success")) {
                                             mList.remove(tipe);
                                             adapter.notifyDataSetChanged();
                                             Toast.makeText(mContext, "Tipe Berhasil Dihapus", Toast.LENGTH_SHORT).show();
-                                        } else {
+                                        } else if (response.body().equalsIgnoreCase("token tidak valid")) {
                                             editor.putString(ID_USER, "");
                                             editor.putString(ACCESTOKEN, "");
                                             editor.commit();
-                                            Toast.makeText(mContext, "Token Tidak Valid", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, response.body(), Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(mContext, LoginActivity.class);
                                             mContext.startActivity(intent);
                                             ((Activity) mContext).finish();
+                                        } else {
+                                            Toast.makeText(mContext, response.body(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
 
                                     @Override
-                                    public void onFailure(Call<MerkTipe> call, Throwable t) {
+                                    public void onFailure(Call<String> call, Throwable t) {
                                         progressDialog.dismiss();
                                         t.printStackTrace();
                                         Toast.makeText(mContext, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
@@ -150,7 +158,7 @@ public class SearchTipeAdapter extends RecyclerView.Adapter<SearchTipeAdapter.Ti
 
     public class TipeViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView  txtNamaMerk;
+        private TextView txtNamaMerk;
         private ImageView imgDelete, imgEdit;
 
         public TipeViewHolder(View itemView) {

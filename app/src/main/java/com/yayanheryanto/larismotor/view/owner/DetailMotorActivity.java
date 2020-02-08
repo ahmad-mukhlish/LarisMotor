@@ -106,6 +106,7 @@ public class DetailMotorActivity extends AppCompatActivity {
                 namaSales.setText(motor.getNamaSales());
 
                 if (motor.getHjm() == null) {
+
                     hjm.setText("-");
                 } else {
                     hjm.setText(formatter(motor.getHjm()));

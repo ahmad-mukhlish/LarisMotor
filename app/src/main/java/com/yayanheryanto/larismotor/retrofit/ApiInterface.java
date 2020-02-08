@@ -121,7 +121,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/deleteSales")
-    Call<Sales> deleteSales(@Header("Authorization") String authorization,
+    Call<String> deleteSales(@Header("Authorization") String authorization,
                             @Field("no_ktp_sales") String no_ktp_sales,
                             @Field("id_user") String id_user,
                             @Field("id_owner") String id_owner
@@ -135,7 +135,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/deleteTipeMotor")
-    Call<MerkTipe> deleteTipe(@Header("Authorization") String authorization,
+    Call<String> deleteTipe(@Header("Authorization") String authorization,
                               @Field("id_tipe") int id_tipe);
 
     @GET("api/detail/{no_mesin}")

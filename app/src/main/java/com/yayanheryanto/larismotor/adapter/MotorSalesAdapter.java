@@ -93,17 +93,23 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
         Call<List<MerkTipe>> call = apiInterface.getMerkById(motor.getIdMerk() + "", motor.getIdTipe() + "");
         call.enqueue(new Callback<List<MerkTipe>>() {
             @Override
+
             public void onResponse(Call<List<MerkTipe>> call, Response<List<MerkTipe>> response) {
-                String merk = response.body().get(0).getNamaMerk();
-                String tipe = response.body().get(0).getNamaTipe();
 
 
-                if (motor.getTahun() == 0) {
-                    holder.title.setText(merk + " " + tipe + " (Baru)");
-                } else {
-                    holder.title.setText(merk + " " + tipe + " (" + motor.getTahun() + ")");
+
+                if (response.body().size() != 0)
+                {
+                    String merk = response.body().get(0).getNamaMerk();
+                    String tipe = response.body().get(0).getNamaTipe();
+
+
+                    if (motor.getTahun() == 0) {
+                        holder.title.setText(merk + " " + tipe + " (Baru)");
+                    } else {
+                        holder.title.setText(merk + " " + tipe + " (" + motor.getTahun() + ")");
+                    }
                 }
-
             }
 
             @Override

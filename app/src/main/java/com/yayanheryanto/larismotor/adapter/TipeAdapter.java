@@ -18,12 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
-import com.yayanheryanto.larismotor.view.owner.EditTipeActivity;
-import com.yayanheryanto.larismotor.view.LoginActivity;
-import com.yayanheryanto.larismotor.view.owner.MasterActivity;
 import com.yayanheryanto.larismotor.model.MerkTipe;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.LoginActivity;
+import com.yayanheryanto.larismotor.view.owner.EditTipeActivity;
+import com.yayanheryanto.larismotor.view.owner.MasterActivity;
 
 import java.util.List;
 
@@ -37,7 +37,6 @@ import static com.yayanheryanto.larismotor.config.config.ID_USER;
 import static com.yayanheryanto.larismotor.config.config.MY_PREFERENCES;
 
 public class TipeAdapter extends RecyclerView.Adapter<TipeAdapter.TipeViewHolder> {
-
 
 
     private Context mContext;
@@ -66,7 +65,7 @@ public class TipeAdapter extends RecyclerView.Adapter<TipeAdapter.TipeViewHolder
 
 
     private void initProgressDialog() {
-        progressDialog = new ProgressDialog((MasterActivity)mContext);
+        progressDialog = new ProgressDialog((MasterActivity) mContext);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Sedang Memproses..");
         progressDialog.setCancelable(false);
@@ -76,15 +75,21 @@ public class TipeAdapter extends RecyclerView.Adapter<TipeAdapter.TipeViewHolder
     public void onBindViewHolder(@NonNull TipeAdapter.TipeViewHolder holder, int position) {
         initProgressDialog();
         final MerkTipe tipe = mList.get(position);
-        holder.txtNamaMerk.setText(tipe.getNamaMerk() + " - "+tipe.getNamaTipe());
+        holder.txtNamaMerk.setText(tipe.getNamaMerk() + " - " + tipe.getNamaTipe());
 
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, EditTipeActivity.class);
-                intent.putExtra(DATA_TIPE, tipe);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
+                if (tipe.getNamaTipe().equalsIgnoreCase("Default")) {
+
+                    Toast.makeText(mContext, "default tidak boleh diedit", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Intent intent = new Intent(mContext, EditTipeActivity.class);
+                    intent.putExtra(DATA_TIPE, tipe);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                }
             }
         });
 
@@ -105,28 +110,31 @@ public class TipeAdapter extends RecyclerView.Adapter<TipeAdapter.TipeViewHolder
                                 String token = pref.getString(ACCESTOKEN, "");
 
                                 ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                                Call<MerkTipe> call = apiInterface.deleteTipe(token, tipe.getIdTipe());
-                                call.enqueue(new Callback<MerkTipe>() {
+                                Call<String> call = apiInterface.deleteTipe(token, tipe.getIdTipe());
+                                call.enqueue(new Callback<String>() {
                                     @Override
-                                    public void onResponse(Call<MerkTipe> call, Response<MerkTipe> response) {
+                                    public void onResponse(Call<String> call, Response<String> response) {
                                         progressDialog.dismiss();
-                                        if (response.body().getMessage().equals("success")){
+
+                                        if (response.body().equals("success")) {
                                             mList.remove(tipe);
                                             adapter.notifyDataSetChanged();
                                             Toast.makeText(mContext, "Tipe Berhasil Dihapus", Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            editor.putString(ID_USER,"");
+                                        } else if (response.body().equalsIgnoreCase("token tidak valid")) {
+                                            editor.putString(ID_USER, "");
                                             editor.putString(ACCESTOKEN, "");
                                             editor.commit();
-                                            Toast.makeText(mContext, "Token Tidak Valid", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, response.body(), Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(mContext, LoginActivity.class);
                                             mContext.startActivity(intent);
-                                            ((Activity)mContext).finish();
+                                            ((Activity) mContext).finish();
+                                        } else {
+                                            Toast.makeText(mContext, response.body(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
 
                                     @Override
-                                    public void onFailure(Call<MerkTipe> call, Throwable t) {
+                                    public void onFailure(Call<String> call, Throwable t) {
                                         progressDialog.dismiss();
                                         t.printStackTrace();
                                         Toast.makeText(mContext, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
