@@ -50,6 +50,10 @@ public interface ApiInterface {
     Call<User> getUser(@Field("username") String username,
                        @Field("password") String password);
 
+    @FormUrlEncoded
+    @POST("api/logout")
+    Call<String> logout(@Field("id_user") String idUser);
+
     @POST("api/addMotor")
     Call<Motor> addMotor(@Header("Authorization") String authorization,
                          @Body RequestBody file);

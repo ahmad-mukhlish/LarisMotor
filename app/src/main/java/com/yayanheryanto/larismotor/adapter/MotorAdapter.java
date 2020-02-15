@@ -104,14 +104,20 @@ public class MotorAdapter extends RecyclerView.Adapter<MotorAdapter.MotorViewHol
 
                 Log.v("coba", response.body().toString());
 
-                String merk = response.body().get(0).getNamaMerk();
-                String tipe = response.body().get(0).getNamaTipe();
 
-                if (motor.getTahun() == 0) {
-                    motorViewHolder.title.setText(merk + " " + tipe + " (Baru)");
-                } else {
-                    motorViewHolder.title.setText(merk + " " + tipe + " (" + motor.getTahun() + ")");
+                if (response.body().size() > 0) {
+                    String merk = response.body().get(0).getNamaMerk();
+                    String tipe = response.body().get(0).getNamaTipe();
+
+
+                    if (motor.getTahun() == 0) {
+                        motorViewHolder.title.setText(merk + " " + tipe + " (Baru)");
+                    } else {
+                        motorViewHolder.title.setText(merk + " " + tipe + " (" + motor.getTahun() + ")");
+                    }
                 }
+
+
             }
 
             @Override

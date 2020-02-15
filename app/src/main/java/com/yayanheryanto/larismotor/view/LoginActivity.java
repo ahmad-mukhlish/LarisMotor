@@ -21,6 +21,8 @@ import com.yayanheryanto.larismotor.model.User;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -124,8 +126,8 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }
                 } else {
-                    dialog.dismiss();
-                    Toast.makeText(LoginActivity.this, "Username atau Password Salah", Toast.LENGTH_SHORT).show();
+                   dialog.dismiss();
+                    Toast.makeText(LoginActivity.this, user.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 

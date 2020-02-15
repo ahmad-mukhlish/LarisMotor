@@ -21,7 +21,6 @@
 
     <string name="pembeli">Pembeli</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string-array name="mobar">
         <item>Mobar</item>
         <item>Mokas</item>
