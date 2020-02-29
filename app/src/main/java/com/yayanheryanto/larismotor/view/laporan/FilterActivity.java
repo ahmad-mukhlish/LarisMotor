@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +18,7 @@ import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.model.Sales;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.owner.InsentifHasilOwnerActivity;
 import com.yayanheryanto.larismotor.view.owner.OwnerMenuActivity;
 
 import java.text.ParseException;
@@ -114,10 +114,8 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
                     if (tanggalDari.equals("kosong") || tanggalKe.equals("kosong") || (sql.parse(tanggalDari).after(sql.parse(tanggalKe)))) {
                         Toast.makeText(FilterActivity.this, "Data tanggal belum valid...", Toast.LENGTH_SHORT).show();
                     } else {
-
                         Intent intent = new Intent(FilterActivity.this, LaporanActivity.class);
-                        intent.putExtra("insentif", false
-                        );
+                        intent.putExtra("insentif", false);
                         intent.putExtra("posSales", spinnerSales.getSelectedItemPosition());
                         intent.putExtra("posKondisi", spinnerKondisi.getSelectedItemPosition());
                         intent.putExtra("posCaraBayar", spinnerCaraBayar.getSelectedItemPosition());
@@ -128,6 +126,54 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
                 }
             }
         });
+
+        Button insentif = findViewById(R.id.insentif);
+        insentif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (spinnerSales.getSelectedItemPosition() != 0) {
+                    sales = saleses.get(spinnerSales.getSelectedItemPosition() - 1).getNoKtpSales();
+                } else {
+                    sales = "-1";
+                }
+
+
+                if (spinnerKondisi.getSelectedItemPosition() == 0) {
+                    kondisi = "-1";
+                } else if (spinnerKondisi.getSelectedItemPosition() == 1) {
+                    kondisi = "1";
+                } else {
+                    kondisi = "0";
+                }
+
+                if (spinnerCaraBayar.getSelectedItemPosition() == 0) {
+                    caraBayar = "-1";
+                } else if (spinnerCaraBayar.getSelectedItemPosition() == 1) {
+                    caraBayar = "0";
+                } else {
+                    caraBayar = "1";
+                }
+
+
+                try {
+                    if (tanggalDari.equals("kosong") || tanggalKe.equals("kosong") || (sql.parse(tanggalDari).after(sql.parse(tanggalKe)))) {
+                        Toast.makeText(FilterActivity.this, "Data tanggal belum valid...", Toast.LENGTH_SHORT).show();
+                    } else if (sales.equalsIgnoreCase("-1")) {
+                        Toast.makeText(FilterActivity.this, "Data sales belum valid...", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(FilterActivity.this, InsentifHasilOwnerActivity.class);
+                        intent.putExtra("sales", saleses.get(spinnerSales.getSelectedItemPosition() - 1));
+                        intent.putExtra("dariSqL", FilterActivity.tanggalDari);
+                        intent.putExtra("hinggaSql", FilterActivity.tanggalKe);
+                        startActivity(intent);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
         dari.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,8 +226,6 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
         spinnerCaraBayar = findViewById(R.id.spinner_metode_bayar);
         ArrayAdapter<String> caraBayarAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, caraBayar);
         spinnerCaraBayar.setAdapter(caraBayarAdapter);
-
-
 
 
     }
@@ -257,7 +301,7 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
                 salesAdapter = new ArrayAdapter<>(FilterActivity.this, android.R.layout.simple_spinner_item, merkArray);
                 spinnerSales.setAdapter(salesAdapter);
 
-                Bundle bundle = getIntent().getExtras() ;
+                Bundle bundle = getIntent().getExtras();
 
                 if (bundle.getBoolean("back")) {
                     spinnerSales.setSelection(bundle.getInt("posSales"));
