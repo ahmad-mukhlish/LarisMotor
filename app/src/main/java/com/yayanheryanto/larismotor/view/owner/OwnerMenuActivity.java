@@ -129,42 +129,45 @@ public class OwnerMenuActivity extends AppCompatActivity implements View.OnClick
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.logout:
-
-                //TODO insert API for delete token
-                pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-                ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                Call<String> call = apiInterface.logout(pref.getString(ID_USER, ""));
-                call.enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-
-                        if (response.body().equalsIgnoreCase("success")) {
-
-                            editor = pref.edit();
-                            editor.putString(ACCESTOKEN, "");
-                            editor.putString(ID_USER, "");
-                            editor.putString(NAMA_USER, "");
-                            editor.commit();
-                            Intent intent = new Intent(OwnerMenuActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-
-                    }
-                });
-
-
+                logout();
                 return true;
 
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void logout() {
+
+        //TODO insert API for delete token
+        pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<String> call = apiInterface.logout(pref.getString(ID_USER, ""));
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                if (response.body().equalsIgnoreCase("success")) {
+
+                    editor = pref.edit();
+                    editor.putString(ACCESTOKEN, "");
+                    editor.putString(ID_USER, "");
+                    editor.putString(NAMA_USER, "");
+                    editor.commit();
+                    Intent intent = new Intent(OwnerMenuActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+
     }
 
     @Override
@@ -175,4 +178,5 @@ public class OwnerMenuActivity extends AppCompatActivity implements View.OnClick
             startActivity(intent);
         }
     }
+
 }

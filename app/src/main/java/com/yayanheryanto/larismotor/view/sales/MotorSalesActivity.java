@@ -104,7 +104,8 @@ public class MotorSalesActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Motor>> call, Throwable t) {
                 dialog.dismiss();
-                Log.v("coba",t.getMessage());
+                Log.v(
+                        "coba", t.getMessage());
                 Toast.makeText(MotorSalesActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
             }
         });
@@ -128,7 +129,7 @@ public class MotorSalesActivity extends AppCompatActivity {
 
             case R.id.action_search:
                 Intent intent1 = new Intent(MotorSalesActivity.this, CariMotorActivity.class);
-                intent1.putExtra("owner",false);
+                intent1.putExtra("owner", false);
                 startActivity(intent1);
                 return true;
 
@@ -159,7 +160,7 @@ public class MotorSalesActivity extends AppCompatActivity {
         spinnerStatus.setVisibility(GONE);
 
 
-        final String[] kondisi = {"Pilih Kondisi","Mokas", "Mobar"};
+        final String[] kondisi = {"Pilih Kondisi", "Mokas", "Mobar"};
         spinnerKondisi = rootDialog.findViewById(R.id.spinner_kondisi);
         ArrayAdapter<String> kondisiAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, kondisi);
         spinnerKondisi.setAdapter(kondisiAdapter);
@@ -371,7 +372,7 @@ public class MotorSalesActivity extends AppCompatActivity {
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         SharedPreferences pref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String id = pref.getString(ID_USER, "");
-        Call<List<Motor>> call = apiInterface.getFilteredMotor(id, "0", merk, tipe, tahun,kondisi);
+        Call<List<Motor>> call = apiInterface.getFilteredMotor(id, "0", merk, tipe, tahun, kondisi);
         call.enqueue(new Callback<List<Motor>>() {
             @Override
             public void onResponse(Call<List<Motor>> call, Response<List<Motor>> response) {
@@ -400,6 +401,6 @@ public class MotorSalesActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(MotorSalesActivity.this,SalesMenuActivity.class));
+        startActivity(new Intent(MotorSalesActivity.this, SalesMenuActivity.class));
     }
 }

@@ -23,6 +23,7 @@ import com.yayanheryanto.larismotor.model.KonfigInsentif;
 import com.yayanheryanto.larismotor.model.Sales;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
+import com.yayanheryanto.larismotor.view.laporan.LaporanActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -273,6 +274,40 @@ public class InsentifConfigAcitivity extends AppCompatActivity implements DatePi
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        Button laporan = findViewById(R.id.laporan);
+        laporan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (spinnerSales.getSelectedItemPosition() != 0) {
+                    sales = saleses.get(spinnerSales.getSelectedItemPosition() - 1).getNoKtpSales();
+                } else {
+                    sales = "-1";
+                }
+
+
+                try {
+                    if (tanggalDari.equals("kosong") || tanggalKe.equals("kosong") || (sql.parse(tanggalDari).after(sql.parse(tanggalKe))) || sales.equals("-1")) {
+                        Toast.makeText(InsentifConfigAcitivity.this, "Data sales atau tanggal ada yang belum valid...", Toast.LENGTH_SHORT).show();
+                    } else {
+
+
+                        Intent intent = new Intent(InsentifConfigAcitivity.this, LaporanActivity.class);
+                        intent.putExtra("insentif",true);
+                        intent.putExtra("sales", saleses.get(spinnerSales.getSelectedItemPosition() - 1));
+                        intent.putExtra("dari", dariTxt.getText().toString());
+                        intent.putExtra("hingga", keTxt.getText().toString());
+                        intent.putExtra("dariSql", tanggalDari);
+                        intent.putExtra("hinggaSql", tanggalKe);
+                        startActivity(intent);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 

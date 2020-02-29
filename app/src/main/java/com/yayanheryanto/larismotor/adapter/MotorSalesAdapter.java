@@ -104,7 +104,8 @@ public class MotorSalesAdapter extends RecyclerView.Adapter<MotorSalesAdapter.Mo
                     String tipe = response.body().get(0).getNamaTipe();
 
 
-                    if (motor.getTahun() == 0) {
+                    if (motor.getKondisi() == 1
+                    ) {
                         holder.title.setText(merk + " " + tipe + " (Baru)");
                     } else {
                         holder.title.setText(merk + " " + tipe + " (" + motor.getTahun() + ")");

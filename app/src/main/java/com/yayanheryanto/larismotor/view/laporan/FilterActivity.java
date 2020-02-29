@@ -116,6 +116,8 @@ public class FilterActivity extends AppCompatActivity implements com.wdullaer.ma
                     } else {
 
                         Intent intent = new Intent(FilterActivity.this, LaporanActivity.class);
+                        intent.putExtra("insentif", false
+                        );
                         intent.putExtra("posSales", spinnerSales.getSelectedItemPosition());
                         intent.putExtra("posKondisi", spinnerKondisi.getSelectedItemPosition());
                         intent.putExtra("posCaraBayar", spinnerCaraBayar.getSelectedItemPosition());

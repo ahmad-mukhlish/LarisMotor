@@ -108,6 +108,7 @@
 
             </LinearLayout>
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -388,14 +389,31 @@
 
     </ScrollView>
 
-
-    <Button
-        android:id="@+id/hasil"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="Lihat Hasil"
-        android:textColor="#FFFFFF" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/laporan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/mdtp_white"
+            android:text="Lihat Laporan"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/hasil"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="Lihat Hasil"
+            android:textColor="#FFFFFF" />
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

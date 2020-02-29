@@ -41,6 +41,9 @@ public class Transaksi {
     @SerializedName("hjm")
     @Expose
     private String hjm;
+    @SerializedName("persentase_mokas")
+    @Expose
+    private String persentaseMokas;
 
     public String getHjm() {
         return hjm;
@@ -175,6 +178,28 @@ public class Transaksi {
         this.dp = dp;
     }
 
+    @Override
+    public String toString() {
+        return "Transaksi{" +
+                "tanggal='" + tanggal + '\'' +
+                ", nosin='" + nosin + '\'' +
+                ", nopol='" + nopol + '\'' +
+                ", pembeli='" + pembeli + '\'' +
+                ", sales='" + sales + '\'' +
+                ", kondisi='" + kondisi + '\'' +
+                ", dp='" + dp + '\'' +
+                ", pencairanLeasing='" + pencairanLeasing + '\'' +
+                ", subsidi='" + subsidi + '\'' +
+                ", mediator='" + mediator + '\'' +
+                ", terjual='" + terjual + '\'' +
+                ", hjm='" + hjm + '\'' +
+                ", persentaseMokas='" + persentaseMokas + '\'' +
+                ", nomor=" + nomor +
+                ", sama=" + sama +
+                ", hargaTerjual=" + hargaTerjual +
+                ", netto=" + netto +
+                '}';
+    }
 }
 
 

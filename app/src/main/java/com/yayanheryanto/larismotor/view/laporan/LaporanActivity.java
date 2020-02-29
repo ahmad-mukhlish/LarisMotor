@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.yayanheryanto.larismotor.R;
 import com.yayanheryanto.larismotor.adapter.LaporanAdapter;
+import com.yayanheryanto.larismotor.model.KonfigInsentif;
+import com.yayanheryanto.larismotor.model.Sales;
 import com.yayanheryanto.larismotor.model.Transaksi;
 import com.yayanheryanto.larismotor.retrofit.ApiClient;
 import com.yayanheryanto.larismotor.retrofit.ApiInterface;
@@ -25,11 +27,12 @@ import retrofit2.Response;
 public class LaporanActivity extends AppCompatActivity {
 
     private static final String[] TABLE_HEADERS = {"No.", "Tanggal", "Nopol/Nosin", "Pembeli", "Sales",
-            "Kondisi", "Bayar", "Harga Terjual", "HJM" , "Subsidi", "Mediator", "Netto"
+            "Kondisi", "Bayar", "Harga Terjual", "HJM", "Subsidi", "Mediator", "Netto", "Persentase Mokas"
     };
     private TableView tableView;
     private LaporanAdapter adapter;
     private ProgressDialog dialog;
+    private double persentaseMokas;
 
     private int posSales, posKondisi, posCaraBayar;
 
@@ -44,7 +47,7 @@ public class LaporanActivity extends AppCompatActivity {
 
         tableView = findViewById(R.id.tableView);
         tableView.setHeaderAdapter(new SimpleTableHeaderAdapter(this, TABLE_HEADERS));
-        TableColumnDpWidthModel columnModel = new TableColumnDpWidthModel(this, 12, 100);
+        TableColumnDpWidthModel columnModel = new TableColumnDpWidthModel(this, 14, 100);
         columnModel.setColumnWidth(0, 60);
         columnModel.setColumnWidth(1, 120);
         columnModel.setColumnWidth(2, 150);
@@ -54,9 +57,10 @@ public class LaporanActivity extends AppCompatActivity {
         columnModel.setColumnWidth(9, 200);
         columnModel.setColumnWidth(10, 200);
         columnModel.setColumnWidth(11, 200);
+        columnModel.setColumnWidth(12, 500);
+
         tableView.setColumnModel(columnModel);
 
-        getTransaksi();
 
         Bundle bundle = getIntent().getExtras();
 
@@ -64,9 +68,10 @@ public class LaporanActivity extends AppCompatActivity {
         posKondisi = bundle.getInt("posKondisi");
         posCaraBayar = bundle.getInt("posCaraBayar");
 
-        Log.v("cak",posSales+"") ;
-        Log.v("cak",posKondisi+"") ;
-        Log.v("cak",posCaraBayar+"") ;
+        Log.v("cak", posSales + "");
+        Log.v("cak", posKondisi + "");
+        Log.v("cak", posCaraBayar + "");
+        getKonfig();
 
 
     }
@@ -79,19 +84,35 @@ public class LaporanActivity extends AppCompatActivity {
     }
 
 
-    private void getTransaksi() {
+    private void getTransaksi(final Double persentaseMokas) {
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
 
-        Log.v("cik",FilterActivity.sales) ;
-        Log.v("cik",FilterActivity.kondisi) ;
-        Log.v("cik",FilterActivity.caraBayar) ;
+        Log.v("cik", FilterActivity.sales);
+        Log.v("cik", FilterActivity.kondisi);
+        Log.v("cik", FilterActivity.caraBayar);
 
-        Call<List<Transaksi>> call = apiInterface.getTransaksi(
-                FilterActivity.tanggalDari, FilterActivity.tanggalKe,
-                FilterActivity.sales, FilterActivity.kondisi, FilterActivity.caraBayar);
+        Bundle bundle = getIntent().getExtras();
 
+        Call<List<Transaksi>> call = null;
+
+        if (bundle.getBoolean("insentif")) {
+
+            Sales salesNow = bundle.getParcelable("sales");
+            String dariSql = bundle.getString("dariSql");
+            String hinggaSql = bundle.getString("hinggaSql");
+
+
+            call = apiInterface.getTransaksi(
+                    dariSql, hinggaSql,
+                    salesNow.getNoKtpSales(), -1+"", -1+"");
+
+        } else {
+            call = apiInterface.getTransaksi(
+                    FilterActivity.tanggalDari, FilterActivity.tanggalKe,
+                    FilterActivity.sales, FilterActivity.kondisi, FilterActivity.caraBayar);
+        }
 
 
         call.enqueue(new Callback<List<Transaksi>>() {
@@ -103,6 +124,7 @@ public class LaporanActivity extends AppCompatActivity {
                 } else {
                     List<Transaksi> transaksi;
                     transaksi = response.body();
+
 
                     int nomor = 1;
                     String pembanding = transaksi.get(0).getTanggal();
@@ -124,12 +146,13 @@ public class LaporanActivity extends AppCompatActivity {
                         }
 
                         transaksiNow.setNomor(nomor);
+                        Log.v("coba", transaksiNow.toString());
                         nomor++;
 
 
                     }
 
-                    adapter = new LaporanAdapter(getApplicationContext(), transaksi);
+                    adapter = new LaporanAdapter(getApplicationContext(), transaksi, persentaseMokas);
                     tableView.setDataAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }
@@ -150,11 +173,42 @@ public class LaporanActivity extends AppCompatActivity {
         Intent intent = new Intent(LaporanActivity.this, FilterActivity.class);
 
 
-
         intent.putExtra("posSales", posSales);
         intent.putExtra("posKondisi", posKondisi);
         intent.putExtra("posCaraBayar", posCaraBayar);
         intent.putExtra("back", true);
         startActivity(intent);
     }
+
+    private void getKonfig() {
+        dialog.show();
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<List<KonfigInsentif>> call = apiInterface.getKonfigInsentif();
+        call.enqueue(new Callback<List<KonfigInsentif>>() {
+            @Override
+            public void onResponse(Call<List<KonfigInsentif>> call, Response<List<KonfigInsentif>> response) {
+                dialog.dismiss();
+                List<KonfigInsentif> konfigInsentifs = response.body();
+                if (konfigInsentifs != null) {
+                    for (KonfigInsentif konfigInsentif : konfigInsentifs) {
+
+                        getTransaksi(Double.parseDouble(konfigInsentif.getPersentase()));
+//                        Log.v("coba",persentaseMokas+"");
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<KonfigInsentif>> call, Throwable t) {
+                dialog.dismiss();
+                t.printStackTrace();
+                Toast.makeText(LaporanActivity.this, "Terjadi Kesalahan Tidak Terduga", Toast.LENGTH_SHORT).show();
+            }
+
+
+        });
+    }
+
 }

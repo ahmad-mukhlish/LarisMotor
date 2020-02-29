@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, OwnerMenuActivity.class);
             startActivity(intent);
             finish();
-        } else if (id.contains("2")) {
+        } else if (!id.equalsIgnoreCase("")) {
             Intent intent = new Intent(LoginActivity.this, SalesMenuActivity.class);
             startActivity(intent);
             finish();
